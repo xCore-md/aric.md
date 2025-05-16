@@ -1,14 +1,33 @@
 import createMiddleware from "next-intl/middleware";
-import { routing } from "./i18n/routing";
+import { NextRequest } from "next/server";
+import { routing } from "@/i18n/routing";
 
-export default createMiddleware(routing);
-//
-// export const config = {
-//     matcher: '/((?!api|trpc|_next|_vercel|.*\\..*).*)'
-// };
+const handleI18nRouting = createMiddleware(routing);
+
+export default async function middleware(request: NextRequest) {
+  const response = handleI18nRouting(request);
+
+  response.headers.set("x-current-path", request.nextUrl.pathname);
+
+  return response;
+}
 
 export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|favicon.ico|apple-touch-icon.png|favicon.svg|images/books|icons|manifest).*)",
   ],
 };
+
+/*
+import createMiddleware from "next-intl/middleware";
+import { routing } from "./i18n/routing";
+
+export default createMiddleware(routing);
+
+
+export const config = {
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|apple-touch-icon.png|favicon.svg|images/books|icons|manifest).*)",
+  ],
+};
+*/

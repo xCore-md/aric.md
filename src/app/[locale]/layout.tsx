@@ -2,10 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 
 import { routing } from "@/i18n/routing";
 import { Footer } from "@/components/shared/Footer";
-import "@/app/globals.css";
+import "@/assets/styles/globals.css";
 import { Header } from "@/components/shared/Header";
 
 const fontInter = Inter({

@@ -44,6 +44,15 @@
   --color-blue: oklch(0.78 0.1489 226.02);
   --color-light-blue: oklch(0.92 0.0864 204.85);
   --color-black: oklch(0.16 0.0233 235.03);
+  --color-buff: oklch(0.81 0.0928 58.44);
+  --color-platinum: oklch(0.91 0.0052 247.88);
+  --color-text-gray: oklch(0.57 0.0253 254.49);
+  --color-yellow: oklch(0.85 0.1729 87.27);
+  --color-mentol: oklch(0.95 0.0889 139.64);
+  --color-green: oklch(0.75 0.1414 141.01);
+  --color-red: oklch(0.74 0.1561 25.23);
+  --color-back: oklch(0.98 0 0);
+
   --shadow-btn: 0px 2px 10px rgba(101, 192, 237, 0.2);
 }
 
@@ -141,4 +150,8 @@
 
 body {
   background-color: #fafbfc;
+}
+
+.h1 {
+  @apply text-2xl font-bold;
 }
