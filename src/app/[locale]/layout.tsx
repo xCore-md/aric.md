@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { headers } from "next/headers";
 
 import { routing } from "@/i18n/routing";
 import { Footer } from "@/components/shared/Footer";

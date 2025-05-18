@@ -4,7 +4,6 @@ import * as React from "react";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -132,13 +131,17 @@ function Carousel({
   );
 }
 
-function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
+function CarouselContent({
+  className,
+  wrapperClassName,
+  ...props
+}: React.ComponentProps<"div"> & { wrapperClassName?: string }) {
   const { carouselRef } = useCarousel();
 
   return (
     <div
       ref={carouselRef}
-      className="overflow-hidden"
+      className={cn("overflow-hidden", wrapperClassName)}
       data-slot="carousel-content"
     >
       <div className={cn("flex", className)} {...props} />
@@ -166,7 +169,7 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
 
 function CarouselPrevious({
   className,
-  variant = "outline",
+  variant = "black",
   size = "icon",
   ...props
 }: React.ComponentProps<typeof Button>) {
@@ -174,6 +177,7 @@ function CarouselPrevious({
 
   return (
     <Button
+      type="button"
       data-slot="carousel-previous"
       variant={variant}
       size={size}
@@ -182,7 +186,9 @@ function CarouselPrevious({
       onClick={scrollPrev}
       {...props}
     >
-      <ArrowLeft />
+      <svg fill="currentColor" viewBox="0 0 24 24">
+        <path d="M15.7 18.7a1 1 0 0 1-1.3 0h-.1l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 1 1 1.4 1.4L10.4 12l5.3 5.3c.4.5.4 1 0 1.4Z" />
+      </svg>
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -190,7 +196,7 @@ function CarouselPrevious({
 
 function CarouselNext({
   className,
-  variant = "outline",
+  variant = "black",
   size = "icon",
   ...props
 }: React.ComponentProps<typeof Button>) {
@@ -198,6 +204,7 @@ function CarouselNext({
 
   return (
     <Button
+      type="button"
       data-slot="carousel-next"
       variant={variant}
       size={size}
@@ -206,7 +213,10 @@ function CarouselNext({
       onClick={scrollNext}
       {...props}
     >
-      <ArrowRight />
+      <svg fill="currentColor" viewBox="0 0 24 24">
+        <path d="M8.3 5.3a1 1 0 0 1 1.3 0h.1l6 6c.4.4.4 1 0 1.4l-6 6a1 1 0 1 1-1.4-1.4l5.3-5.3-5.3-5.3a1 1 0 0 1 0-1.4Z" />
+      </svg>
+
       <span className="sr-only">Next slide</span>
     </Button>
   );
