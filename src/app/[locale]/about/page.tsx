@@ -1,3 +1,5 @@
+import { AboutContainer } from "@/containers/AboutContainer";
+
 export default function Page() {
-  return <div>About</div>;
+  return <AboutContainer />;
 }

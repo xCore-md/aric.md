@@ -63,10 +63,10 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
                 <Link href="/about">Despre noi</Link>
               </li>
               <li>
-                <Link href="/">Întrebări și răspunsuri</Link>
+                <Link href="/faq">Întrebări și răspunsuri</Link>
               </li>
               <li>
-                <Link href="/">Contacte</Link>
+                <Link href="/contacts">Contacte</Link>
               </li>
             </ul>
 
