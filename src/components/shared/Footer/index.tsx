@@ -31,7 +31,7 @@ export const Footer: React.FC = () => {
                   rapidă online — tot ce ai nevoie pentru un drum fără griji.
                 </div>
 
-                <Button className="mt-4" asChild>
+                <Button className="mt-4" variant="white" asChild>
                   <Link href="/">Despre noi</Link>
                 </Button>
               </div>

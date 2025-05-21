@@ -5,7 +5,7 @@ export const TripRouteDetails: React.FC = () => {
   return (
     <div className="grid grid-cols-5 gap-4 items-center">
       <div className="col-span-2 ">
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-5 mb-6">
           <div className="font-semibold text-lg">01:00</div>
           <div className="text-text-gray">02 Mai 2025</div>
         </div>
@@ -31,7 +31,7 @@ export const TripRouteDetails: React.FC = () => {
       </div>
 
       <div className="col-span-2 ">
-        <div className="flex items-center justify-end gap-5">
+        <div className="flex items-center justify-end gap-5 mb-6">
           <div className="font-semibold text-lg">01:00</div>
           <div className="text-text-gray">02 Mai 2025</div>
         </div>

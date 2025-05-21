@@ -9,7 +9,6 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "default-btn--gradient",
         default1:
           "bg-white text-blue shadow-xs hover:text-black hover:blue-gradient shadow-btn ring-1 ring-blue ring-inset hover:ring-0",
         destructive:
@@ -22,8 +21,13 @@ const buttonVariants = cva(
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
 
+        default: "default-btn-gradient",
+        reverse: "default-btn-gradient-reverse",
         black:
           "bg-white text-black hover:text-white hover:bg-black ring-1 ring-black ring-inset",
+
+        white:
+          "bg-white/10 text-white hover:text-black hover:bg-white ring-1 ring-white ring-inset active:hover:text-blue",
       },
       size: {
         default: "h-12 px-5 py-2 [&_svg:not([class*='size-'])]:size-6",
