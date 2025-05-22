@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { routing } from "@/i18n/routing";
 import { Footer } from "@/components/shared/Footer";
@@ -46,11 +47,13 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${fontInter.variable} antialiased`}>
         <NextIntlClientProvider>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main>{children}</main>
-            <Footer />
-          </div>
+          <NuqsAdapter>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main>{children}</main>
+              <Footer />
+            </div>
+          </NuqsAdapter>
         </NextIntlClientProvider>
       </body>
     </html>
