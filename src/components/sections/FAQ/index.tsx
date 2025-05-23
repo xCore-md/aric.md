@@ -20,9 +20,9 @@ export const FAQSection: React.FC = () => {
   return (
     <section className="section">
       <div className="container">
-        <div className="flex justify-between gap-16">
-          <div className="max-w-3xl w-full">
-            <h2 className="h2 flex flex-col !mb-14">
+        <div className="justify-between gap-8 md:flex lg:gap-16">
+          <div className="w-full max-w-3xl">
+            <h2 className="h2 !mb-8 flex flex-wrap gap-x-4 md:!mb-14 md:flex-col">
               <span className="flex items-center gap-4">
                 <span>Întrebări</span>
                 <svg viewBox="0 0 39 40" className="size-10">
@@ -43,14 +43,14 @@ export const FAQSection: React.FC = () => {
               <Accordion
                 type="single"
                 collapsible
-                className="w-full max-w-3xl space-y-4 relative"
+                className="relative w-full max-w-3xl space-y-4"
               >
                 <Image
                   src={faqAvatar.src}
                   alt="Image"
                   width={faqAvatar.width}
                   height={faqAvatar.height}
-                  className="absolute right-8 -translate-y-full"
+                  className="absolute right-8 hidden -translate-y-full sm:block"
                 />
 
                 <AccordionItem value="item-1">
@@ -60,7 +60,7 @@ export const FAQSection: React.FC = () => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <Button asChild className="mt-8">
+                <Button asChild className="md:mt-8">
                   <Link href="/faq">
                     Vezi toate
                     <ChevronRightIcon />
@@ -70,7 +70,7 @@ export const FAQSection: React.FC = () => {
             </div>
           </div>
 
-          <Card className="max-w-sm w-full">
+          <Card className="mt-10 w-full max-w-sm md:mt-0">
             <CardHeader>
               <CardTitle className="h3 text-center">
                 Cere un
@@ -81,7 +81,7 @@ export const FAQSection: React.FC = () => {
               <form action="" className="space-y-6">
                 <Input placeholder="Nume / Prenume *" />
                 <Input placeholder="+373 | 000 00 000" />
-                <Button type="button" className="w-full">
+                <Button type="button" className="w-full" size="lg">
                   Sună-mă înapoi
                 </Button>
               </form>

@@ -15,8 +15,8 @@ export const ReviewsCarouselSection: React.FC = () => {
   return (
     <section className="section">
       <div className="container">
-        <Carousel opts={{ loop: true }}>
-          <div className="flex justify-between items-end">
+        <Carousel opts={{ loop: true, align: "start" }}>
+          <div className="flex flex-col items-center justify-between text-center md:flex-row md:items-end md:text-left">
             <h2 className="h2 max-w-xl">
               Ce spun clienții despre călătoriile noastre?
             </h2>
@@ -29,9 +29,12 @@ export const ReviewsCarouselSection: React.FC = () => {
 
           <CarouselContent className="-ml-8 py-10" wrapperClassName="px-2.5">
             {[1, 2, 3, 4, 5].map((_, index) => (
-              <CarouselItem key={index} className="pl-8 basis-1/3">
-                <div className="bg-white shadow-lg rounded-xl p-8">
-                  <div className="text-2xl mb-4">
+              <CarouselItem
+                key={index}
+                className="pl-8 sm:basis-1/2 lg:basis-1/3"
+              >
+                <div className="rounded-xl bg-white p-8 shadow-lg">
+                  <div className="mb-4 text-2xl">
                     “Bucură-te de o călătorie sigură, confortabilă și fără
                     griji”
                   </div>
@@ -42,7 +45,7 @@ export const ReviewsCarouselSection: React.FC = () => {
                     O companie serioasă și de încredere!
                   </div>
 
-                  <div className="flex items-center gap-2 mt-4 mb-5">
+                  <div className="mt-4 mb-5 flex items-center gap-2">
                     {[1, 2, 3, 4, 5].map((_, index) => (
                       <svg
                         key={index}
@@ -66,10 +69,10 @@ export const ReviewsCarouselSection: React.FC = () => {
                     alt="Image"
                     width={googleIcon.width}
                     height={googleIcon.height}
-                    className="h-5 mt-3"
+                    className="mt-3 h-5"
                   />
 
-                  <div className="relative aspect-video rounded-lg overflow-hidden mt-8">
+                  <div className="relative mt-8 aspect-video overflow-hidden rounded-lg">
                     <Image
                       src="https://placehold.co/352x200/png"
                       alt="Image"

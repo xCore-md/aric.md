@@ -5,18 +5,18 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-full text-base font-semibold transition cursor-pointer disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full text-base font-semibold transition outline-none focus-visible:ring-[3px] disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default1:
-          "bg-white text-blue shadow-xs hover:text-black hover:blue-gradient shadow-btn ring-1 ring-blue ring-inset hover:ring-0",
+          "text-blue hover:blue-gradient shadow-btn ring-blue bg-white shadow-xs ring-1 ring-inset hover:text-black hover:ring-0",
         destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 text-white shadow-xs",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 border shadow-xs",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-xs",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
@@ -24,16 +24,16 @@ const buttonVariants = cva(
         default: "default-btn-gradient",
         reverse: "default-btn-gradient-reverse",
         black:
-          "bg-white text-black hover:text-white hover:bg-black ring-1 ring-black ring-inset",
+          "bg-white text-black ring-1 ring-black ring-inset hover:bg-black hover:text-white",
 
         white:
-          "bg-white/10 text-white hover:text-black hover:bg-white ring-1 ring-white ring-inset active:hover:text-blue",
+          "active:hover:text-blue bg-white/10 text-white ring-1 ring-white ring-inset hover:bg-white hover:text-black",
       },
       size: {
         default: "h-12 px-5 py-2 [&_svg:not([class*='size-'])]:size-6",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-12 [&_svg:not([class*='size-'])]:size-6 flex-none",
+        sm: "h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5",
+        lg: "h-14 px-12",
+        icon: "size-12 flex-none [&_svg:not([class*='size-'])]:size-6",
       },
     },
     defaultVariants: {

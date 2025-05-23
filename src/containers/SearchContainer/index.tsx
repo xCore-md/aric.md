@@ -13,6 +13,8 @@ import { ChevronRightIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export const SearchContainer: React.FC = () => {
   return (
@@ -32,6 +34,30 @@ export const SearchContainer: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/*<Card className="mt-8 border">
+            <CardContent>
+              <div className="flex flex-col items-center gap-12">
+                <div className="flex items-center gap-4">
+                  <svg className="size-10 fill-black" viewBox="0 0 41 34">
+                    <path
+                      fillRule="evenodd"
+                      d="M32.7 17.6a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-2.4 4.2a1.1 1.1 0 0 0-.9 2l2 2-2 2a1.1 1.1 0 0 0 .8 1.9 1.1 1.1 0 0 0 .9-.4l1.8-1.9 1.8 2a1.1 1.1 0 0 0 1.4.1 1.1 1.1 0 0 0 .2-1.7l-1.9-2 2-2a1.1 1.1 0 0 0-1.7-1.6L32.9 24l-1.8-2a1.1 1.1 0 0 0-.8-.3Z"
+                      clipRule="evenodd"
+                    />
+                    <path d="M9.5 22.5a1.1 1.1 0 0 1 .8 2l-8.4 8.3a1.1 1.1 0 0 1-1.6-1.6L8.6 23a1.1 1.1 0 0 1 .9-.4Z" />
+                    <path d="M17.5.3a13.1 13.1 0 0 1 15.6 14.6 1.1 1.1 0 0 1-2.2-.3v-1.5a10.8 10.8 0 1 0-9 10.7 1.2 1.2 0 0 1 .3 2.3l-2 .1a13.1 13.1 0 0 1-2.7-26Z" />
+                  </svg>
+
+                  <div className="h4">
+                    Nu a fost găsit nici un bilet pentru această rută!
+                  </div>
+                </div>
+
+                <Button>Modifică căutarea</Button>
+              </div>
+            </CardContent>
+          </Card>*/}
 
           <div className="grid grid-cols-3 gap-8">
             <div className="col-span-2">
@@ -75,7 +101,33 @@ export const SearchContainer: React.FC = () => {
                 <CardHeader className="border-platinum relative -mt-6 gap-0 rounded-t-xl border bg-[#F9F9F9] py-6">
                   <CardTitle className="h4">Filtru bilete 🔎</CardTitle>
                 </CardHeader>
-                <CardContent></CardContent>
+                <CardContent>
+                  <div className="divide-card divide-y">
+                    <div className="">
+                      <div className="mb-4 font-semibold">Filtrează după:</div>
+                      <div className="">
+                        <RadioGroup defaultValue="option-one">
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem
+                              value="option-one"
+                              id="option-one"
+                            />
+                            <Label htmlFor="option-one">Dată: crescător</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem
+                              value="option-two"
+                              id="option-two"
+                            />
+                            <Label htmlFor="option-two">
+                              Dată: descrescător
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
               </Card>
             </div>
           </div>

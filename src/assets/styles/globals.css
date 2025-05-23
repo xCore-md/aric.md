@@ -162,7 +162,7 @@
     background-color: var(--color-blue);
   }
 
-  @apply disabled:bg-text-gray  disabled:bg-none disabled:text-[#DDE0E3];
+  @apply disabled:bg-text-gray disabled:bg-none disabled:text-[#DDE0E3];
 }
 
 .default-btn-gradient-reverse {
@@ -193,7 +193,7 @@
     box-shadow: inset 0 0 0 1px var(--color-text-gray);
   }
 
-  @apply disabled:bg-transparent  disabled:bg-none disabled:text-text-gray;
+  @apply disabled:text-text-gray disabled:bg-transparent disabled:bg-none;
 }
 
 body {
@@ -201,23 +201,23 @@ body {
 }
 
 .h1 {
-  @apply text-6xl font-semibold;
+  @apply text-4xl font-semibold md:text-6xl;
 }
 
 .h2 {
-  @apply text-[2.5rem] font-semibold mb-3.5 leading-tight;
+  @apply mb-3.5 text-3xl leading-tight font-semibold md:text-[2.5rem];
 }
 
 .h3 {
-  @apply text-[2rem] font-semibold mb-3.5 leading-tight;
+  @apply mb-3.5 text-[2rem] leading-tight font-semibold;
 }
 
 .h4 {
-  @apply text-2xl font-medium leading-tight;
+  @apply text-2xl leading-tight font-medium;
 }
 
 .subtitle {
-  @apply text-2xl text-black/75;
+  @apply text-xl text-black/75 md:text-2xl;
 }
 
 .section {

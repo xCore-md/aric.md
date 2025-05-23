@@ -48,9 +48,9 @@ export default async function LocaleLayout({
       <body className={`${fontInter.variable} antialiased`}>
         <NextIntlClientProvider>
           <NuqsAdapter>
-            <div className="flex flex-col min-h-screen">
+            <div className="flex min-h-screen flex-col">
               <Header />
-              <main>{children}</main>
+              <main className="overflow-hidden">{children}</main>
               <Footer />
             </div>
           </NuqsAdapter>

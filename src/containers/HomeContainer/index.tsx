@@ -20,7 +20,7 @@ import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
 export const HomeContainer: React.FC = () => {
   return (
     <>
-      <div className="relative mx-auto w-full max-w-[1600px] overflow-hidden rounded-b-3xl">
+      {/*<div className="relative mx-auto w-full max-w-[1600px] overflow-hidden rounded-b-3xl">
         <div className="relative z-10 pb-14">
           <Header isHomePage />
 
@@ -47,7 +47,7 @@ export const HomeContainer: React.FC = () => {
           fill
           className="object-cover"
         />
-      </div>
+      </div>*/}
 
       <section className="section">
         <div className="container">
@@ -57,7 +57,7 @@ export const HomeContainer: React.FC = () => {
             noastre
           </p>
 
-          <div className="relative mt-10 grid grid-cols-3 gap-8">
+          <div className="relative mt-10 grid gap-4 md:grid-cols-3 xl:gap-8">
             {[
               "Flexibilitate bilete",
               "Călătorie confortabilă",
@@ -65,9 +65,9 @@ export const HomeContainer: React.FC = () => {
             ].map((item, index) => (
               <div
                 key={index}
-                className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-[0_4px_16px_rgba(17,34,17,0.05)]"
+                className="flex items-center gap-4 rounded-xl sm:bg-white sm:p-4 sm:shadow-[0_4px_16px_rgba(17,34,17,0.05)]"
               >
-                <div className="relative h-30 w-30 overflow-hidden rounded-lg">
+                <div className="relative hidden h-30 w-30 flex-none overflow-hidden rounded-lg xl:block">
                   <Image
                     src="https://placehold.co/600x400/png"
                     alt="Image"
@@ -83,7 +83,7 @@ export const HomeContainer: React.FC = () => {
                     </svg>
                     <span>{item}</span>
                   </h3>
-                  <div className="text-text-gray flex items-center gap-2 text-sm">
+                  <div className="text-text-gray hidden items-center gap-2 text-sm sm:flex">
                     <p>Adaptabil</p>
                     <svg
                       width="4"
@@ -112,7 +112,7 @@ export const HomeContainer: React.FC = () => {
         </div>
       </section>
 
-      <section className="section">
+      {/*<section className="section">
         <div className="container">
           <div className="relative flex min-h-[95vh] items-center justify-between">
             <div className="absolute h-full w-2/3 overflow-hidden rounded-xl">
@@ -267,6 +267,7 @@ export const HomeContainer: React.FC = () => {
           </div>
         </div>
       </section>
+*/}
 
       <EmailSubscriptionSection />
 

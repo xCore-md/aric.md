@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useQueryState } from "nuqs";
-import { Check, ChevronRightIcon, ChevronsUpDown, Search } from "lucide-react";
+import { Check, ChevronRightIcon, CalendarIcon, Search } from "lucide-react";
 
 import {
   Popover,
@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { AuthForm } from "@/components/shared/AuthForm";
 
 export const SearchTicketForm: React.FC = () => {
   const [departureCity, setDepartureCity] = useQueryState("departure");
@@ -39,14 +40,15 @@ export const SearchTicketForm: React.FC = () => {
             <Search />
           </Button>
         </DialogTrigger>
-        <DialogContent className="bg-red">
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </DialogDescription>
+        <DialogContent className="min-h-[90vh]">
+          <DialogHeader className="sr-only">
+            <DialogTitle />
+            <DialogDescription />
           </DialogHeader>
+
+          <div className="p-20">
+            <AuthForm />
+          </div>
         </DialogContent>
       </Dialog>
     </div>
@@ -104,54 +106,65 @@ const SelectCity: React.FC<{ placeholder?: string }> = ({
   );
 };
 
+import { useMaskito } from "@maskito/react";
+import { Calendar } from "@/components/ui/calendar";
+
 const SelectDate: React.FC<{ placeholder?: string }> = ({
   placeholder = "",
 }) => {
-  const [value, setValue] = React.useState("");
-  const [isOpen, setIsOpen] = React.useState(false);
-
-  const inputRef = React.useRef<HTMLInputElement>(null);
-
+  const maskedInputRef = useMaskito({
+    options: {
+      mask: [
+        /\d/,
+        /\d/,
+        "/", // zi
+        /\d/,
+        /\d/,
+        "/", // lună
+        /\d/,
+        /\d/,
+        /\d/,
+        /\d/, // an
+      ],
+    },
+  });
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <div className="relative">
+    <Popover>
+      <div className="relative w-full">
         <PopoverTrigger asChild>
           <div
             className={cn(
-              "flex h-16 max-w-50 items-center gap-3 rounded-full border bg-white px-4",
-              isOpen &&
-                "border-blue text-blue [&[data-state=open]>svg]:rotate-90",
+              "flex h-16 items-center gap-3 rounded-full border bg-white px-4",
+              "focus-within:border-blue focus-within:text-blue",
             )}
           >
             <div>🗓️</div>
             <div className="">
               <div className="text-sm">{placeholder}</div>
               <input
-                ref={inputRef}
+                ref={maskedInputRef}
                 type="text"
-                placeholder="30/05/2025"
+                placeholder="1"
                 className="focus:placeholder:text-platinum placeholder:text-text-gray text-text-gray h-full w-full focus:outline-none"
               />
             </div>
           </div>
         </PopoverTrigger>
       </div>
-
       <PopoverContent
-        align="start"
-        className="w-3xs p-0"
+        className="w-auto p-0"
         onOpenAutoFocus={(event) => {
           event.preventDefault();
-          inputRef.current?.focus();
+          maskedInputRef.current?.focus();
         }}
       >
-        <button
-          onClick={() => setValue("Chișinău")}
-          type="button"
-          className="hover:text-blue w-full px-4 py-2 text-left transition"
-        >
-          Chișinău
-        </button>
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="rounded-md border"
+        />
       </PopoverContent>
     </Popover>
   );

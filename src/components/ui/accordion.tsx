@@ -20,7 +20,7 @@ function AccordionItem({
     <AccordionPrimitive.Item
       data-slot="accordion-item"
       className={cn(
-        "bg-white rounded-full [&[data-state=open]]:rounded-3xl",
+        "rounded-full bg-white [&[data-state=open]]:rounded-3xl",
         "shadow-md shadow-black/2",
         className,
       )}
@@ -39,14 +39,14 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "py-4 px-6",
-          "focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-start justify-between gap-4 rounded-3xl text-left font-semibold transition-all outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]]:text-blue [&[data-state=open]>svg]:rotate-0 [&[data-state=open]>svg]:text-blue",
+          "px-6 py-4",
+          "focus-visible:border-ring focus-visible:ring-ring/50 [&[data-state=open]]:text-blue [&[data-state=open]>svg]:text-blue flex flex-1 items-start justify-between gap-4 rounded-3xl text-left font-semibold transition-all outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>svg]:rotate-0",
           className,
         )}
         {...props}
       >
         {children}
-        <ChevronDownIcon className="-rotate-90 text-muted-foreground pointer-events-none size-6 shrink-0 translate-y-0.5 transition-transform duration-200" />
+        <ChevronDownIcon className="text-muted-foreground pointer-events-none size-6 shrink-0 translate-y-0.5 -rotate-90 transition-transform duration-200" />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   );
@@ -63,7 +63,7 @@ function AccordionContent({
       className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden"
       {...props}
     >
-      <div className={cn("py-4 px-6 pt-0", className)}>{children}</div>
+      <div className={cn("px-6 py-4 pt-0", className)}>{children}</div>
     </AccordionPrimitive.Content>
   );
 }
