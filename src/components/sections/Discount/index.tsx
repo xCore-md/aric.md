@@ -20,7 +20,7 @@ export const DiscountSection: React.FC = () => {
               <span>20%</span>
             </h2>
 
-            <p className="subtitle mt-4 mb-8 max-w-sm !text-white">
+            <p className="subtitle mt-4 mb-8 !text-white lg:max-w-sm">
               Cumpără bilet dus-întors și beneficiază de reducere pentru al
               doilea bilet!
             </p>

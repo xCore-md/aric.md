@@ -1,3 +1,8 @@
 {
-  "title": "Titlu"
+  "nav": {
+    "home": "Acasă",
+    "about": "Despre noi",
+    "faq": "Întrebări și răspunsuri",
+    "contacts": "Contacte"
+  }
 }

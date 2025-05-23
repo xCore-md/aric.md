@@ -32,7 +32,7 @@ export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
   }
 
   return (
-    <section className="relative -mb-28 py-24">
+    <section className="relative h-full py-24">
       <div className="relative z-10 container">
         <div className="grid grid-cols-2 gap-32">
           <div className="text-white">
@@ -56,7 +56,7 @@ export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
               <div className="flex w-full items-center gap-5">
                 <Input
                   placeholder="Adresa ta de e-mail"
-                  className="placeholder:text-platinum border-transparent bg-white/14"
+                  className="placeholder:text-platinum border-transparent bg-white/14 focus:bg-white"
                 />
                 <Button>Abonează-te</Button>
               </div>

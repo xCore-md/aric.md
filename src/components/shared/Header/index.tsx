@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import NextLink from "next/link";
-import { useLocale } from "use-intl";
+import { useLocale, useTranslations } from "use-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 
 import { cn } from "@/lib/utils";
@@ -10,6 +10,16 @@ import logo from "@/assets/images/logo-white.svg";
 import roFlag from "@/assets/images/languages/ro.svg";
 import ruFlag from "@/assets/images/languages/ru.svg";
 import { Button } from "@/components/ui/button";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { NAV_LINKS } from "@/utils/constants";
 
 const language: {
   [key: string]: {
@@ -34,6 +44,9 @@ const language: {
 };
 
 export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
+  const [openMenu, setOpenMenu] = React.useState(false);
+  const t = useTranslations();
+
   const pathname = usePathname();
   const locale = useLocale();
 
@@ -41,13 +54,15 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
     return null;
 
   return (
-    <header>
-      <div className={cn("mt-5", !isHomePage && "bg-white mt-0")}>
+    <header className="sticky top-0 z-50">
+      <div
+        className={cn("mt-5 hidden sm:block", !isHomePage && "mt-0 bg-white")}
+      >
         <div className="container">
           <div
             className={cn(
-              "flex items-center gap-8 text-sm font-medium py-3",
-              isHomePage && "bg-white px-8 rounded-full",
+              "flex items-center gap-8 py-3 text-sm font-medium",
+              isHomePage && "rounded-full bg-white px-8",
             )}
           >
             <a
@@ -73,8 +88,8 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
 
       <div className={cn(!isHomePage && "bg-black")}>
         <div className="container">
-          <nav className="flex items-center justify-between  py-6">
-            <Link href="/" className="w-24 flex">
+          <nav className="flex items-center justify-between py-6">
+            <Link href="/" className="flex w-20 sm:w-24">
               <Image
                 src={logo.src}
                 alt="Aric.md"
@@ -83,25 +98,22 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
               />
             </Link>
 
-            <ul className="flex items-center gap-8 text-white">
-              <li>
-                <Link href="/">Acasă</Link>
-              </li>
-              <li>
-                <Link href="/about">Despre noi</Link>
-              </li>
-              <li>
-                <Link href="/faq">Întrebări și răspunsuri</Link>
-              </li>
-              <li>
-                <Link href="/contacts">Contacte</Link>
-              </li>
-            </ul>
+            <div className="hidden items-center gap-8 text-white lg:flex">
+              {NAV_LINKS?.map((link, index) => (
+                <Link
+                  key={index}
+                  href={link.path}
+                  className="hover:text-blue transition"
+                >
+                  {t(link.label)}
+                </Link>
+              ))}
+            </div>
 
             <div className="flex items-center gap-4">
               <NextLink
                 href={`/${language[locale]?.next}/${pathname}`}
-                className="flex items-center gap-2 font-semibold text-white"
+                className="xs:flex hidden items-center gap-2 font-semibold text-white"
               >
                 <Image
                   src={language[locale]?.flag?.src}
@@ -113,7 +125,33 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
                 <span>{language[locale]?.label}</span>
               </NextLink>
 
-              <Button variant="white">Contul meu</Button>
+              <div className="flex gap-4">
+                <Button variant="white">Contul meu</Button>
+
+                <Dialog open={openMenu} onOpenChange={setOpenMenu}>
+                  <DialogTrigger asChild>
+                    <button className="block lg:hidden">
+                      <svg className="size-8 fill-white" viewBox="0 0 33 33">
+                        <path d="M31.4 27a1.2 1.2 0 0 1 0 2.2H1.2a1.2 1.2 0 0 1 0-2.3h30.2ZM31.4 15.3a1.2 1.2 0 0 1 0 2.4H1.2a1.2 1.2 0 0 1 0-2.4h30.2ZM31.4 3.8a1.2 1.2 0 0 1 0 2.3H1.2a1.2 1.2 0 0 1 0-2.3h30.2Z" />
+                      </svg>
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="h-svh">
+                    <DialogHeader className="sr-only">
+                      <DialogTitle />
+                      <DialogDescription />
+                    </DialogHeader>
+
+                    <div
+                      className="px-6 py-10"
+                      onClick={() => setOpenMenu(false)}
+                    >
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                      Atque, non?
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
           </nav>
         </div>

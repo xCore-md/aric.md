@@ -70,7 +70,7 @@ export const FAQSection: React.FC = () => {
             </div>
           </div>
 
-          <Card className="mt-10 w-full max-w-sm md:mt-0">
+          <Card className="mx-auto mt-10 w-full max-w-sm md:mt-0">
             <CardHeader>
               <CardTitle className="h3 text-center">
                 Cere un

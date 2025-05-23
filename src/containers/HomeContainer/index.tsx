@@ -20,7 +20,9 @@ import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
 export const HomeContainer: React.FC = () => {
   return (
     <>
-      {/*<div className="relative mx-auto w-full max-w-[1600px] overflow-hidden rounded-b-3xl">
+      <Header />
+
+      <div className="relative mx-auto w-full max-w-[1600px] overflow-hidden rounded-b-3xl">
         <div className="relative z-10 pb-14">
           <Header isHomePage />
 
@@ -47,7 +49,7 @@ export const HomeContainer: React.FC = () => {
           fill
           className="object-cover"
         />
-      </div>*/}
+      </div>
 
       <section className="section">
         <div className="container">

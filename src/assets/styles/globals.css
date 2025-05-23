@@ -54,6 +54,7 @@
   --color-back: oklch(0.98 0 0);
 
   --shadow-btn: 0px 2px 10px rgba(101, 192, 237, 0.2);
+  --breakpoint-xs: 30rem;
 }
 
 :root {
