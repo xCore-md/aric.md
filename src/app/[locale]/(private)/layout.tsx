@@ -3,6 +3,7 @@ import { PRIVATE_LINKS } from "@/utils/constants";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTranslations } from "use-intl";
+import { cn } from "@/lib/utils";
 
 export default function PrivateLayout({
   children,
@@ -22,9 +23,12 @@ export default function PrivateLayout({
               <Link
                 key={path}
                 href={path}
-                className="border-blue flex h-16 items-center gap-2 border-b px-8 py-5"
+                className={cn(
+                  "text-text-gray border-platinum flex h-16 items-center gap-2 border-b px-8 py-5 font-semibold",
+                  pathname === path && "border-blue text-blue",
+                )}
               >
-                <svg width="24" height="24" className="fill-blue">
+                <svg width="24" height="24" fill="currentColor">
                   {svgPath}
                 </svg>
 
