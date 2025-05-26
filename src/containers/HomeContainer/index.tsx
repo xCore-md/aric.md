@@ -2,19 +2,12 @@
 import React from "react";
 import Image from "next/image";
 import { Header } from "@/components/shared/Header";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import heroBackground from "@/assets/images/hero.jpg";
 import { FAQSection } from "@/components/sections/FAQ";
 import { ReviewsCarouselSection } from "@/components/sections/ReviewsCarousel";
 import { DiscountSection } from "@/components/sections/Discount";
 import { EmailSubscriptionSection } from "@/components/sections/EmailSubscription";
-import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link } from "@/i18n/navigation";
-import { ChevronRightIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import bgChairs from "@/assets/images/chairs.jpg";
 import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
 
 export const HomeContainer: React.FC = () => {
@@ -27,17 +20,17 @@ export const HomeContainer: React.FC = () => {
           <Header isHomePage />
 
           <div className="container">
-            <div className="mt-18">
+            <div className="mt-10 md:mt-18">
               <h1 className="h1 max-w-xl text-white">
                 Cumpără ușor biletul de autobuz online!
               </h1>
 
-              <p className="mt-4 max-w-md text-2xl text-white">
+              <p className="mt-4 max-w-md text-xl text-white md:text-2xl">
                 Curse regulate, microbuze confortabile și orare flexibile!
               </p>
             </div>
 
-            <div className="mt-44">
+            <div className="mt-20 lg:mt-44">
               <SearchTicketForm />
             </div>
           </div>

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useQueryState } from "nuqs";
-import { Check, ChevronRightIcon, CalendarIcon, Search } from "lucide-react";
+import { ChevronRightIcon, Search } from "lucide-react";
 
 import {
   Popover,
@@ -10,47 +10,29 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { AuthForm } from "@/components/shared/AuthForm";
 
 export const SearchTicketForm: React.FC = () => {
   const [departureCity, setDepartureCity] = useQueryState("departure");
   const [arrivalCity, setArrivalCity] = useQueryState("arrival");
 
+  console.log({ departureCity, arrivalCity, setDepartureCity, setArrivalCity });
+
   return (
-    <div className="flex items-center gap-4 rounded-2xl border bg-white p-8 shadow-lg">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
       <SelectCity placeholder="Orașul de pornire" />
       <SelectCity placeholder="Orașul de sosire" />
 
       <SelectDate placeholder="Data plecării" />
       <SelectDate placeholder="Data retur" />
 
-      <SelectPassengers />
+      <div className="col-span-full flex w-full flex-col gap-4 sm:flex-row lg:col-span-1">
+        <SelectPassengers />
 
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button size="icon">
-            <Search />
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="min-h-[90vh]">
-          <DialogHeader className="sr-only">
-            <DialogTitle />
-            <DialogDescription />
-          </DialogHeader>
-
-          <div className="p-20">
-            <AuthForm />
-          </div>
-        </DialogContent>
-      </Dialog>
+        <Button className="h-16 flex-none lg:size-16">
+          <span className="lg:sr-only">Căutare</span>
+          <Search />
+        </Button>
+      </div>
     </div>
   );
 };
@@ -63,13 +45,15 @@ const SelectCity: React.FC<{ placeholder?: string }> = ({
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
+  console.log(value);
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <div className="relative">
         <PopoverTrigger asChild>
           <div
             className={cn(
-              "flex h-16 w-3xs items-center gap-3 rounded-full border bg-white px-4",
+              "flex h-16 items-center gap-3 rounded-full border bg-white px-4",
               isOpen &&
                 "border-blue text-blue [&[data-state=open]>svg]:rotate-90",
             )}
@@ -88,7 +72,7 @@ const SelectCity: React.FC<{ placeholder?: string }> = ({
 
       <PopoverContent
         align="start"
-        className="w-3xs p-0"
+        className="w-full p-0"
         onOpenAutoFocus={(event) => {
           event.preventDefault();
           inputRef.current?.focus();
@@ -99,7 +83,7 @@ const SelectCity: React.FC<{ placeholder?: string }> = ({
           type="button"
           className="hover:text-blue w-full px-4 py-2 text-left transition"
         >
-          Chișinău
+          Chișinău Chișinău Chișinău
         </button>
       </PopoverContent>
     </Popover>
@@ -145,7 +129,7 @@ const SelectDate: React.FC<{ placeholder?: string }> = ({
               <input
                 ref={maskedInputRef}
                 type="text"
-                placeholder="1"
+                placeholder="31/12/2020"
                 className="focus:placeholder:text-platinum placeholder:text-text-gray text-text-gray h-full w-full focus:outline-none"
               />
             </div>
@@ -156,7 +140,7 @@ const SelectDate: React.FC<{ placeholder?: string }> = ({
         className="w-auto p-0"
         onOpenAutoFocus={(event) => {
           event.preventDefault();
-          maskedInputRef.current?.focus();
+          // maskedInputRef?.current?.focus();
         }}
       >
         <Calendar
@@ -174,7 +158,7 @@ const SelectPassengers: React.FC = () => {
   return (
     <div
       className={cn(
-        "flex h-16 items-center gap-3 rounded-full border bg-white px-4",
+        "flex h-16 w-full items-center gap-3 rounded-full border bg-white px-4",
         "focus-within:border-blue focus-within:text-blue",
       )}
     >

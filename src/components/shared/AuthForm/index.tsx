@@ -40,8 +40,8 @@ export const AuthForm: React.FC = () => {
   };
 
   return (
-    <div className="grid h-full w-full grid-cols-2">
-      <div className="pr-24">
+    <div className="grid h-full w-full md:grid-cols-2">
+      <div className="md:pr-24">
         <Image
           className="w-24"
           src={logo.src}

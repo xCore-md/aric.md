@@ -3,6 +3,11 @@
     "home": "Главная",
     "about": "О нас",
     "faq": "Вопросы и ответы",
-    "contacts": "Контакты"
+    "contacts": "Контакты",
+    "booking": "Бронирование",
+    "passengers": "Пассажиры",
+    "payments": "Платежи",
+    "profile_settings": "Настройки профиля",
+    "my_tickets": "Мои билеты"
   }
 }

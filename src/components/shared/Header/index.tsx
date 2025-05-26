@@ -20,6 +20,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { NAV_LINKS } from "@/utils/constants";
+import { AuthForm } from "@/components/shared/AuthForm";
 
 const language: {
   [key: string]: {
@@ -126,7 +127,7 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
               </NextLink>
 
               <div className="flex gap-4">
-                <Button variant="white">Contul meu</Button>
+                <AccountButton />
 
                 <Dialog open={openMenu} onOpenChange={setOpenMenu}>
                   <DialogTrigger asChild>
@@ -136,18 +137,76 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
                       </svg>
                     </button>
                   </DialogTrigger>
-                  <DialogContent className="h-svh">
+                  <DialogContent className="h-svh bg-black">
                     <DialogHeader className="sr-only">
                       <DialogTitle />
                       <DialogDescription />
                     </DialogHeader>
 
-                    <div
-                      className="px-6 py-10"
-                      onClick={() => setOpenMenu(false)}
-                    >
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                      Atque, non?
+                    <div className="space-y-8 pt-2 pb-10">
+                      <div
+                        className="flex gap-10"
+                        onClick={() => setOpenMenu(false)}
+                      >
+                        <div className="flex items-center gap-1 text-white">
+                          <span>🕔</span>
+                          <span>Mereu disponibili 24/24</span>
+                        </div>
+
+                        <NextLink
+                          href={`/${language[locale]?.next}/${pathname}`}
+                          className="xs:flex hidden items-center gap-2 font-semibold text-white"
+                        >
+                          <Image
+                            src={language[locale]?.flag?.src}
+                            alt={language[locale]?.alt}
+                            width={language[locale]?.flag?.width}
+                            height={language[locale]?.flag?.height}
+                            className="size-5"
+                          />
+                          <span>{language[locale]?.label}</span>
+                        </NextLink>
+                      </div>
+
+                      <div
+                        className="bg-blue/10 grid gap-2 rounded-xl px-2 py-1 text-white"
+                        onClick={() => setOpenMenu(false)}
+                      >
+                        <a
+                          href="mailto:contact@aric.md"
+                          className="flex items-center gap-1"
+                        >
+                          <span>📩</span>
+                          <span>contact@aric.md</span>
+                        </a>
+
+                        <a
+                          href="tel:+37379435990"
+                          className="flex items-center gap-1"
+                        >
+                          <span>📞</span>
+                          <span>+373 79 435 990</span>
+                        </a>
+                      </div>
+
+                      <div className="flex">
+                        <AccountButton />
+                      </div>
+
+                      <div
+                        className="text-blue flex flex-col gap-2 text-xl"
+                        onClick={() => setOpenMenu(false)}
+                      >
+                        {NAV_LINKS?.map((link, index) => (
+                          <Link
+                            key={index}
+                            href={link.path}
+                            className="hover:text-blue py-3 transition"
+                          >
+                            {t(link.label)}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -157,5 +216,46 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
         </div>
       </div>
     </header>
+  );
+};
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const AccountButton = () => {
+  return (
+    <>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="white">Contul meu</Button>
+        </DialogTrigger>
+        <DialogContent className="max-h-[calc(100dvh)] w-[calc(100dvw)] overflow-y-auto">
+          <DialogHeader className="sr-only">
+            <DialogTitle />
+            <DialogDescription />
+          </DialogHeader>
+
+          <div className="lg:p-20">
+            <AuthForm />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Select>
+        <SelectTrigger className="!h-12 rounded-full border border-white bg-white !text-base !font-semibold">
+          <SelectValue placeholder="Theme" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="light">Light</SelectItem>
+          <SelectItem value="dark">Dark</SelectItem>
+          <SelectItem value="system">System</SelectItem>
+        </SelectContent>
+      </Select>
+    </>
   );
 };

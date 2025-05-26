@@ -97,8 +97,8 @@ export const AboutContainer: React.FC = () => {
                 Planifică-ți călătoriile mai ușor, mai rapid și mai convenabil!
               </h2>
 
-              <ul className="space-y-12">
-                <li className="flex gap-12">
+              <ul className="space-y-6 md:space-y-12">
+                <li className="flex gap-6 md:gap-12">
                   <div className="flex size-20 flex-none items-center justify-center rounded-full bg-white text-2xl">
                     🏆
                   </div>
@@ -114,7 +114,7 @@ export const AboutContainer: React.FC = () => {
                   </div>
                 </li>
 
-                <li className="flex gap-12">
+                <li className="flex gap-6 md:gap-12">
                   <div className="flex size-20 flex-none items-center justify-center rounded-full bg-white text-2xl">
                     🚀
                   </div>
@@ -129,7 +129,7 @@ export const AboutContainer: React.FC = () => {
                   </div>
                 </li>
 
-                <li className="flex gap-12">
+                <li className="flex gap-6 md:gap-12">
                   <div className="flex size-20 flex-none items-center justify-center rounded-full bg-white text-2xl">
                     🌟
                   </div>
