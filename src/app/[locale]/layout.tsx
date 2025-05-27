@@ -2,12 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { routing } from "@/i18n/routing";
 import { Footer } from "@/components/shared/Footer";
 import "@/assets/styles/globals.css";
 import { Header } from "@/components/shared/Header";
+import { Providers } from "@/providers";
 
 const fontInter = Inter({
   variable: "--font-inter",
@@ -47,13 +47,13 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${fontInter.variable} antialiased`}>
         <NextIntlClientProvider>
-          <NuqsAdapter>
+          <Providers>
             <div className="flex min-h-screen flex-col">
               <Header />
               <main className="overflow-hidden">{children}</main>
               <Footer />
             </div>
-          </NuqsAdapter>
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

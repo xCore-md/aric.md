@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@bprogress/next": "^3.2.12",
     "@maskito/core": "^3.8.0",
     "@maskito/react": "^3.8.0",
     "@radix-ui/react-accordion": "^1.2.10",

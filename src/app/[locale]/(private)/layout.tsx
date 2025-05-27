@@ -15,7 +15,7 @@ export default function PrivateLayout({
 
   console.log({ pathname });
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 mb-20">
       <Card className="border">
         <CardContent>
           <div className="flex justify-center gap-8">
