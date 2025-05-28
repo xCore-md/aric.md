@@ -25,6 +25,7 @@ export default function PrivateLayout({
                 href={path}
                 className={cn(
                   "text-text-gray border-platinum flex h-16 items-center gap-2 border-b px-8 py-5 font-semibold",
+                  "hover:border-blue hover:text-blue transition",
                   pathname === path && "border-blue text-blue",
                 )}
               >

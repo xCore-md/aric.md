@@ -220,12 +220,11 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
 };
 
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ChevronDown } from "lucide-react";
 
 const AccountButton = () => {
   return (
@@ -246,16 +245,14 @@ const AccountButton = () => {
         </DialogContent>
       </Dialog>
 
-      <Select>
-        <SelectTrigger className="!h-12 rounded-full border border-white bg-white !text-base !font-semibold">
-          <SelectValue placeholder="Theme" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="light">Light</SelectItem>
-          <SelectItem value="dark">Dark</SelectItem>
-          <SelectItem value="system">System</SelectItem>
-        </SelectContent>
-      </Select>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="white" className="border-red">
+            Victor Morari <ChevronDown />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>button</PopoverContent>
+      </Popover>
     </>
   );
 };
