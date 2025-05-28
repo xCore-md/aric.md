@@ -19,7 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { NAV_LINKS } from "@/utils/constants";
+import { NAV_LINKS, PRIVATE_LINKS } from "@/utils/constants";
 import { AuthForm } from "@/components/shared/AuthForm";
 
 const language: {
@@ -227,6 +227,7 @@ import {
 import { ChevronDown } from "lucide-react";
 
 const AccountButton = () => {
+  const t = useTranslations();
   return (
     <>
       <Dialog>
@@ -251,7 +252,17 @@ const AccountButton = () => {
             Victor Morari <ChevronDown />
           </Button>
         </PopoverTrigger>
-        <PopoverContent>button</PopoverContent>
+        <PopoverContent align="end" className="w-50 p-2">
+          {PRIVATE_LINKS?.map((link, index) => (
+            <Link
+              href={link.path}
+              key={index}
+              className="hover:text-blue flex w-full p-2 text-left transition"
+            >
+              {t(link.label)}
+            </Link>
+          ))}
+        </PopoverContent>
       </Popover>
     </>
   );
