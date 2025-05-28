@@ -19,7 +19,7 @@ import { Link } from "@/i18n/navigation";
 export const BookingContainer: React.FC = () => {
   const t = useTranslations();
   return (
-    <div>
+    <>
       <div className="py-8">
         <h3 className="h3 !mb-0">{t(PRIVATE_LINK.booking.label)}</h3>
       </div>
@@ -351,6 +351,6 @@ export const BookingContainer: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </>
   );
 };
