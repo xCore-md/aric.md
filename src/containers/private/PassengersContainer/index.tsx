@@ -18,7 +18,7 @@ export const PassengersContainer: React.FC = () => {
       <Card className="ring-platinum ring ring-inset">
         <CardContent className="">
           <table className="table">
-            <thead className="thead">
+            <thead className="thead [&_th]:last:text-center">
               <tr>
                 <th>Nume</th>
                 <th>Prenume</th>
@@ -87,7 +87,6 @@ const PassengerRow: React.FC<{
       <td className="w-56 pr-8">
         {edit ? (
           <input
-            ref={refInput}
             disabled={!edit}
             value={lastName}
             onChange={(event) => setLastName(event?.target?.value)}

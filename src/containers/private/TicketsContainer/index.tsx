@@ -6,6 +6,16 @@ import { PRIVATE_LINK } from "@/utils/constants";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import Image from "next/image";
+import logo from "@/assets/images/logo-black.svg";
 
 export const TicketsContainer: React.FC = () => {
   const t = useTranslations();
@@ -103,7 +113,52 @@ export const TicketsContainer: React.FC = () => {
                   <ChevronRightIcon />
                 </Button>
 
-                <Button variant="link">Anulează</Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="link">Anulează</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader className="sr-only">
+                      <DialogTitle />
+                      <DialogDescription />
+                    </DialogHeader>
+
+                    <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
+                      <Image
+                        src={logo.src}
+                        alt="Aric.md"
+                        width={logo.width}
+                        height={logo.height}
+                        className="mb-12 w-24"
+                      />
+
+                      <div className="h2">Doriți să anulați biletul?</div>
+
+                      <div className="text-text-gray mb-12 text-lg">
+                        În funcție de timpul rămas până la plecare, există o
+                        taxă de reținere pentru bilet – o sumă care este
+                        reținută de la pasager în cazul returnării biletului.
+                      </div>
+
+                      <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
+                        <div className="text-left">
+                          <div className="font-semibold">Nr. Invoice</div>
+                          <div className="text-text-gray">INV567489240UI</div>
+                        </div>
+
+                        <div className="text-right">
+                          <div className="font-semibold">Metoda de plată</div>
+                          <div className="text-text-gray">MAIB</div>
+                        </div>
+                      </div>
+
+                      <Button size="lg" className="w-full">
+                        Anulează biletul
+                        <ChevronRightIcon />
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </div>

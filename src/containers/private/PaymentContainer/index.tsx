@@ -3,8 +3,6 @@ import React from "react";
 import { useTranslations } from "use-intl";
 import { PRIVATE_LINK } from "@/utils/constants";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
 
 export const PaymentContainer: React.FC = () => {
   const t = useTranslations();
@@ -20,27 +18,23 @@ export const PaymentContainer: React.FC = () => {
           <table className="table">
             <thead className="thead">
               <tr>
-                <th>Nume</th>
-                <th>Prenume</th>
-                <th>Data rezervării</th>
-                <th>ID Bilet</th>
-                <th>Modifică</th>
-                <th>Șterge</th>
+                <th>ID</th>
+                <th>Ruta</th>
+                <th>Data tranzacției</th>
+                <th>Suma</th>
+                <th>Statut</th>
               </tr>
             </thead>
-            <tbody className="tbody [&_td]:last:[&_button]:mx-auto">
+            <tbody className="tbody">
               <tr>
-                <td>January</td>
-                <td>$100</td>
-                <td>$100</td>
-                <td>$100</td>
+                <td>257</td>
+                <td>Chișinău - Ismail</td>
+                <td>04/04/2025</td>
+                <td>120 MDL</td>
                 <td>
-                  <Button variant="reverse">Modifică nume</Button>
-                </td>
-                <td>
-                  <button className="flex size-10 items-center justify-center rounded-lg border bg-white">
-                    <Trash2 />
-                  </button>
+                  <div className="bg-yellow max-w-max rounded-full px-2.5 text-base font-normal">
+                    Se procesează
+                  </div>
                 </td>
               </tr>
             </tbody>

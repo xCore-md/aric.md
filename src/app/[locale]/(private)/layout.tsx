@@ -16,7 +16,7 @@ export default function PrivateLayout({
   console.log({ pathname });
   return (
     <div className="container mt-4 mb-20">
-      <Card className="border">
+      <Card className="hidden border lg:block">
         <CardContent>
           <div className="flex justify-center gap-8">
             {PRIVATE_LINKS?.map(({ label, path, svgPath }) => (
@@ -24,7 +24,7 @@ export default function PrivateLayout({
                 key={path}
                 href={path}
                 className={cn(
-                  "text-text-gray border-platinum flex h-16 items-center gap-2 border-b px-8 py-5 font-semibold",
+                  "text-text-gray border-platinum flex h-16 items-center gap-2 border-b px-2 py-5 font-semibold xl:px-8",
                   "hover:border-blue hover:text-blue transition",
                   pathname === path && "border-blue text-blue",
                 )}

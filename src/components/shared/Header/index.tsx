@@ -228,42 +228,51 @@ import { ChevronDown } from "lucide-react";
 
 const AccountButton = () => {
   const t = useTranslations();
+  const pathname = usePathname();
+
+  const isAuth = true;
+
   return (
     <>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="white">Contul meu</Button>
-        </DialogTrigger>
-        <DialogContent className="max-h-[calc(100dvh)] w-[calc(100dvw)] overflow-y-auto">
-          <DialogHeader className="sr-only">
-            <DialogTitle />
-            <DialogDescription />
-          </DialogHeader>
+      {isAuth ? (
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="white" className="border-red">
+              Victor Morari <ChevronDown />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-50 p-2">
+            {PRIVATE_LINKS?.map((link, index) => (
+              <Link
+                href={link.path}
+                key={index}
+                className={cn(
+                  "hover:text-blue flex w-full p-2 text-left transition",
+                  pathname === link.path && "text-blue",
+                )}
+              >
+                {t(link.label)}
+              </Link>
+            ))}
+          </PopoverContent>
+        </Popover>
+      ) : (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="white">Contul meu</Button>
+          </DialogTrigger>
+          <DialogContent className="max-h-[calc(100dvh)] w-[calc(100dvw)] overflow-y-auto">
+            <DialogHeader className="sr-only">
+              <DialogTitle />
+              <DialogDescription />
+            </DialogHeader>
 
-          <div className="lg:p-20">
-            <AuthForm />
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="white" className="border-red">
-            Victor Morari <ChevronDown />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent align="end" className="w-50 p-2">
-          {PRIVATE_LINKS?.map((link, index) => (
-            <Link
-              href={link.path}
-              key={index}
-              className="hover:text-blue flex w-full p-2 text-left transition"
-            >
-              {t(link.label)}
-            </Link>
-          ))}
-        </PopoverContent>
-      </Popover>
+            <div className="lg:p-20">
+              <AuthForm />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };
