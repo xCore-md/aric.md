@@ -2,30 +2,36 @@
 import React from "react";
 import Image from "next/image";
 import { Header } from "@/components/shared/Header";
+import { ChevronRightIcon } from "lucide-react";
 
-import heroBackground from "@/assets/images/hero.jpg";
+import { Link } from "@/i18n/navigation";
+import { Button } from "@/components/ui/button";
 import { FAQSection } from "@/components/sections/FAQ";
-import { ReviewsCarouselSection } from "@/components/sections/ReviewsCarousel";
 import { DiscountSection } from "@/components/sections/Discount";
-import { EmailSubscriptionSection } from "@/components/sections/EmailSubscription";
+import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
+import { ReviewsCarouselSection } from "@/components/sections/ReviewsCarousel";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { EmailSubscriptionSection } from "@/components/sections/EmailSubscription";
+
+import bgChairs from "@/assets/images/chairs.jpg";
+import heroBackground from "@/assets/images/hero.jpg";
 
 export const HomeContainer: React.FC = () => {
   return (
     <>
-      <Header />
-
       <div className="relative mx-auto w-full max-w-[1600px] overflow-hidden rounded-b-3xl">
         <div className="relative z-10 pb-14">
           <Header isHomePage />
 
           <div className="container">
             <div className="mt-10 md:mt-18">
-              <h1 className="h1 max-w-xl text-white">
+              <h1 className="h1 mb-4 max-w-xl text-white">
                 Cumpără ușor biletul de autobuz online!
               </h1>
 
-              <p className="mt-4 max-w-md text-xl text-white md:text-2xl">
+              <p className="sr-only mt-4 max-w-md text-xl text-white sm:not-sr-only md:text-2xl">
                 Curse regulate, microbuze confortabile și orare flexibile!
               </p>
             </div>
@@ -40,7 +46,7 @@ export const HomeContainer: React.FC = () => {
           src={heroBackground.src}
           alt="Description of image"
           fill
-          className="object-cover"
+          className="!h-1/2 object-cover object-right sm:!h-full"
         />
       </div>
 
@@ -107,31 +113,31 @@ export const HomeContainer: React.FC = () => {
         </div>
       </section>
 
-      {/*<section className="section">
-        <div className="container">
-          <div className="relative flex min-h-[95vh] items-center justify-between">
-            <div className="absolute h-full w-2/3 overflow-hidden rounded-xl">
+      <section className="section">
+        <div className="container !p-0 md:!px-6">
+          <div className="relative flex min-h-[90vh] flex-col p-6 2xl:flex-row 2xl:justify-between 2xl:pr-0">
+            <div className="absolute top-0 left-0 h-full w-full overflow-hidden md:rounded-xl 2xl:w-2/3">
               <Image
                 src={bgChairs.src}
                 alt="Image"
                 fill
-                className="object-cover object-left"
+                className="object-leftmd:rounded-xl !h-[30%] min-h-96 object-cover lg:!h-full"
               />
             </div>
 
-            <div className="relative z-10 flex h-full flex-col p-16">
+            <div className="relative z-10 flex h-full flex-col lg:p-16">
               <div className="max-w-xs">
                 <h2 className="h1 text-white">Rezervează locul!</h2>
                 <p className="text-2xl text-white/90">
                   Cea mai populară rută acum: Chișinău – Ismail!
                 </p>
 
-                <Button className="mt-8" variant="white">
+                <Button className="mt-8 mb-12" variant="white">
                   Caută alte rute
                 </Button>
               </div>
 
-              <div className="relative mt-auto -ml-28 flex gap-18">
+              <div className="relative mt-80 -ml-28 hidden gap-18 2xl:flex">
                 <div className="flex flex-col items-center gap-4">
                   <div className="flex items-center gap-2 text-2xl text-white">
                     <svg viewBox="0 0 15 18" className="size-5 fill-white">
@@ -183,13 +189,16 @@ export const HomeContainer: React.FC = () => {
               </div>
             </div>
 
-            <div className="relative z-10 max-w-2xl">
+            <div className="relative z-10 mx-auto w-full lg:max-w-3xl">
               <Card>
-                <CardHeader className="border-platinum relative -mt-6 gap-0 rounded-t-xl border bg-[#F9F9F9] py-6">
-                  <CardTitle className="text-2xl font-normal">
+                <CardHeader
+                  className="relative rounded-t-xl border bg-[#F9F9F9] py-6"
+                  platinum
+                >
+                  <CardTitle className="text-center text-xl font-normal sm:text-left md:text-2xl">
                     Chișinău - Ismail
                   </CardTitle>
-                  <div className="bg-mentol absolute top-1/2 right-0 -translate-y-1/2 space-x-2 rounded-l-full px-4 py-2">
+                  <div className="bg-mentol mx-auto mt-3 max-w-max space-x-2 rounded-full px-4 py-2 sm:absolute sm:top-1/2 sm:right-0 sm:mt-0 sm:-translate-y-1/2 sm:rounded-l-full sm:rounded-r-none">
                     <span className="text-xl">🔥</span>
                     <span className="text-lg font-semibold">
                       Cele mai apropiate rute{" "}
@@ -197,7 +206,7 @@ export const HomeContainer: React.FC = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <Tabs defaultValue="first" className="">
+                  <Tabs defaultValue="first" className="items-center">
                     <TabsList>
                       <TabsTrigger value="first">Vi, 02 Mai</TabsTrigger>
                       <TabsTrigger value="second">Sâ, 03 Mai</TabsTrigger>
@@ -205,12 +214,12 @@ export const HomeContainer: React.FC = () => {
                       <TabsTrigger value="second">Lu, 05 Mai</TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="first">
+                    <TabsContent value="first" className="w-full">
                       <ul className="space-y-4">
                         {[1, 2, 3].map((_, index) => (
                           <li
                             key={index}
-                            className="border-platinum rounded-xl border px-10 py-6"
+                            className="border-platinum rounded-xl border p-3 md:px-10 md:py-6"
                           >
                             <div className="flex items-center justify-between gap-8">
                               <Link
@@ -225,24 +234,11 @@ export const HomeContainer: React.FC = () => {
                                 120MDL
                               </div>
 
-                              <Button>Rezervează</Button>
+                              <Button variant="reverse">Rezervează</Button>
                             </div>
 
                             <div className="my-6 w-full border-b border-dashed" />
 
-                            <TripRouteDetails />
-                          </li>
-                        ))}
-                      </ul>
-                    </TabsContent>
-
-                    <TabsContent value="second">
-                      <ul className="space-y-4">
-                        {[1, 2].map((_, index) => (
-                          <li
-                            key={index}
-                            className="border-platinum rounded-xl border px-10 py-6"
-                          >
                             <TripRouteDetails />
                           </li>
                         ))}
@@ -262,7 +258,6 @@ export const HomeContainer: React.FC = () => {
           </div>
         </div>
       </section>
-*/}
 
       <EmailSubscriptionSection />
 

@@ -18,22 +18,26 @@ export const SearchTicketForm: React.FC = () => {
   console.log({ departureCity, arrivalCity, setDepartureCity, setArrivalCity });
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      <SelectCity placeholder="Orașul de pornire" />
-      <SelectCity placeholder="Orașul de sosire" />
+    <Card className="ring-platinum ring ring-inset">
+      <CardContent className="">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <SelectCity placeholder="Orașul de pornire" />
+          <SelectCity placeholder="Orașul de sosire" />
 
-      <SelectDate placeholder="Data plecării" />
-      <SelectDate placeholder="Data retur" />
+          <SelectDate placeholder="Data plecării" />
+          <SelectDate placeholder="Data retur" />
 
-      <div className="col-span-full flex w-full flex-col gap-4 sm:flex-row lg:col-span-1">
-        <SelectPassengers />
+          <div className="col-span-full flex w-full flex-col gap-4 sm:flex-row lg:col-span-1">
+            <SelectPassengers />
 
-        <Button className="h-16 flex-none lg:size-16">
-          <span className="lg:sr-only">Căutare</span>
-          <Search />
-        </Button>
-      </div>
-    </div>
+            <Button className="h-16 flex-none lg:size-16">
+              <span className="lg:sr-only">Căutare</span>
+              <Search />
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -92,6 +96,7 @@ const SelectCity: React.FC<{ placeholder?: string }> = ({
 
 import { useMaskito } from "@maskito/react";
 import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent } from "@/components/ui/card";
 
 const SelectDate: React.FC<{ placeholder?: string }> = ({
   placeholder = "",

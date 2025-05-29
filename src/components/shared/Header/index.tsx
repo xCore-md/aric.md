@@ -237,7 +237,7 @@ const AccountButton = () => {
       {isAuth ? (
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="white" className="border-red">
+            <Button variant="white">
               Victor Morari <ChevronDown />
             </Button>
           </PopoverTrigger>
