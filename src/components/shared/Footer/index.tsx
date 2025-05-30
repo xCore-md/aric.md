@@ -146,10 +146,16 @@ const TermsAndSocial = () => {
 
       <div className="flex h-full flex-col gap-4">
         <div className="flex flex-col sm:items-end">
-          <Link href="/terms" className="text-yellow hover:text-blue text-sm">
+          <Link
+            href="/legal/terms"
+            className="text-yellow hover:text-blue text-sm"
+          >
             Termenii și condițiile generale
           </Link>
-          <Link href="/terms" className="text-yellow hover:text-blue text-sm">
+          <Link
+            href="/legal/privacy"
+            className="text-yellow hover:text-blue text-sm"
+          >
             Politicii de confidențialitate
           </Link>
         </div>

@@ -15,8 +15,17 @@ import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useQueryState } from "nuqs";
 
 export const SearchContainer: React.FC = () => {
+  const [departureCity, setDepartureCity] = useQueryState("departure");
+  const [arrivalCity, setArrivalCity] = useQueryState("arrival");
+
+  const [departureDate, setDepartureDate] = useQueryState("departureDate");
+  const [returnDate, setReturnDate] = useQueryState("returnDate");
+
+  const [passengers, setPassengers] = useQueryState("passengers");
+
   return (
     <>
       <section className="section">
@@ -25,7 +34,7 @@ export const SearchContainer: React.FC = () => {
             <SearchTicketForm />
           </div>
 
-          <div className="flex items-center justify-between gap-6">
+          <div className="items-center justify-between gap-6 sm:flex">
             <h1 className="h3">Chișinău - Ismail</h1>
             <div className="flex items-center justify-between gap-4">
               <div className="text-text-gray">Au fost găsite</div>
@@ -35,14 +44,17 @@ export const SearchContainer: React.FC = () => {
             </div>
           </div>
 
-          {/*<Card className="mt-8 border">
+          <Card className="mt-8 border">
             <CardContent>
-              <div className="flex flex-col items-center gap-12">
-                <div className="flex items-center gap-4">
-                  <svg className="size-10 fill-black" viewBox="0 0 41 34">
+              <div className="flex flex-col items-center gap-10">
+                <div className="flex flex-col items-center gap-4 text-center md:flex-row">
+                  <svg
+                    className="size-10 flex-none fill-black"
+                    viewBox="0 0 41 34"
+                  >
                     <path
-                      fillRule="evenodd"
                       d="M32.7 17.6a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-2.4 4.2a1.1 1.1 0 0 0-.9 2l2 2-2 2a1.1 1.1 0 0 0 .8 1.9 1.1 1.1 0 0 0 .9-.4l1.8-1.9 1.8 2a1.1 1.1 0 0 0 1.4.1 1.1 1.1 0 0 0 .2-1.7l-1.9-2 2-2a1.1 1.1 0 0 0-1.7-1.6L32.9 24l-1.8-2a1.1 1.1 0 0 0-.8-.3Z"
+                      fillRule="evenodd"
                       clipRule="evenodd"
                     />
                     <path d="M9.5 22.5a1.1 1.1 0 0 1 .8 2l-8.4 8.3a1.1 1.1 0 0 1-1.6-1.6L8.6 23a1.1 1.1 0 0 1 .9-.4Z" />
@@ -57,25 +69,29 @@ export const SearchContainer: React.FC = () => {
                 <Button>Modifică căutarea</Button>
               </div>
             </CardContent>
-          </Card>*/}
+          </Card>
 
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid gap-8 lg:grid-cols-3">
             <div className="col-span-2">
               <ul className="space-y-4">
                 {[1, 2, 3].map((_, index) => (
                   <li
                     key={index}
-                    className="border-platinum rounded-xl border bg-white px-10 py-6"
+                    className="border-platinum rounded-xl border bg-white p-4 md:px-10 md:py-6"
                   >
-                    <div className="flex items-center justify-between gap-8">
-                      <div className="text-text-gray bg-back flex items-center gap-2 rounded-full px-3 py-1 text-sm">
+                    <div className="grid grid-cols-1 items-center justify-between gap-x-8 gap-y-2 sm:grid-cols-2 md:flex">
+                      <div className="text-text-gray bg-back flex max-w-max items-center gap-2 rounded-full px-3 py-1 text-sm">
                         <div className="text-text-gray">20 pasageri</div>
                         <div className="text-green">/ 5 rămase</div>
                       </div>
 
-                      <div className="ml-auto text-2xl font-medium">120MDL</div>
+                      <div className="text-2xl font-medium sm:ml-auto">
+                        120MDL
+                      </div>
 
-                      <Button variant="reverse">Rezervează</Button>
+                      <Button variant="reverse" className="col-span-full">
+                        Rezervează
+                      </Button>
                     </div>
 
                     <div className="my-6 w-full border-b border-dashed" />
@@ -96,7 +112,8 @@ export const SearchContainer: React.FC = () => {
                 ))}
               </ul>
             </div>
-            <div className="">
+
+            <div className="hidden lg:block">
               <Card>
                 <CardHeader className="border-platinum relative -mt-6 gap-0 rounded-t-xl border bg-[#F9F9F9] py-6">
                   <CardTitle className="h4">Filtru bilete 🔎</CardTitle>

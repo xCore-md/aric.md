@@ -353,14 +353,14 @@ export const BookingContainer: React.FC = () => {
                   Sunt de acord cu{" "}
                   <Link
                     className="text-blue underline-offset-2 transition hover:underline"
-                    href="/terms"
+                    href="/legal/terms"
                   >
                     Termenii și condițiile generale
                   </Link>{" "}
                   conform{" "}
                   <Link
                     className="text-blue underline-offset-2 transition hover:underline"
-                    href="/terms"
+                    href="/legal/privacy"
                   >
                     Politicii de confidențialitate
                   </Link>

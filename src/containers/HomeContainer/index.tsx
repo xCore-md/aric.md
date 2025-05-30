@@ -190,9 +190,9 @@ export const HomeContainer: React.FC = () => {
             </div>
 
             <div className="relative z-10 mx-auto w-full lg:max-w-3xl">
-              <Card>
+              <Card className="gap-4 pb-4 sm:gap-6 sm:pb-6">
                 <CardHeader
-                  className="relative rounded-t-xl border bg-[#F9F9F9] py-6"
+                  className="relative rounded-t-xl border bg-[#F9F9F9] p-3 sm:py-6"
                   platinum
                 >
                   <CardTitle className="text-center text-xl font-normal sm:text-left md:text-2xl">
@@ -200,12 +200,12 @@ export const HomeContainer: React.FC = () => {
                   </CardTitle>
                   <div className="bg-mentol mx-auto mt-3 max-w-max space-x-2 rounded-full px-4 py-2 sm:absolute sm:top-1/2 sm:right-0 sm:mt-0 sm:-translate-y-1/2 sm:rounded-l-full sm:rounded-r-none">
                     <span className="text-xl">🔥</span>
-                    <span className="text-lg font-semibold">
+                    <span className="font-semibold md:text-lg">
                       Cele mai apropiate rute{" "}
                     </span>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-2 sm:px-6">
                   <Tabs defaultValue="first" className="items-center">
                     <TabsList>
                       <TabsTrigger value="first">Vi, 02 Mai</TabsTrigger>
@@ -219,25 +219,25 @@ export const HomeContainer: React.FC = () => {
                         {[1, 2, 3].map((_, index) => (
                           <li
                             key={index}
-                            className="border-platinum rounded-xl border p-3 md:px-10 md:py-6"
+                            className="border-platinum relative rounded-xl border p-3 pb-16 md:px-10 md:py-6"
                           >
                             <div className="flex items-center justify-between gap-8">
                               <Link
                                 href="/"
-                                className="flex items-center gap-1 font-semibold"
+                                className="xs:static hover:text-blue absolute bottom-4 flex items-center gap-1 font-semibold transition"
                               >
                                 <span>Detalii bilet</span>
                                 <ChevronRightIcon className="size-5" />
                               </Link>
 
-                              <div className="ml-auto text-2xl font-medium">
+                              <div className="xs:ml-auto text-2xl font-medium">
                                 120MDL
                               </div>
 
                               <Button variant="reverse">Rezervează</Button>
                             </div>
 
-                            <div className="my-6 w-full border-b border-dashed" />
+                            <div className="my-4 w-full border-b border-dashed md:my-6" />
 
                             <TripRouteDetails />
                           </li>
