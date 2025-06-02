@@ -2,6 +2,10 @@
 import React from "react";
 import Image from "next/image";
 import { ChevronRightIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
 import { Link } from "@/i18n/navigation";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,8 +19,40 @@ import {
 } from "@/components/ui/accordion";
 
 import faqAvatar from "@/assets/images/faq.png";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+const schema = z.object({
+  name: z.string().min(3, { message: "Required" }),
+  phone: z.string().min(3),
+});
 
 export const FAQSection: React.FC = () => {
+  const form = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: "",
+      phone: "",
+    },
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = form;
+
+  function onSubmit(data: z.infer<typeof schema>) {
+    console.log(data);
+  }
+
   return (
     <section className="section">
       <div className="container">
@@ -78,13 +114,42 @@ export const FAQSection: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form action="" className="space-y-6">
-                <Input placeholder="Nume / Prenume *" />
-                <Input placeholder="+373 | 000 00 000" />
-                <Button type="button" className="w-full" size="lg">
-                  Sună-mă înapoi
-                </Button>
-              </form>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="Nume / Prenume" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="+373 | 000 00 000" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <Button type="submit" className="w-full" size="lg">
+                    Sună-mă înapoi
+                  </Button>
+                </form>
+              </Form>
             </CardContent>
           </Card>
         </div>

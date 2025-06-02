@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Header } from "@/components/shared/Header";
 import { ChevronRightIcon } from "lucide-react";
 
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { FAQSection } from "@/components/sections/FAQ";
 import { DiscountSection } from "@/components/sections/Discount";
@@ -17,8 +17,11 @@ import { EmailSubscriptionSection } from "@/components/sections/EmailSubscriptio
 
 import bgChairs from "@/assets/images/chairs.jpg";
 import heroBackground from "@/assets/images/hero.jpg";
+import { useTicketForm } from "@/hooks/useTicketForm";
 
 export const HomeContainer: React.FC = () => {
+  const { updateTicketSearchParams } = useTicketForm();
+
   return (
     <>
       <div className="relative mx-auto w-full max-w-[1600px] overflow-hidden rounded-b-3xl">
@@ -37,7 +40,7 @@ export const HomeContainer: React.FC = () => {
             </div>
 
             <div className="mt-20 lg:mt-44">
-              <SearchTicketForm />
+              <SearchTicketForm onSubmit={updateTicketSearchParams} />
             </div>
           </div>
         </div>

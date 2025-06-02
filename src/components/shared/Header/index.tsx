@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import NextLink from "next/link";
 import { useLocale, useTranslations } from "use-intl";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -48,6 +49,7 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
   const [openMenu, setOpenMenu] = React.useState(false);
   const t = useTranslations();
 
+  const searchParams = useSearchParams();
   const pathname = usePathname();
   const locale = useLocale();
 
@@ -113,7 +115,10 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
 
             <div className="flex items-center gap-4">
               <NextLink
-                href={`/${language[locale]?.next}/${pathname}`}
+                href={
+                  `/${language[locale]?.next}/${pathname}` +
+                  (searchParams.size ? `?${searchParams}` : "")
+                }
                 className="xs:flex hidden items-center gap-2 font-semibold text-white"
               >
                 <Image
@@ -237,7 +242,7 @@ const AccountButton = () => {
       {isAuth ? (
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="white">
+            <Button variant="white" className="ring-0">
               Victor Morari <ChevronDown />
             </Button>
           </PopoverTrigger>

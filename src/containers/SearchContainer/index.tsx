@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { ChevronRightIcon } from "lucide-react";
 import { FAQSection } from "@/components/sections/FAQ";
 import { DiscountSection } from "@/components/sections/Discount";
 
@@ -9,29 +10,37 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronRightIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useQueryState } from "nuqs";
+import { useTicketForm } from "@/hooks/useTicketForm";
+
+import type { TicketFormValues } from "@/types";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { pokemonOptions } from "@/app/pokemon";
 
 export const SearchContainer: React.FC = () => {
-  const [departureCity, setDepartureCity] = useQueryState("departure");
-  const [arrivalCity, setArrivalCity] = useQueryState("arrival");
+  const { updateTicketSearchParams } = useTicketForm();
 
-  const [departureDate, setDepartureDate] = useQueryState("departureDate");
-  const [returnDate, setReturnDate] = useQueryState("returnDate");
+  function handleSearch(data: TicketFormValues) {
+    updateTicketSearchParams(data);
+  }
 
-  const [passengers, setPassengers] = useQueryState("passengers");
+  const { data } = useSuspenseQuery(pokemonOptions);
+
+  console.log({ data });
 
   return (
     <>
+      <div className="bg-red mx-auto max-w-max p-4 text-4xl font-bold text-white">
+        Pokemon ID:{data?.id}
+      </div>
       <section className="section">
         <div className="container">
           <div className="mb-10">
-            <SearchTicketForm />
+            <SearchTicketForm onSubmit={handleSearch} />
           </div>
 
           <div className="items-center justify-between gap-6 sm:flex">
@@ -44,7 +53,7 @@ export const SearchContainer: React.FC = () => {
             </div>
           </div>
 
-          <Card className="mt-8 border">
+          {/* <Card className="mt-8 border">
             <CardContent>
               <div className="flex flex-col items-center gap-10">
                 <div className="flex flex-col items-center gap-4 text-center md:flex-row">
@@ -69,51 +78,49 @@ export const SearchContainer: React.FC = () => {
                 <Button>Modifică căutarea</Button>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
-          <div className="grid gap-8 lg:grid-cols-3">
-            <div className="col-span-2">
-              <ul className="space-y-4">
-                {[1, 2, 3].map((_, index) => (
-                  <li
-                    key={index}
-                    className="border-platinum rounded-xl border bg-white p-4 md:px-10 md:py-6"
-                  >
-                    <div className="grid grid-cols-1 items-center justify-between gap-x-8 gap-y-2 sm:grid-cols-2 md:flex">
-                      <div className="text-text-gray bg-back flex max-w-max items-center gap-2 rounded-full px-3 py-1 text-sm">
-                        <div className="text-text-gray">20 pasageri</div>
-                        <div className="text-green">/ 5 rămase</div>
-                      </div>
-
-                      <div className="text-2xl font-medium sm:ml-auto">
-                        120MDL
-                      </div>
-
-                      <Button variant="reverse" className="col-span-full">
-                        Rezervează
-                      </Button>
+          <div className="mt-8 flex flex-col-reverse gap-8 lg:flex-row">
+            <ul className="space-y-4">
+              {[1, 2, 3].map((_, index) => (
+                <li
+                  key={index}
+                  className="border-platinum rounded-xl border bg-white p-4 md:px-10 md:py-6"
+                >
+                  <div className="grid grid-cols-1 items-center justify-between gap-x-8 gap-y-2 sm:grid-cols-2 md:flex">
+                    <div className="text-text-gray bg-back flex max-w-max items-center gap-2 rounded-full px-3 py-1 text-sm">
+                      <div className="text-text-gray">20 pasageri</div>
+                      <div className="text-green">/ 5 rămase</div>
                     </div>
 
-                    <div className="my-6 w-full border-b border-dashed" />
+                    <div className="text-2xl font-medium sm:ml-auto">
+                      120MDL
+                    </div>
 
-                    <TripRouteDetails />
+                    <Button variant="reverse" className="col-span-full">
+                      Rezervează
+                    </Button>
+                  </div>
 
-                    <Collapsible>
-                      <CollapsibleTrigger className="hover:text-blue data-[state=open]:text-blue bg-back mt-6 flex w-full cursor-pointer items-center justify-between gap-1 rounded-full px-6 py-4 font-semibold transition data-[state=open]:rounded-t-2xl data-[state=open]:rounded-b-none [&[data-state=open]>svg]:rotate-90">
-                        <span>Detalii bilet</span>
-                        <ChevronRightIcon className="size-5" />
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="bg-back rounded-b-2xl px-6 pb-4">
-                        Yes. Free to use for personal and commercial projects.
-                        No attribution required.
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                  <div className="my-6 w-full border-b border-dashed" />
 
-            <div className="hidden lg:block">
+                  <TripRouteDetails />
+
+                  <Collapsible>
+                    <CollapsibleTrigger className="hover:text-blue data-[state=open]:text-blue bg-back mt-6 flex w-full cursor-pointer items-center justify-between gap-1 rounded-full px-6 py-4 font-semibold transition data-[state=open]:rounded-t-2xl data-[state=open]:rounded-b-none [&[data-state=open]>svg]:rotate-90">
+                      <span>Detalii bilet</span>
+                      <ChevronRightIcon className="size-5" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="bg-back rounded-b-2xl px-6 pb-4">
+                      Yes. Free to use for personal and commercial projects. No
+                      attribution required.
+                    </CollapsibleContent>
+                  </Collapsible>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex-none lg:w-1/3">
               <Card>
                 <CardHeader className="border-platinum relative -mt-6 gap-0 rounded-t-xl border bg-[#F9F9F9] py-6">
                   <CardTitle className="h4">Filtru bilete 🔎</CardTitle>

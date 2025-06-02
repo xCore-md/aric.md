@@ -3,6 +3,7 @@ import React from "react";
 import { ChevronRightIcon, Search } from "lucide-react";
 import { useMaskito } from "@maskito/react";
 import { maskitoDateOptionsGenerator } from "@maskito/kit";
+import { format, isValid, parse } from "date-fns";
 
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +14,8 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useTicketForm } from "@/hooks/useTicketForm";
+import type { TicketFormValues } from "@/types";
 
 const options = maskitoDateOptionsGenerator({
   mode: "dd/mm/yyyy",
@@ -25,30 +28,33 @@ interface IProps {
   placeholder?: string;
 }
 
-export const SearchTicketForm: React.FC = () => {
-  const [departureCity, setDepartureCity] = React.useState("");
-  const [arrivalCity, setArrivalCity] = React.useState("");
+export const SearchTicketForm: React.FC<{
+  onSubmit: (data: TicketFormValues) => void;
+}> = ({ onSubmit }) => {
+  const {
+    departureCity,
+    setDepartureCity,
+    arrivalCity,
+    setArrivalCity,
+    departureDate,
+    setDepartureDate,
+    returnDate,
+    setReturnDate,
+    passengers,
+    setPassengers,
+    canSearch,
+  } = useTicketForm();
 
-  const [departureDate, setDepartureDate] = React.useState("");
-  const [returnDate, setReturnDate] = React.useState("");
-
-  const [passengers, setPassengers] = React.useState("");
-
-  const canSearch = React.useMemo(() => {
-    if (
-      departureCity &&
-      arrivalCity &&
-      departureDate &&
-      returnDate &&
-      passengers
-    ) {
-      return true;
-    }
-
-    return false;
-  }, [departureCity, arrivalCity, departureDate, returnDate, passengers]);
-
-  console.log({ returnDate, departureDate });
+  const handleSubmit = () => {
+    if (!canSearch) return;
+    onSubmit({
+      departureCity,
+      arrivalCity,
+      departureDate,
+      returnDate,
+      passengers,
+    });
+  };
 
   return (
     <Card className="ring-platinum ring ring-inset">
@@ -83,6 +89,7 @@ export const SearchTicketForm: React.FC = () => {
               className="h-16 flex-none lg:size-16"
               type="button"
               disabled={!canSearch}
+              onClick={handleSubmit}
             >
               <span className="lg:sr-only">Căutare</span>
               <Search />
@@ -93,8 +100,6 @@ export const SearchTicketForm: React.FC = () => {
     </Card>
   );
 };
-
-import { format, isValid, parse } from "date-fns";
 
 const SelectCity: React.FC<IProps> = ({
   value,
@@ -233,7 +238,7 @@ const SelectDate: React.FC<IProps> = ({
                 }}
                 type="text"
                 placeholder="31/12/2020"
-                className="focus:placeholder:text-platinum h-full w-full text-black focus:outline-none"
+                className="focus:placeholder:text-platinum placeholder:text-text-gray text-text-gray h-full w-full text-black focus:outline-none"
               />
             </div>
           </div>

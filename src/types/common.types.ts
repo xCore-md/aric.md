@@ -38,3 +38,11 @@ export interface PaginatedResponse<T> {
   total_pages: number;
   results: Array<T>;
 }
+
+export type TicketFormValues = {
+  departureCity: string;
+  arrivalCity: string;
+  departureDate: string;
+  returnDate: string;
+  passengers: string;
+};
