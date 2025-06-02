@@ -192,7 +192,7 @@ const SelectDate: React.FC<IProps> = ({
 
   const handleChange = (date: Date | undefined) => {
     if (date) {
-      setValue(format(date, "dd.mm.yyyy"));
+      setValue(format(date, "dd.MM.yyyy"));
     }
   };
 
@@ -223,12 +223,12 @@ const SelectDate: React.FC<IProps> = ({
 
                   if (value.length !== 10) return;
 
-                  const parsedDate = parse(value, "dd.mm.yyyy", new Date());
+                  const parsedDate = parse(value, "dd.MM.yyyy", new Date());
                   console.log({ value });
                   console.log({ parsedDate });
 
                   if (isValid(parsedDate)) {
-                    setValue(format(parsedDate, "dd.mm.yyyy"));
+                    setValue(format(parsedDate, "dd.MM.yyyy"));
                   }
                 }}
                 type="text"
@@ -248,7 +248,7 @@ const SelectDate: React.FC<IProps> = ({
       >
         <Calendar
           mode="single"
-          selected={parse(inputValue, "dd.mm.yyyy", new Date())}
+          selected={parse(inputValue, "dd.MM.yyyy", new Date())}
           onSelect={handleChange}
           className="rounded-md border"
         />
