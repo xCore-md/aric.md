@@ -2,6 +2,7 @@
 import React from "react";
 import { ChevronRightIcon, Search } from "lucide-react";
 import { useMaskito } from "@maskito/react";
+import { maskitoDateOptionsGenerator } from "@maskito/kit";
 
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +13,11 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+const options = maskitoDateOptionsGenerator({
+  mode: "dd/mm/yyyy",
+  min: new Date(),
+});
 
 interface IProps {
   value: string;
@@ -27,6 +33,20 @@ export const SearchTicketForm: React.FC = () => {
   const [returnDate, setReturnDate] = React.useState("");
 
   const [passengers, setPassengers] = React.useState("");
+
+  const canSearch = React.useMemo(() => {
+    if (
+      departureCity &&
+      arrivalCity &&
+      departureDate &&
+      returnDate &&
+      passengers
+    ) {
+      return true;
+    }
+
+    return false;
+  }, [departureCity, arrivalCity, departureDate, returnDate, passengers]);
 
   console.log({ returnDate, departureDate });
 
@@ -59,7 +79,11 @@ export const SearchTicketForm: React.FC = () => {
           <div className="col-span-full flex w-full flex-col gap-4 sm:flex-row lg:col-span-1">
             <SelectPassengers value={passengers} setValue={setPassengers} />
 
-            <Button className="h-16 flex-none lg:size-16">
+            <Button
+              className="h-16 flex-none lg:size-16"
+              type="button"
+              disabled={!canSearch}
+            >
               <span className="lg:sr-only">Căutare</span>
               <Search />
             </Button>
@@ -70,7 +94,7 @@ export const SearchTicketForm: React.FC = () => {
   );
 };
 
-import { format, parse } from "date-fns";
+import { format, isValid, parse } from "date-fns";
 
 const SelectCity: React.FC<IProps> = ({
   value,
@@ -162,27 +186,13 @@ const SelectDate: React.FC<IProps> = ({
   value,
 }) => {
   const maskedInputRef = useMaskito({
-    options: {
-      mask: [
-        /\d/,
-        /\d/,
-        "/", // zi
-        /\d/,
-        /\d/,
-        "/", // lună
-        /\d/,
-        /\d/,
-        /\d/,
-        /\d/, // an
-      ],
-    },
+    options,
   });
-  // const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [inputValue, setInputValue] = React.useState(value);
 
   const handleChange = (date: Date | undefined) => {
     if (date) {
-      setValue(format(date, "dd/MM/yyyy"));
+      setValue(format(date, "dd.mm.yyyy"));
     }
   };
 
@@ -205,12 +215,25 @@ const SelectDate: React.FC<IProps> = ({
             <div className="">
               <div className="text-sm">{placeholder}</div>
               <input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
                 ref={maskedInputRef}
+                value={inputValue}
+                onInput={(e) => {
+                  const value = e.currentTarget.value;
+                  setInputValue(value);
+
+                  if (value.length !== 10) return;
+
+                  const parsedDate = parse(value, "dd.mm.yyyy", new Date());
+                  console.log({ value });
+                  console.log({ parsedDate });
+
+                  if (isValid(parsedDate)) {
+                    setValue(format(parsedDate, "dd.mm.yyyy"));
+                  }
+                }}
                 type="text"
                 placeholder="31/12/2020"
-                className="focus:placeholder:text-platinum placeholder:text-text-gray text-text-gray h-full w-full focus:outline-none"
+                className="focus:placeholder:text-platinum h-full w-full text-black focus:outline-none"
               />
             </div>
           </div>
@@ -225,7 +248,7 @@ const SelectDate: React.FC<IProps> = ({
       >
         <Calendar
           mode="single"
-          selected={parse(inputValue, "dd/MM/yyyy", new Date())}
+          selected={parse(inputValue, "dd.mm.yyyy", new Date())}
           onSelect={handleChange}
           className="rounded-md border"
         />
@@ -243,7 +266,7 @@ const SelectPassengers: React.FC<IProps> = ({ value, setValue }) => {
       )}
     >
       <div>👤</div>
-      <div>
+      <div className="w-full">
         <div className="text-sm">Pasageri</div>
         <input
           value={value || "1"}
@@ -251,7 +274,7 @@ const SelectPassengers: React.FC<IProps> = ({ value, setValue }) => {
           type="number"
           min={1}
           placeholder="1"
-          className="focus:placeholder:text-platinum placeholder:text-text-gray text-text-gray h-full w-full focus:outline-none"
+          className="focus:placeholder:text-platinum h-full w-full text-black focus:outline-none"
         />
       </div>
     </div>
