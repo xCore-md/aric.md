@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,10 +22,8 @@ import faqAvatar from "@/assets/images/faq.png";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
@@ -35,6 +33,7 @@ const schema = z.object({
 });
 
 export const FAQSection: React.FC = () => {
+  const pathname = usePathname();
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -96,12 +95,14 @@ export const FAQSection: React.FC = () => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <Button asChild className="md:mt-8">
-                  <Link href="/faq">
-                    Vezi toate
-                    <ChevronRightIcon />
-                  </Link>
-                </Button>
+                {pathname !== "/faq" && (
+                  <Button asChild className="md:mt-8">
+                    <Link href="/faq">
+                      Vezi toate
+                      <ChevronRightIcon />
+                    </Link>
+                  </Button>
+                )}
               </Accordion>
             </div>
           </div>

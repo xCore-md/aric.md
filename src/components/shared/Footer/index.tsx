@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { Link, usePathname } from "@/i18n/navigation";
+import Link from "next/link";
+import { usePathname } from "@/i18n/navigation";
 
 import logo from "@/assets/images/logo.svg";
 import { Button } from "@/components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
-import { NAV_LINKS } from "@/utils/constants";
+import { NAV_LINK, NAV_LINKS } from "@/utils/constants";
 import { useTranslations } from "use-intl";
 
 export const Footer: React.FC = () => {
@@ -35,7 +36,9 @@ export const Footer: React.FC = () => {
                 </div>
 
                 <Button className="mt-4" variant="white" asChild>
-                  <Link href="/">Despre noi</Link>
+                  <Link href={NAV_LINK.about.path}>
+                    {t(NAV_LINK.about.label)}
+                  </Link>
                 </Button>
               </div>
 
@@ -113,7 +116,7 @@ export const Footer: React.FC = () => {
                 <div className="flex-none">
                   <div className="text-white">Schimbă limba</div>
                   <div className="flex justify-end gap-4 text-sm text-[#8F9FA3]">
-                    <Link href={"/" + pathname}>Ro</Link>
+                    <Link href={"/ro" + pathname}>Ro</Link>
                     <Link href={"/ru/" + pathname}>Ru</Link>
                   </div>
                 </div>

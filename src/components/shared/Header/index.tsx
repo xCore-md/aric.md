@@ -134,9 +134,11 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
               <div className="flex gap-4">
                 <AccountButton />
 
+                <CallButtonList />
+
                 <Dialog open={openMenu} onOpenChange={setOpenMenu}>
                   <DialogTrigger asChild>
-                    <button className="block lg:hidden">
+                    <button className="block lg:hidden" type="button">
                       <svg className="size-8 fill-white" viewBox="0 0 33 33">
                         <path d="M31.4 27a1.2 1.2 0 0 1 0 2.2H1.2a1.2 1.2 0 0 1 0-2.3h30.2ZM31.4 15.3a1.2 1.2 0 0 1 0 2.4H1.2a1.2 1.2 0 0 1 0-2.4h30.2ZM31.4 3.8a1.2 1.2 0 0 1 0 2.3H1.2a1.2 1.2 0 0 1 0-2.3h30.2Z" />
                       </svg>
@@ -230,6 +232,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ChevronDown } from "lucide-react";
+import { CallButtonList } from "../CallButtonList";
 
 const AccountButton = () => {
   const t = useTranslations();

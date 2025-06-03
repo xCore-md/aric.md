@@ -237,3 +237,18 @@ body {
 .tbody {
   @apply [&_tr]:bg-back text-lg font-semibold [&_td]:py-4 [&_td]:first:pl-6  [&_td]:first:rounded-l-xl [&_td]:last:rounded-r-xl;
 }
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slide-up 0.3s ease-out forwards;
+}
