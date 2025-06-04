@@ -20,7 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { NAV_LINKS, PRIVATE_LINKS } from "@/utils/constants";
+import { CONTACTS, NAV_LINKS, PRIVATE_LINKS } from "@/utils/constants";
 import { AuthForm } from "@/components/shared/AuthForm";
 
 const language: {
@@ -69,21 +69,24 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
             )}
           >
             <a
-              href="mailto:contact@aric.md"
+              href={`mailto:${CONTACTS.email}`}
               className="flex items-center gap-1"
             >
               <span>📩</span>
-              <span>contact@aric.md</span>
+              <span>{CONTACTS.email}</span>
             </a>
 
-            <a href="tel:+37379435990" className="flex items-center gap-1">
+            <a
+              href={`tel:${CONTACTS.phone}`}
+              className="flex items-center gap-1"
+            >
               <span>📞</span>
-              <span>+373 79 435 990</span>
+              <span>{CONTACTS.phone}</span>
             </a>
 
             <div className="ml-auto flex items-center gap-1">
               <span>🕔</span>
-              <span>Mereu disponibili 24/24</span>
+              <span>{t("general.always_available")}</span>
             </div>
           </div>
         </div>
@@ -180,19 +183,19 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
                         onClick={() => setOpenMenu(false)}
                       >
                         <a
-                          href="mailto:contact@aric.md"
+                          href={`mailto:${CONTACTS.email}`}
                           className="flex items-center gap-1"
                         >
                           <span>📩</span>
-                          <span>contact@aric.md</span>
+                          <span>{CONTACTS.email}</span>
                         </a>
 
                         <a
-                          href="tel:+37379435990"
+                          href={`tel:${CONTACTS.phone}`}
                           className="flex items-center gap-1"
                         >
                           <span>📞</span>
-                          <span>+373 79 435 990</span>
+                          <span>{CONTACTS.phone}</span>
                         </a>
                       </div>
 

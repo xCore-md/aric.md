@@ -16,6 +16,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { useTranslations } from "next-intl";
 
 const schema = z.object({
   email: z.string().email(),
@@ -24,6 +25,7 @@ const schema = z.object({
 export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
   withBg,
 }) => {
+  const t = useTranslations();
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -47,9 +49,7 @@ export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
         <div className="container">
           <div className="flex flex-col items-center gap-16 text-center">
             <h2 className="max-w-4xl text-3xl text-black md:text-5xl">
-              Fii mereu informat despre cele mai noi curse, reduceri și oferte
-              speciale. Abonează-te la noutățile ARIC și planifică-ți
-              călătoriile mai ușor, mai rapid și mai convenabil.
+              {t("subscription.title")}
             </h2>
 
             <Form {...form}>
@@ -64,13 +64,16 @@ export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl>
-                          <Input placeholder="Adresa ta de e-mail" {...field} />
+                          <Input
+                            placeholder={t("input.email_field_label")}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage className="absolute -bottom-6 left-6" />
                       </FormItem>
                     )}
                   />
-                  <Button>Abonează-te</Button>
+                  <Button>{t("action.subscribe")}</Button>
                 </div>
               </form>
             </Form>
@@ -85,11 +88,9 @@ export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
       <div className="relative z-10 container">
         <div className="grid gap-10 md:grid-cols-2 md:gap-32">
           <div className="text-white">
-            <h2 className="h2 max-w-sm">
-              Primeşte notificări despre reduceri!
-            </h2>
+            <h2 className="h2 max-w-md">{t("email_subscription.title")}</h2>
             <p className="text-xl opacity-80 md:text-2xl">
-              Planifică-ți călătoriile mai ușor, mai rapid și mai convenabil.
+              {t("email_subscription.title")}
             </p>
           </div>
 

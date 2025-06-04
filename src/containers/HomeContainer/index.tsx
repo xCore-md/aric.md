@@ -1,10 +1,11 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { Header } from "@/components/shared/Header";
+import { useTranslations } from "next-intl";
 import { ChevronRightIcon } from "lucide-react";
+import { Header } from "@/components/shared/Header";
 
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { FAQSection } from "@/components/sections/FAQ";
 import { DiscountSection } from "@/components/sections/Discount";
@@ -20,6 +21,7 @@ import heroBackground from "@/assets/images/hero.jpg";
 import { useTicketForm } from "@/hooks/useTicketForm";
 
 export const HomeContainer: React.FC = () => {
+  const t = useTranslations();
   const { updateTicketSearchParams } = useTicketForm();
 
   return (
@@ -31,11 +33,11 @@ export const HomeContainer: React.FC = () => {
           <div className="container">
             <div className="mt-10 md:mt-18">
               <h1 className="h1 mb-4 max-w-xl text-white">
-                Cumpără ușor biletul de autobuz online!
+                {t("booking.buy_ticket_slogan")}
               </h1>
 
               <p className="sr-only mt-4 max-w-md text-xl text-white sm:not-sr-only md:text-2xl">
-                Curse regulate, microbuze confortabile și orare flexibile!
+                {t("booking.additional_info")}
               </p>
             </div>
 
@@ -55,23 +57,29 @@ export const HomeContainer: React.FC = () => {
 
       <section className="section">
         <div className="container">
-          <h2 className="h2">Planifică-ți călătoria perfectă!</h2>
-          <p className="subtitle">
-            Căutați și cumpărați bilete către cele mai populare destinații ale
-            noastre
-          </p>
+          <h2 className="h2">{t("planning.title")}</h2>
+          <p className="subtitle">{t("planning.subtitle")}</p>
 
           <div className="relative mt-10 grid gap-4 md:grid-cols-3 xl:gap-8">
             {[
-              "Flexibilitate bilete",
-              "Călătorie confortabilă",
-              "Fiabilitatea serviciilor",
-            ].map((item, index) => (
+              {
+                title: "planning.feature1.title",
+                description: "planning.feature1.description",
+              },
+              {
+                title: "planning.feature2.title",
+                description: "planning.feature2.description",
+              },
+              {
+                title: "planning.feature3.title",
+                description: "planning.feature3.description",
+              },
+            ].map(({ title, description }, index) => (
               <div
                 key={index}
                 className="flex items-center gap-4 rounded-xl sm:bg-white sm:p-4 sm:shadow-[0_4px_16px_rgba(17,34,17,0.05)]"
               >
-                <div className="relative hidden h-30 w-30 flex-none overflow-hidden rounded-lg xl:block">
+                <div className="relative hidden size-28 flex-none overflow-hidden rounded-lg xl:block">
                   <Image
                     src="https://placehold.co/600x400/png"
                     alt="Image"
@@ -85,29 +93,10 @@ export const HomeContainer: React.FC = () => {
                     <svg viewBox="0 0 20 20" className="fill-yellow size-5">
                       <path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20ZM7.3 14.3l-3.6-3.6a1 1 0 0 1 1.4-1.4L8 12.2l6.9-7a1 1 0 0 1 1.4 1.5l-7.6 7.6a1 1 0 0 1-1.4 0Z" />
                     </svg>
-                    <span>{item}</span>
+                    <span>{t(title)}</span>
                   </h3>
-                  <div className="text-text-gray hidden items-center gap-2 text-sm sm:flex">
-                    <p>Adaptabil</p>
-                    <svg
-                      width="4"
-                      height="4"
-                      viewBox="0 0 4 4"
-                      fill="currentColor"
-                    >
-                      <circle cx="2" cy="2" r="2" />
-                    </svg>
-
-                    <p>Convenabil</p>
-                    <svg
-                      width="4"
-                      height="4"
-                      viewBox="0 0 4 4"
-                      fill="currentColor"
-                    >
-                      <circle cx="2" cy="2" r="2" />
-                    </svg>
-                    <p>Rapid</p>
+                  <div className="text-text-gray hidden text-sm sm:flex">
+                    {t(description)}
                   </div>
                 </div>
               </div>
@@ -130,13 +119,13 @@ export const HomeContainer: React.FC = () => {
 
             <div className="relative z-10 flex h-full flex-col lg:p-16">
               <div className="max-w-xs">
-                <h2 className="h1 text-white">Rezervează locul!</h2>
+                <h2 className="h1 text-white">{t("reservation.title")}</h2>
                 <p className="text-2xl text-white/90">
-                  Cea mai populară rută acum: Chișinău – Ismail!
+                  {t("reservation.subtitle")}: <br /> Chișinău – Ismail!
                 </p>
 
                 <Button className="mt-8 mb-12" variant="white">
-                  Caută alte rute
+                  {t("reservation.button")}
                 </Button>
               </div>
 
@@ -250,8 +239,8 @@ export const HomeContainer: React.FC = () => {
                   </Tabs>
 
                   <Button asChild className="mt-4">
-                    <Link href="/faq">
-                      Vezi toate rutele
+                    <Link href="/search">
+                      {t("action.see_all_routes")}
                       <ChevronRightIcon />
                     </Link>
                   </Button>

@@ -1,3 +1,7 @@
+import ro from '../../messages/ro.json';
+
+export type Messages = typeof ro;
+
 export interface ILoginResponse {
   access: string;
   refresh: string;

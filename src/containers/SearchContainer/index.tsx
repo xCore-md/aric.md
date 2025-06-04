@@ -34,9 +34,6 @@ export const SearchContainer: React.FC = () => {
 
   return (
     <>
-      <div className="bg-red mx-auto max-w-max p-4 text-4xl font-bold text-white">
-        Pokemon ID:{data?.id}
-      </div>
       <section className="section">
         <div className="container">
           <div className="mb-10">

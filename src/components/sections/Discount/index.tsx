@@ -8,24 +8,28 @@ import chargerImage from "@/assets/images/usb-charger.png";
 import chairImage from "@/assets/images/chair.png";
 import bgBus from "@/assets/images/bg-bus.jpg";
 import busImage from "@/assets/images/bus.png";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 export const DiscountSection: React.FC = () => {
+  const t = useTranslations();
   return (
     <section className="section">
       <div className="container !p-0 md:!px-6">
         <div className="relative overflow-hidden md:overflow-visible">
           <div className="relative z-10 h-full p-8 md:p-16">
             <h2 className="h1 flex flex-col text-white">
-              <span>Reducere!</span>
+              <span>{t("discount_offer.title")}</span>
               <span>20%</span>
             </h2>
 
             <p className="subtitle mt-4 mb-8 !text-white lg:max-w-sm">
-              Cumpără bilet dus-întors și beneficiază de reducere pentru al
-              doilea bilet!
+              {t("discount_offer.description")}
             </p>
 
-            <Button>Rezervează acum</Button>
+            <Button asChild>
+              <Link href="/search">{t("action.book_now")}</Link>
+            </Button>
           </div>
 
           <div className="relative z-10 flex items-center gap-4 px-8 pb-8 md:gap-6 md:px-16">

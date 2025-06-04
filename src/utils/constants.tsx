@@ -1,3 +1,13 @@
+import { Messages } from "@/types";
+
+type NavKey = keyof Messages["nav"];
+type NavLabel = `nav.${NavKey}`;
+
+type NavLinkItem = {
+  path: string;
+  label: NavLabel;
+};
+
 export const NAV_LINK = {
   home: {
     path: "/",
@@ -15,7 +25,7 @@ export const NAV_LINK = {
     path: "/contacts",
     label: "nav.contacts",
   },
-};
+} as const satisfies Record<string, NavLinkItem>;
 
 export const NAV_LINKS = Object.values(NAV_LINK);
 
@@ -65,3 +75,8 @@ export const PRIVATE_LINK = {
 } as const;
 
 export const PRIVATE_LINKS = Object.values(PRIVATE_LINK);
+
+export const CONTACTS = {
+  email: "contact@aric.md",
+  phone: "+373 79 435 990",
+};

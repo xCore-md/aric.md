@@ -1,17 +1,12 @@
 "use client";
 import React from "react";
-import Image from "next/image";
+import { useOnClickOutside } from "usehooks-ts";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 const socialButtons = [
   {
-    url: 1,
+    href: "https://t.me/username",
     label: "Telegram",
     color: "#02B0F4",
     svgPath: (
@@ -19,7 +14,7 @@ const socialButtons = [
     ),
   },
   {
-    url: 2,
+    href: "viber://chat/?number=%2BPHONENUMBERWITHCOUNTRYCODE",
     label: "Viber",
     color: "#7360F2",
     svgPath: (
@@ -36,8 +31,8 @@ const socialButtons = [
     ),
   },
   {
-    url: 2,
-    label: "Viber",
+    href: "whatsapp://send?abid=phonenumber",
+    label: "WhatsApp",
     color: "#25D366",
     svgPath: (
       <path
@@ -50,13 +45,16 @@ const socialButtons = [
 ];
 
 export const CallButtonList: React.FC = () => {
+  const ref = React.useRef(null);
   const [show, setShow] = React.useState(false);
 
+  useOnClickOutside(ref, () => setShow(false));
+
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block" ref={ref}>
       <button
         onClick={() => setShow(!show)}
-        className="flex size-12 rounded-full bg-white"
+        className={cn("flex size-12 cursor-pointer rounded-full bg-white")}
       >
         <svg
           className="fill-blue m-auto size-5.5 flex-none"
@@ -68,17 +66,19 @@ export const CallButtonList: React.FC = () => {
 
       <div className="slide-up absolute top-full left-1/2 flex -translate-x-1/2 flex-col gap-2">
         {socialButtons.map((btn, index) => (
-          <button
-            key={btn.url}
+          <a
+            href={btn.href}
+            key={index}
             style={{
               animationDelay: `${index * 200}ms`,
               background: btn.color,
             }}
             className={cn(
-              "translate-y-2 transform opacity-0",
-              show && "slide-up",
-              "flex size-12 rounded-full",
+              "size-0 translate-y-2 transform overflow-hidden opacity-0",
+              show && "slide-up size-12 hover:!opacity-70",
+              "flex rounded-full",
             )}
+            target="_blank"
           >
             <svg
               className="m-auto size-6 flex-none fill-white"
@@ -86,7 +86,8 @@ export const CallButtonList: React.FC = () => {
             >
               {btn?.svgPath}
             </svg>
-          </button>
+            <span className="sr-only">{btn.label}</span>
+          </a>
         ))}
       </div>
     </div>

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTicketForm } from "@/hooks/useTicketForm";
 import type { TicketFormValues } from "@/types";
+import { useTranslations } from "next-intl";
 
 const options = maskitoDateOptionsGenerator({
   mode: "dd/mm/yyyy",
@@ -31,6 +32,7 @@ interface IProps {
 export const SearchTicketForm: React.FC<{
   onSubmit: (data: TicketFormValues) => void;
 }> = ({ onSubmit }) => {
+  const t = useTranslations();
   const {
     departureCity,
     setDepartureCity,
@@ -61,23 +63,23 @@ export const SearchTicketForm: React.FC<{
       <CardContent className="">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <SelectCity
-            placeholder="Orașul de pornire"
+            placeholder={t("booking.departure_city")}
             value={departureCity}
             setValue={setDepartureCity}
           />
           <SelectCity
-            placeholder="Orașul de sosire"
+            placeholder={t("booking.arrival_city")}
             value={arrivalCity}
             setValue={setArrivalCity}
           />
 
           <SelectDate
-            placeholder="Data plecării"
+            placeholder={t("booking.departure_date")}
             value={departureDate}
             setValue={setDepartureDate}
           />
           <SelectDate
-            placeholder="Data retur"
+            placeholder={t("booking.return_date")}
             value={returnDate}
             setValue={setReturnDate}
           />
@@ -263,6 +265,7 @@ const SelectDate: React.FC<IProps> = ({
 };
 
 const SelectPassengers: React.FC<IProps> = ({ value, setValue }) => {
+  const t = useTranslations();
   return (
     <div
       className={cn(
@@ -272,7 +275,7 @@ const SelectPassengers: React.FC<IProps> = ({ value, setValue }) => {
     >
       <div>👤</div>
       <div className="w-full">
-        <div className="text-sm">Pasageri</div>
+        <div className="text-sm">{t("booking.passengers")}</div>
         <input
           value={value || "1"}
           onChange={(event) => setValue(event?.target.value)}

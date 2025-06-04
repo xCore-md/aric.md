@@ -26,6 +26,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { useTranslations } from "next-intl";
 
 const schema = z.object({
   name: z.string().min(3, { message: "Required" }),
@@ -33,6 +34,7 @@ const schema = z.object({
 });
 
 export const FAQSection: React.FC = () => {
+  const t = useTranslations();
   const pathname = usePathname();
   const form = useForm({
     resolver: zodResolver(schema),
@@ -59,7 +61,7 @@ export const FAQSection: React.FC = () => {
           <div className="w-full max-w-3xl">
             <h2 className="h2 !mb-8 flex flex-wrap gap-x-4 md:!mb-14 md:flex-col">
               <span className="flex items-center gap-4">
-                <span>Întrebări</span>
+                <span>{t("faq.questions")}</span>
                 <svg viewBox="0 0 39 40" className="size-10">
                   <path
                     fill="#FFC60E"
@@ -71,7 +73,7 @@ export const FAQSection: React.FC = () => {
                   />
                 </svg>
               </span>
-              <span>și Răspunsuri</span>
+              <span>{t("faq.and_answers")}</span>
             </h2>
 
             <div className="flex gap-28">
@@ -98,7 +100,7 @@ export const FAQSection: React.FC = () => {
                 {pathname !== "/faq" && (
                   <Button asChild className="md:mt-8">
                     <Link href="/faq">
-                      Vezi toate
+                      {t("general.view_all_label")}
                       <ChevronRightIcon />
                     </Link>
                   </Button>
@@ -110,8 +112,9 @@ export const FAQSection: React.FC = () => {
           <Card className="mx-auto mt-10 w-full max-w-sm md:mt-0">
             <CardHeader>
               <CardTitle className="h3 text-center">
-                Cere un
-                <br /> apel telefonic
+                {t.rich("phone_request.title", {
+                  br: () => <br />,
+                })}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -126,7 +129,10 @@ export const FAQSection: React.FC = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="Nume / Prenume" {...field} />
+                          <Input
+                            placeholder={t("input.name_and_surname_label")}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -147,7 +153,7 @@ export const FAQSection: React.FC = () => {
                   />
 
                   <Button type="submit" className="w-full" size="lg">
-                    Sună-mă înapoi
+                    {t("phone_request.action")}
                   </Button>
                 </form>
               </Form>

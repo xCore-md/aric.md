@@ -10,16 +10,16 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import googleIcon from "@/assets/images/google.svg";
+import { useTranslations } from "next-intl";
 
 export const ReviewsCarouselSection: React.FC = () => {
+  const t = useTranslations();
   return (
     <section className="section">
       <div className="container">
         <Carousel opts={{ loop: true, align: "start" }}>
           <div className="flex flex-col items-center justify-between text-center md:flex-row md:items-end md:text-left">
-            <h2 className="h2 max-w-xl">
-              Ce spun clienții despre călătoriile noastre?
-            </h2>
+            <h2 className="h2 max-w-xl">{t("customer_feedback.title")}</h2>
 
             <div className="relative flex gap-2">
               <CarouselPrevious />

@@ -9,5 +9,82 @@
     "payments": "Plăți",
     "profile_settings": "Setări profil",
     "my_tickets": "Biletele mele"
+  },
+  "booking": {
+    "buy_ticket_slogan": "Cumpără ușor biletul de autobuz online!",
+    "additional_info": "Curse regulate, microbuze confortabile și orare flexibile!",
+    "departure_city": "Orașul de pornire",
+    "arrival_city": "Orașul de sosire",
+    "departure_date": "Data plecării",
+    "return_date": "Data retur",
+    "passengers": "Pasageri"
+  },
+  "planning": {
+    "title": "Planifică-ți călătoria perfectă!",
+    "subtitle": "Caută și cumpără bilete către cele mai populare destinații ale noastre",
+    "feature1": {
+      "title": "Flexibilitate bilete",
+      "description": "Adaptabil • Convenabil • Rapid"
+    },
+    "feature2": {
+      "title": "Călătorie confortabilă",
+      "description": "Spațios • Modern • Punctual"
+    },
+    "feature3": {
+      "title": "Fiabilitatea serviciilor",
+      "description": "Sigur • Profesionist • Constant"
+    }
+  },
+  "reservation": {
+    "title": "Rezervă locul!",
+    "subtitle": "Cea mai populară rută acum",
+    "button": "Caută alte rute"
+  },
+  "subscription": {
+    "title": "Fi mereu informat despre cele mai noi curse, reduceri și oferte speciale. Abonează-te la noutățile ARIC și planifică-ți călătoriile mai ușor, rapid și mai convenabil."
+  },
+  "input": {
+    "email_field_label": "Adresa ta de e-mail",
+    "name_and_surname_label": "Nume / Prenume"
+  },
+  "action": {
+    "subscribe": "Abonează-te",
+    "see_all_routes": "Vezi toate rutele",
+    "book_now": "Rezervează acum"
+  },
+  "customer_feedback": {
+    "title": "Ce spun clienții despre călătoriile noastre?"
+  },
+  "discount_offer": {
+    "title": "Reducere!",
+    "description": "Cumpără bilet dus-întors și beneficiază de reducere pentru al doilea bilet!"
+  },
+  "faq": {
+    "questions": "Întrebări",
+    "and_answers": "și Răspunsuri"
+  },
+  "general": {
+    "always_available": "Mereu disponibili 24/24",
+    "leaving_soon": "Pleacă în curând",
+    "address": "Adresa",
+    "language_switch": "Schimbă limba",
+    "view_all_label": "Vezi toate"
+  },
+  "phone_request": {
+    "title": "Cere un <br></br>apel telefonic",
+    "action": "Sună-mă înapoi"
+  },
+  "legal_info": {
+    "terms": "Termeni și condițiile generale",
+    "privacy": "Politici de confidențialitate",
+    "copyright": "Toate drepturile rezervate"
+  },
+  "footer": {
+    "title": "Rezervă-ți locul ușor și bucură-te de o călătorie sigură și confortabilă. Microbuze moderne, orare flexibile și rezervare rapidă online — tot ce ai nevoie pentru un drum fără griji.",
+    "address": "Republica Moldova, mun.Chisinau, str, Calea Basarabiei 26"
+  },
+  "email_subscription": {
+    "title": "Primește notificări despre reduceri!",
+    "description": "Planifică-ți călătoriile mai ușor, mai rapid și mai convenabil."
   }
 }

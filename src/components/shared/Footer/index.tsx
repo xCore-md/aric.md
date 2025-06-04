@@ -7,7 +7,7 @@ import { usePathname } from "@/i18n/navigation";
 import logo from "@/assets/images/logo.svg";
 import { Button } from "@/components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
-import { NAV_LINK, NAV_LINKS } from "@/utils/constants";
+import { CONTACTS, NAV_LINK, NAV_LINKS } from "@/utils/constants";
 import { useTranslations } from "use-intl";
 
 export const Footer: React.FC = () => {
@@ -29,11 +29,7 @@ export const Footer: React.FC = () => {
                   />
                 </Link>
 
-                <div className="text-platinum mt-8">
-                  Rezervă-ți locul ușor și bucură-te de o călătorie sigură și
-                  confortabilă. Microbuze moderne, orare flexibile și rezervare
-                  rapidă online — tot ce ai nevoie pentru un drum fără griji.
-                </div>
+                <div className="text-platinum mt-8">{t("footer.title")}</div>
 
                 <Button className="mt-4" variant="white" asChild>
                   <Link href={NAV_LINK.about.path}>
@@ -62,7 +58,7 @@ export const Footer: React.FC = () => {
 
               <div className="rounded-2xl bg-white/10 p-6 ring-1 ring-white ring-inset">
                 <div className="bg-mentol mb-6 max-w-max rounded-full px-3 py-2 text-sm">
-                  Pleacă în curând
+                  {t("general.leaving_soon")}
                 </div>
 
                 <ul className="divide-text-gray -mb-6 space-y-6 divide-y">
@@ -87,34 +83,36 @@ export const Footer: React.FC = () => {
                 <div className="space-y-12">
                   <div className="flex flex-col gap-2">
                     <div className="text-lg font-semibold text-white">
-                      Contacte
+                      {t("nav.contacts")}
                     </div>
                     <a
                       className="text-text-gray text-sm"
-                      href="tel:+37378348888"
+                      href={`tel:${CONTACTS.phone}`}
                     >
-                      +373 78 348 888
+                      {CONTACTS.phone}
                     </a>
                     <a
                       className="text-text-gray text-sm"
-                      href="mailto:contact@aric.md"
+                      href={`mailto:${CONTACTS.email}`}
                     >
-                      contact@aric.md
+                      {CONTACTS.email}
                     </a>
                   </div>
 
                   <div className="pr-10">
                     <div className="text-lg font-semibold text-white">
-                      Adresa
+                      {t("general.address")}
                     </div>
                     <div className="text-text-gray text-sm">
-                      Rep Moldova, mun.Chisinau, str, Calea Basarabiei 26
+                      {t("footer.address")}
                     </div>
                   </div>
                 </div>
 
                 <div className="flex-none">
-                  <div className="text-white">Schimbă limba</div>
+                  <div className="text-white">
+                    {t("general.language_switch")}
+                  </div>
                   <div className="flex justify-end gap-4 text-sm text-[#8F9FA3]">
                     <Link href={"/ro" + pathname}>Ro</Link>
                     <Link href={"/ru/" + pathname}>Ru</Link>
@@ -134,6 +132,7 @@ export const Footer: React.FC = () => {
 };
 
 const TermsAndSocial = () => {
+  const t = useTranslations();
   return (
     <div className="flex h-full flex-col justify-between gap-8 sm:flex-row">
       <div className="flex max-w-max grid-cols-2 gap-2 sm:grid">
@@ -153,19 +152,19 @@ const TermsAndSocial = () => {
             href="/legal/terms"
             className="text-yellow hover:text-blue text-sm"
           >
-            Termenii și condițiile generale
+            {t("legal_info.terms")}
           </Link>
           <Link
             href="/legal/privacy"
             className="text-yellow hover:text-blue text-sm"
           >
-            Politicii de confidențialitate
+            {t("legal_info.privacy")}
           </Link>
         </div>
 
         <div className="text-platinum mt-auto text-center text-xs sm:text-right">
           <div>© 2025 — Copyright</div>
-          <div>All Rights reserved</div>
+          <div> {t("legal_info.copyright")}</div>
         </div>
       </div>
     </div>
