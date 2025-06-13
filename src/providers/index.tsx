@@ -1,9 +1,51 @@
 "use client";
 import React from "react";
-import { QueryClientProvider } from "@tanstack/react-query";
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ProgressProvider } from "@bprogress/next/app";
 import { getQueryClient } from "@/query/get-query-client";
+// import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+import { HTTPError } from "ky";
+
+function handleApiError(error: unknown) {
+  console.log(error);
+
+  if (error instanceof HTTPError) {
+    error.response
+      .json()
+      .then((responseJson) => {
+        const serverMessage =
+          responseJson?.message ||
+          Object.values(responseJson?.errors || {})?.flat()?.[0] ||
+          "Произошла неизвестная ошибка.";
+
+        toast.error(serverMessage);
+      })
+      .catch(() => {
+        toast.error("Ошибка сервера. Не удалось прочитать ответ.");
+      });
+  } else if (error instanceof Error) {
+    console.error(error.message);
+    toast.error("Произошла ошибка при выполнении запроса.");
+  } else {
+    toast.error("Произошла неизвестная ошибка.");
+  }
+}
+
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: handleApiError,
+  }),
+  mutationCache: new MutationCache({
+    onError: handleApiError,
+  }),
+});
 
 export const Providers: React.FC<{ children: React.ReactNode }> = ({
   children,

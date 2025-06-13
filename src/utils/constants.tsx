@@ -29,6 +29,18 @@ export const NAV_LINK = {
 
 export const NAV_LINKS = Object.values(NAV_LINK);
 
+export const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
+
+export const QUERY_KEYS = {
+  searchStations: "searchStations",
+  searchStationsDestinations: "searchStationsDestinations",
+  searchTripDates: "searchTripDates",
+  search: "search",
+  searchReturnTripDates: "searchReturnTripDates",
+} as const;
+
+export const SUPORTED_LANGUAGES = ["ru", "ro", "en"] as const;
+
 export const PRIVATE_LINK = {
   booking: {
     path: "/booking",

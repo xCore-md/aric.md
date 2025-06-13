@@ -18,15 +18,35 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTicketForm } from "@/hooks/useTicketForm";
 
 import type { TicketFormValues } from "@/types";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { pokemonOptions } from "@/app/pokemon";
+import { QUERY_KEYS } from "@/utils/constants";
+import { searchService } from "@/services/search.service";
 
 export const SearchContainer: React.FC = () => {
-  const { updateTicketSearchParams } = useTicketForm();
+  const { updateTicketSearchParams, searchQuery } = useTicketForm();
+
+  const {
+    data: searchData,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.search],
+    queryFn: () => searchService.getAll(searchQuery),
+    enabled: false,
+  });
+
+  console.log("🔍 searchData:", searchData);
 
   function handleSearch(data: TicketFormValues) {
     updateTicketSearchParams(data);
+    // delay 1 tick pentru a aștepta actualizarea
+    setTimeout(() => {
+      refetch();
+    }, 0);
   }
+
+  console.log(searchQuery);
 
   const { data } = useSuspenseQuery(pokemonOptions);
 
@@ -39,6 +59,8 @@ export const SearchContainer: React.FC = () => {
           <div className="mb-10">
             <SearchTicketForm onSubmit={handleSearch} />
           </div>
+
+          {isLoading && <p>Loading...</p>}
 
           <div className="items-center justify-between gap-6 sm:flex">
             <h1 className="h3">Chișinău - Ismail</h1>

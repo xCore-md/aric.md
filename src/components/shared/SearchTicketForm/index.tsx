@@ -17,6 +17,9 @@ import { cn } from "@/lib/utils";
 import { useTicketForm } from "@/hooks/useTicketForm";
 import type { TicketFormValues } from "@/types";
 import { useTranslations } from "next-intl";
+import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/utils/constants";
+import { searchService } from "@/services/search.service";
 
 const options = maskitoDateOptionsGenerator({
   mode: "dd/mm/yyyy",
@@ -27,6 +30,14 @@ interface IProps {
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
   placeholder?: string;
+  disabled?: boolean;
+}
+
+interface SelectCityProps extends IProps {
+  data: {
+    value: string;
+    label: string;
+  }[];
 }
 
 export const SearchTicketForm: React.FC<{
@@ -58,6 +69,48 @@ export const SearchTicketForm: React.FC<{
     });
   };
 
+  const { data: stations } = useQuery({
+    queryKey: [QUERY_KEYS.searchStations],
+    queryFn: () => searchService.getStations(),
+  });
+
+  const { data: stationsDestinations } = useQuery({
+    queryKey: [QUERY_KEYS.searchStationsDestinations, departureCity],
+    queryFn: () =>
+      searchService.getStationsDestinations({
+        from_station_id: Number(departureCity),
+      }),
+    enabled: !!departureCity,
+  });
+
+  const { data: tripDates } = useQuery({
+    queryKey: [QUERY_KEYS.searchTripDates, departureCity, arrivalCity],
+    queryFn: () =>
+      searchService.getTripDates({
+        from_station_id: Number(departureCity),
+        to_station_id: Number(arrivalCity),
+      }),
+    enabled: !!arrivalCity && !!departureCity,
+  });
+
+  const { data: returnTripDates } = useQuery({
+    queryKey: [
+      QUERY_KEYS.searchReturnTripDates,
+      departureCity,
+      arrivalCity,
+      departureDate,
+    ],
+    queryFn: () =>
+      searchService.getReturnTripDates({
+        from_station_id: Number(departureCity),
+        to_station_id: Number(arrivalCity),
+        departure_date: departureDate,
+      }),
+    enabled: !!arrivalCity && !!departureCity && !!departureDate,
+  });
+
+  console.log("✅ tripDates:", tripDates);
+
   return (
     <Card className="ring-platinum ring ring-inset">
       <CardContent className="">
@@ -66,22 +119,41 @@ export const SearchTicketForm: React.FC<{
             placeholder={t("booking.departure_city")}
             value={departureCity}
             setValue={setDepartureCity}
+            data={
+              stations?.map((s) => ({
+                value: String(s.id),
+                label: s.name_ru,
+              })) || []
+            }
           />
+
           <SelectCity
             placeholder={t("booking.arrival_city")}
             value={arrivalCity}
             setValue={setArrivalCity}
+            data={
+              stationsDestinations?.map((s) => ({
+                value: String(s.id),
+                label: s.name_ru,
+              })) || []
+            }
+            disabled={!departureCity}
           />
 
           <SelectDate
             placeholder={t("booking.departure_date")}
             value={departureDate}
             setValue={setDepartureDate}
+            disabled={!arrivalCity}
+            allowedDates={tripDates?.dates}
           />
+
           <SelectDate
             placeholder={t("booking.return_date")}
             value={returnDate}
             setValue={setReturnDate}
+            disabled={!departureDate}
+            allowedDates={returnTripDates?.dates}
           />
 
           <div className="col-span-full flex w-full flex-col gap-4 sm:flex-row lg:col-span-1">
@@ -103,39 +175,22 @@ export const SearchTicketForm: React.FC<{
   );
 };
 
-const SelectCity: React.FC<IProps> = ({
+const SelectCity: React.FC<SelectCityProps> = ({
   value,
   setValue,
   placeholder = "",
+  data,
+  disabled,
 }) => {
-  const data = [
-    {
-      id: 1,
-      label: "Chisinau",
-    },
-    {
-      id: 2,
-      label: "Balti",
-    },
-    {
-      id: 3,
-      label: "Bucuresti",
-    },
-    {
-      id: 4,
-      label: "Kiev",
-    },
-  ];
-
   const [isOpen, setIsOpen] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState(value);
+  const [inputValue, setInputValue] = React.useState(
+    data?.find((item) => item.value === value)?.label || "",
+  );
   const inputRef = React.useRef<HTMLInputElement>(null);
-
-  console.log(value);
 
   React.useEffect(() => {
     if (value) {
-      setInputValue(value);
+      setInputValue(data?.find((item) => item.value === value)?.label || "");
     }
   }, [value]);
 
@@ -148,6 +203,7 @@ const SelectCity: React.FC<IProps> = ({
               "flex h-16 items-center gap-3 rounded-full border bg-white px-4",
               isOpen &&
                 "border-blue text-blue [&[data-state=open]>svg]:rotate-90",
+              disabled && "bg-muted pointer-events-none opacity-50",
             )}
           >
             <div>📍</div>
@@ -175,7 +231,7 @@ const SelectCity: React.FC<IProps> = ({
         {data?.map((item, index) => (
           <button
             key={index}
-            onClick={() => setValue(String(item?.label))}
+            onClick={() => setValue(String(item?.value))}
             type="button"
             className="hover:text-blue flex w-full p-2 text-left transition"
           >
@@ -187,10 +243,12 @@ const SelectCity: React.FC<IProps> = ({
   );
 };
 
-const SelectDate: React.FC<IProps> = ({
+const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
   placeholder = "",
   setValue,
   value,
+  disabled,
+  allowedDates,
 }) => {
   const maskedInputRef = useMaskito({
     options,
@@ -208,6 +266,18 @@ const SelectDate: React.FC<IProps> = ({
       setInputValue(value);
     }
   }, [value]);
+
+  const allowedDatesMap = allowedDates?.map((d) => new Date(d));
+
+  const isDayDisabled = React.useCallback(
+    (date: Date) => {
+      return !allowedDatesMap?.some(
+        (allowedDate) => allowedDate.toDateString() === date.toDateString(),
+      );
+    },
+    [allowedDatesMap],
+  );
+
   return (
     <Popover>
       <div className="relative w-full">
@@ -216,6 +286,7 @@ const SelectDate: React.FC<IProps> = ({
             className={cn(
               "flex h-16 items-center gap-3 rounded-full border bg-white px-4",
               "focus-within:border-blue focus-within:text-blue",
+              disabled && "bg-muted pointer-events-none opacity-50",
             )}
           >
             <div>🗓️</div>
@@ -231,16 +302,14 @@ const SelectDate: React.FC<IProps> = ({
                   if (value.length !== 10) return;
 
                   const parsedDate = parse(value, "dd.MM.yyyy", new Date());
-                  console.log({ value });
-                  console.log({ parsedDate });
 
                   if (isValid(parsedDate)) {
                     setValue(format(parsedDate, "dd.MM.yyyy"));
                   }
                 }}
                 type="text"
-                placeholder="31/12/2020"
-                className="focus:placeholder:text-platinum placeholder:text-text-gray text-text-gray h-full w-full text-black focus:outline-none"
+                placeholder="31.12.2020"
+                className="focus:placeholder:text-platinum placeholder:text-text-gray text-text-gray h-full w-full focus:outline-none"
               />
             </div>
           </div>
@@ -250,7 +319,6 @@ const SelectDate: React.FC<IProps> = ({
         className="w-auto p-0"
         onOpenAutoFocus={(event) => {
           event.preventDefault();
-          // maskedInputRef?.current?.focus();
         }}
       >
         <Calendar
@@ -258,19 +326,21 @@ const SelectDate: React.FC<IProps> = ({
           selected={parse(inputValue, "dd.MM.yyyy", new Date())}
           onSelect={handleChange}
           className="rounded-md border"
+          disabled={isDayDisabled}
         />
       </PopoverContent>
     </Popover>
   );
 };
 
-const SelectPassengers: React.FC<IProps> = ({ value, setValue }) => {
+const SelectPassengers: React.FC<IProps> = ({ value, setValue, disabled }) => {
   const t = useTranslations();
   return (
     <div
       className={cn(
         "flex h-16 w-full items-center gap-3 rounded-full border bg-white px-4",
         "focus-within:border-blue focus-within:text-blue",
+        disabled && "bg-muted pointer-events-none opacity-50",
       )}
     >
       <div>👤</div>
