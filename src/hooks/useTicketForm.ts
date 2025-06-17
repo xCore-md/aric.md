@@ -1,11 +1,11 @@
 import React from "react";
 import { useQueryStates, parseAsString, parseAsInteger } from "nuqs";
-import { format, parse } from "date-fns";
-import type { PaginationParams, TicketFormValues } from "@/types";
-import { toApiDate } from "@/utils/format-date";
+import type { TicketFormValues } from "@/types";
+import { useRouter } from "@/i18n/navigation";
 
 export const useTicketForm = () => {
-  const [, setSearchQueryState] = useQueryStates(
+  const { replace } = useRouter();
+  const [searchQueryState, setSearchQueryState] = useQueryStates(
     {
       from_station_id: parseAsInteger,
       to_station_id: parseAsInteger,
@@ -18,19 +18,21 @@ export const useTicketForm = () => {
     },
   );
 
-  const [fromStationId, setFromStationId] = React.useState("");
-  const [toStationId, setToStationId] = React.useState("");
-  const [departureDate, setDepartureDate] = React.useState("");
-  const [returnDate, setReturnDate] = React.useState("");
-  const [passengers, setPassengers] = React.useState("1");
-
-  console.log({
-    fromStationId,
-    toStationId,
-    departureDate,
-    returnDate,
-    passengers,
-  });
+  const [fromStationId, setFromStationId] = React.useState(
+    searchQueryState?.from_station_id || "",
+  );
+  const [toStationId, setToStationId] = React.useState(
+    searchQueryState?.to_station_id || "",
+  );
+  const [departureDate, setDepartureDate] = React.useState(
+    searchQueryState?.departure_date || "",
+  );
+  const [returnDate, setReturnDate] = React.useState(
+    searchQueryState?.return_date || "",
+  );
+  const [passengers, setPassengers] = React.useState(
+    searchQueryState?.passengers || "1",
+  );
 
   const canSearch = React.useMemo(() => {
     return [fromStationId, toStationId, departureDate, passengers].every(
@@ -39,7 +41,9 @@ export const useTicketForm = () => {
   }, [fromStationId, toStationId, departureDate, passengers]);
 
   const updateTicketSearchParams = React.useCallback(
-    (v: TicketFormValues) => setSearchQueryState(v),
+    (v: TicketFormValues) => {
+      replace({ pathname: "/search", query: v });
+    },
     [setSearchQueryState],
   );
 

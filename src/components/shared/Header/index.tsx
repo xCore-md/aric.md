@@ -62,6 +62,7 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
         className={cn("mt-5 hidden sm:block", !isHomePage && "mt-0 bg-white")}
       >
         <div className="container">
+          <NextLink href={"/login"}>Login</NextLink>
           <div
             className={cn(
               "flex items-center gap-8 py-3 text-sm font-medium",

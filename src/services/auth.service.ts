@@ -2,19 +2,30 @@ import ky from "ky";
 import { signOut } from "next-auth/react";
 
 import { API_URL } from "@/utils/constants";
-import type { ILogin } from "@/types";
+import type {
+  ApiResponse,
+  ExpiresInResponseData,
+  ILogin,
+  SendCodePayload,
+  TokenResponseData,
+  VerifyCodePayload,
+} from "@/types";
 
 class AuthService {
   private authApi = ky.create({
-    prefixUrl: API_URL + "auth",
+    prefixUrl: API_URL + "customer/auth",
   });
 
-  login(data: ILogin) {
-    return this.authApi.post("login", { json: data });
-  }
+  sendVerificationCode = (data: SendCodePayload) => {
+    return this.authApi
+      .post("verification-code", { json: data })
+      .json<ApiResponse<ExpiresInResponseData>>();
+  };
 
-  refreshToken(refresh: string) {
-    return this.authApi.post("token/refresh", { json: { refresh } });
+  verify(data: VerifyCodePayload) {
+    return this.authApi
+      .post("verify", { json: data })
+      .json<ApiResponse<TokenResponseData>>();
   }
 
   async logout() {

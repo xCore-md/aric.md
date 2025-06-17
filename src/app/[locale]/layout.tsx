@@ -33,15 +33,18 @@ export const viewport: Viewport = {
 
 export default async function LocaleLayout({
   children,
+  modal,
   params,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+  console.log(modal);
 
   return (
     <html lang={locale}>
@@ -50,7 +53,10 @@ export default async function LocaleLayout({
           <Providers>
             <div className="flex min-h-screen flex-col">
               <Header />
-              <main className="overflow-hidden">{children}</main>
+              <main className="overflow-hidden">
+                {children}
+                {modal}
+              </main>
               <Footer />
             </div>
           </Providers>

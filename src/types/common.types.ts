@@ -86,3 +86,40 @@ export interface SearchResponse extends PaginatedResponse<TripItem> {
   data: TripItem[];
   // filters: FiltersBlock;
 }
+
+export interface User {
+  id: number;
+  phone: string;
+  email: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  language: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TokenResponseData {
+  token: string;
+  user: User;
+}
+
+export interface ExpiresInResponseData {
+  expires_in: number;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+export interface SendCodePayload {
+  phone: string;
+  language: string;
+}
+
+export interface VerifyCodePayload {
+  phone: string;
+  code: string;
+  language: string;
+}

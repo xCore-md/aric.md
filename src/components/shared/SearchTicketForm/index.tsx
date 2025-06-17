@@ -220,7 +220,7 @@ const SelectCity: React.FC<SelectCityProps> = ({
               ref={inputRef}
               type="text"
               placeholder={placeholder}
-              className="focus:placeholder:text-platinum placeholder:text-text-gray text-text-gray h-full w-full focus:outline-none"
+              className="focus:placeholder:text-platinum placeholder:text-text-gray h-full w-full text-black focus:outline-none"
             />
             <ChevronRightIcon className="size-5 flex-none" />
           </div>
@@ -291,7 +291,7 @@ const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
         <PopoverTrigger asChild>
           <div
             className={cn(
-              "flex h-16 items-center gap-3 rounded-full border bg-white px-4",
+              "text-text-gray flex h-16 items-center gap-3 rounded-full border bg-white px-4",
               "focus-within:border-blue focus-within:text-blue",
               disabled && "bg-muted pointer-events-none opacity-50",
             )}
@@ -316,7 +316,7 @@ const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
                 }}
                 type="text"
                 placeholder="31.12.2020"
-                className="focus:placeholder:text-platinum placeholder:text-text-gray text-text-gray h-full w-full focus:outline-none"
+                className="focus:placeholder:text-platinum placeholder:text-text-gray h-full w-full text-black focus:outline-none"
               />
             </div>
           </div>

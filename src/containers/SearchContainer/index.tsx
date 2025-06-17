@@ -43,6 +43,8 @@ export const SearchContainer: React.FC = () => {
       setSearchData(result);
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   }
 
