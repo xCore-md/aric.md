@@ -9,48 +9,44 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTicketForm } from "@/hooks/useTicketForm";
 
-import type { TicketFormValues } from "@/types";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { pokemonOptions } from "@/app/pokemon";
-import { QUERY_KEYS } from "@/utils/constants";
+import type { SearchResponse, TicketFormValues } from "@/types";
 import { searchService } from "@/services/search.service";
+import { TicketDetailsCollapsible } from "@/components/shared/TicketDetailsCollapsible";
+import { toApiDate } from "@/utils/format-date";
 
 export const SearchContainer: React.FC = () => {
-  const { updateTicketSearchParams, searchQuery } = useTicketForm();
+  const { updateTicketSearchParams } = useTicketForm();
+  const [searchData, setSearchData] = React.useState<SearchResponse>();
+  const [isLoading, setLoading] = React.useState(false);
 
-  const {
-    data: searchData,
-    isLoading,
-    refetch,
-  } = useQuery({
-    queryKey: [QUERY_KEYS.search],
-    queryFn: () => searchService.getAll(searchQuery),
-    enabled: false,
-  });
-
-  console.log("🔍 searchData:", searchData);
-
-  function handleSearch(data: TicketFormValues) {
+  async function handleSearch(data: TicketFormValues) {
     updateTicketSearchParams(data);
-    // delay 1 tick pentru a aștepta actualizarea
-    setTimeout(() => {
-      refetch();
-    }, 0);
+    setLoading(true);
+
+    const { departure_date, return_date } = data;
+
+    const formattedDepartureDate = toApiDate(departure_date);
+    const formattedReturnDate = toApiDate(return_date || "");
+
+    try {
+      const result = await searchService.getAll({
+        ...data,
+        departure_date: String(formattedDepartureDate),
+        ...(formattedReturnDate && { return_date: formattedReturnDate }),
+      });
+
+      setSearchData(result);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
-  console.log(searchQuery);
-
-  const { data } = useSuspenseQuery(pokemonOptions);
-
-  console.log({ data });
+  console.log("🔍 search data:", searchData);
 
   return (
     <>
@@ -63,11 +59,11 @@ export const SearchContainer: React.FC = () => {
           {isLoading && <p>Loading...</p>}
 
           <div className="items-center justify-between gap-6 sm:flex">
-            <h1 className="h3">Chișinău - Ismail</h1>
+            <h1 className="h3 bg-red-500">Chișinău - Ismail</h1>
             <div className="flex items-center justify-between gap-4">
               <div className="text-text-gray">Au fost găsite</div>
               <div className="bg-green rounded-full px-2.5 py-0.5">
-                16 bilete
+                <span className="bg-red-500">77</span> bilete
               </div>
             </div>
           </div>
@@ -101,7 +97,7 @@ export const SearchContainer: React.FC = () => {
 
           <div className="mt-8 flex flex-col-reverse gap-8 lg:flex-row">
             <ul className="space-y-4">
-              {[1, 2, 3].map((_, index) => (
+              {searchData?.data?.map(({ route_departure }, index) => (
                 <li
                   key={index}
                   className="border-platinum rounded-xl border bg-white p-4 md:px-10 md:py-6"
@@ -125,6 +121,8 @@ export const SearchContainer: React.FC = () => {
 
                   <TripRouteDetails />
 
+                  <TicketDetailsCollapsible data={route_departure} />
+
                   <Collapsible>
                     <CollapsibleTrigger className="hover:text-blue data-[state=open]:text-blue bg-back mt-6 flex w-full cursor-pointer items-center justify-between gap-1 rounded-full px-6 py-4 font-semibold transition data-[state=open]:rounded-t-2xl data-[state=open]:rounded-b-none [&[data-state=open]>svg]:rotate-90">
                       <span>Detalii bilet</span>
@@ -139,7 +137,8 @@ export const SearchContainer: React.FC = () => {
               ))}
             </ul>
 
-            <div className="flex-none lg:w-1/3">
+            {/* Filters */}
+            {/* <div className="flex-none lg:w-1/3">
               <Card>
                 <CardHeader className="border-platinum relative -mt-6 gap-0 rounded-t-xl border bg-[#F9F9F9] py-6">
                   <CardTitle className="h4">Filtru bilete 🔎</CardTitle>
@@ -172,7 +171,7 @@ export const SearchContainer: React.FC = () => {
                   </div>
                 </CardContent>
               </Card>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

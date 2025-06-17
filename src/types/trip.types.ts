@@ -4,6 +4,7 @@ import type {
   DepartureArrivalTime,
   Route,
   RouteWithStations,
+  Station,
   Timestamps,
 } from "@/types";
 
@@ -35,7 +36,7 @@ export interface TripUpdateDto extends DepartureArrivalTime {
 export interface TripSegment extends DepartureArrivalTime {
   id: number;
   bus: BusWithFacilities;
-  route: Route;
+  route: Route & { stations: Station[] };
 }
 
 export interface TripItem {

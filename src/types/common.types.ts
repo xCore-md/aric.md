@@ -50,11 +50,11 @@ export interface PaginatedResponse<T> {
 }
 
 export type TicketFormValues = {
-  departureCity: string;
-  arrivalCity: string;
-  departureDate: string;
-  returnDate: string;
-  passengers: string;
+  from_station_id: number;
+  to_station_id: number;
+  departure_date: string;
+  return_date?: string;
+  passengers: number;
 };
 
 export interface Timestamps {

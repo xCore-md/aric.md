@@ -1,63 +1,53 @@
 import React from "react";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "@/i18n/navigation";
+import { useQueryStates, parseAsString, parseAsInteger } from "nuqs";
+import { format, parse } from "date-fns";
 import type { PaginationParams, TicketFormValues } from "@/types";
+import { toApiDate } from "@/utils/format-date";
 
 export const useTicketForm = () => {
-  const { replace } = useRouter();
-  const searchParams = useSearchParams();
-  const getParam = (key: string, def = "") => searchParams?.get(key) || def;
-
-  const [departureCity, setDepartureCity] = React.useState(
-    getParam("departureCity"),
-  );
-  const [arrivalCity, setArrivalCity] = React.useState(getParam("arrivalCity"));
-  const [departureDate, setDepartureDate] = React.useState(
-    getParam("departureDate"),
-  );
-  const [returnDate, setReturnDate] = React.useState(getParam("returnDate"));
-  const [passengers, setPassengers] = React.useState(
-    getParam("passengers", "1"),
+  const [, setSearchQueryState] = useQueryStates(
+    {
+      from_station_id: parseAsInteger,
+      to_station_id: parseAsInteger,
+      departure_date: parseAsString,
+      return_date: parseAsString,
+      passengers: parseAsInteger.withDefault(1),
+    },
+    {
+      history: "push",
+    },
   );
 
-  const canSearch = React.useMemo(
-    () =>
-      [departureCity, arrivalCity, departureDate, returnDate, passengers].every(
-        Boolean,
-      ),
-    [departureCity, arrivalCity, departureDate, returnDate, passengers],
-  );
+  const [fromStationId, setFromStationId] = React.useState("");
+  const [toStationId, setToStationId] = React.useState("");
+  const [departureDate, setDepartureDate] = React.useState("");
+  const [returnDate, setReturnDate] = React.useState("");
+  const [passengers, setPassengers] = React.useState("1");
 
-  const searchQuery: PaginationParams | undefined = React.useMemo(() => {
-    if (!canSearch) return undefined;
-    return {
-      from_station_id: Number(departureCity),
-      to_station_id: Number(departureCity),
-      departure_date: departureDate,
-      return_date: returnDate,
-      passengers: Number(passengers),
-    };
-  }, [
-    departureCity,
-    arrivalCity,
+  console.log({
+    fromStationId,
+    toStationId,
     departureDate,
     returnDate,
     passengers,
-    canSearch,
-  ]);
+  });
 
-  function updateTicketSearchParams(data: TicketFormValues) {
-    const searchParams = new URLSearchParams(data);
-    const queryString = searchParams.toString();
+  const canSearch = React.useMemo(() => {
+    return [fromStationId, toStationId, departureDate, passengers].every(
+      Boolean,
+    );
+  }, [fromStationId, toStationId, departureDate, passengers]);
 
-    replace(`/search?${queryString}`);
-  }
+  const updateTicketSearchParams = React.useCallback(
+    (v: TicketFormValues) => setSearchQueryState(v),
+    [setSearchQueryState],
+  );
 
   return {
-    departureCity,
-    setDepartureCity,
-    arrivalCity,
-    setArrivalCity,
+    fromStationId,
+    setFromStationId,
+    toStationId,
+    setToStationId,
     departureDate,
     setDepartureDate,
     returnDate,
@@ -66,6 +56,5 @@ export const useTicketForm = () => {
     setPassengers,
     canSearch,
     updateTicketSearchParams,
-    searchQuery,
   };
 };

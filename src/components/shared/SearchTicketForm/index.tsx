@@ -45,10 +45,10 @@ export const SearchTicketForm: React.FC<{
 }> = ({ onSubmit }) => {
   const t = useTranslations();
   const {
-    departureCity,
-    setDepartureCity,
-    arrivalCity,
-    setArrivalCity,
+    fromStationId,
+    setFromStationId,
+    toStationId,
+    setToStationId,
     departureDate,
     setDepartureDate,
     returnDate,
@@ -61,11 +61,11 @@ export const SearchTicketForm: React.FC<{
   const handleSubmit = () => {
     if (!canSearch) return;
     onSubmit({
-      departureCity,
-      arrivalCity,
-      departureDate,
-      returnDate,
-      passengers,
+      from_station_id: Number(fromStationId),
+      to_station_id: Number(toStationId),
+      departure_date: departureDate,
+      ...(returnDate && { return_date: returnDate }),
+      passengers: Number(passengers),
     });
   };
 
@@ -74,42 +74,49 @@ export const SearchTicketForm: React.FC<{
     queryFn: () => searchService.getStations(),
   });
 
-  const { data: stationsDestinations } = useQuery({
-    queryKey: [QUERY_KEYS.searchStationsDestinations, departureCity],
-    queryFn: () =>
-      searchService.getStationsDestinations({
-        from_station_id: Number(departureCity),
-      }),
-    enabled: !!departureCity,
-  });
+  const { data: stationsDestinations, refetch: refetchStationsDestinations } =
+    useQuery({
+      queryKey: [QUERY_KEYS.searchStationsDestinations, fromStationId],
+      queryFn: () =>
+        searchService.getStationsDestinations({
+          from_station_id: Number(fromStationId),
+        }),
+      enabled: !!fromStationId,
+    });
 
   const { data: tripDates } = useQuery({
-    queryKey: [QUERY_KEYS.searchTripDates, departureCity, arrivalCity],
+    queryKey: [QUERY_KEYS.searchTripDates, fromStationId, toStationId],
     queryFn: () =>
       searchService.getTripDates({
-        from_station_id: Number(departureCity),
-        to_station_id: Number(arrivalCity),
+        from_station_id: Number(fromStationId),
+        to_station_id: Number(toStationId),
       }),
-    enabled: !!arrivalCity && !!departureCity,
+    enabled: !!toStationId,
   });
 
   const { data: returnTripDates } = useQuery({
     queryKey: [
       QUERY_KEYS.searchReturnTripDates,
-      departureCity,
-      arrivalCity,
+      fromStationId,
+      toStationId,
       departureDate,
     ],
     queryFn: () =>
       searchService.getReturnTripDates({
-        from_station_id: Number(departureCity),
-        to_station_id: Number(arrivalCity),
-        departure_date: departureDate,
+        from_station_id: Number(fromStationId),
+        to_station_id: Number(toStationId),
+        departure_date: format(
+          parse(departureDate, "dd.MM.yyyy", new Date()),
+          "yyyy/MM/dd",
+        ),
       }),
-    enabled: !!arrivalCity && !!departureCity && !!departureDate,
+    enabled: !!departureDate,
   });
 
-  console.log("✅ tripDates:", tripDates);
+  React.useEffect(() => {
+    setToStationId("");
+    refetchStationsDestinations();
+  }, [fromStationId]);
 
   return (
     <Card className="ring-platinum ring ring-inset">
@@ -117,8 +124,8 @@ export const SearchTicketForm: React.FC<{
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <SelectCity
             placeholder={t("booking.departure_city")}
-            value={departureCity}
-            setValue={setDepartureCity}
+            value={fromStationId}
+            setValue={setFromStationId}
             data={
               stations?.map((s) => ({
                 value: String(s.id),
@@ -129,22 +136,22 @@ export const SearchTicketForm: React.FC<{
 
           <SelectCity
             placeholder={t("booking.arrival_city")}
-            value={arrivalCity}
-            setValue={setArrivalCity}
+            value={toStationId}
+            setValue={setToStationId}
             data={
               stationsDestinations?.map((s) => ({
                 value: String(s.id),
                 label: s.name_ru,
               })) || []
             }
-            disabled={!departureCity}
+            disabled={!fromStationId}
           />
 
           <SelectDate
             placeholder={t("booking.departure_date")}
             value={departureDate}
             setValue={setDepartureDate}
-            disabled={!arrivalCity}
+            disabled={!toStationId}
             allowedDates={tripDates?.dates}
           />
 
