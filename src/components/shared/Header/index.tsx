@@ -21,7 +21,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { CONTACTS, NAV_LINKS, PRIVATE_LINKS } from "@/utils/constants";
-import { AuthForm } from "@/components/shared/AuthForm";
 
 const language: {
   [key: string]: {
@@ -38,6 +37,12 @@ const language: {
     next: "ro",
   },
   ro: {
+    flag: ruFlag,
+    alt: "Русский",
+    label: "Ру",
+    next: "ru",
+  },
+  en: {
     flag: ruFlag,
     alt: "Русский",
     label: "Ру",
@@ -62,7 +67,6 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
         className={cn("mt-5 hidden sm:block", !isHomePage && "mt-0 bg-white")}
       >
         <div className="container">
-          <NextLink href={"/login"}>Login</NextLink>
           <div
             className={cn(
               "flex items-center gap-8 py-3 text-sm font-medium",
@@ -235,55 +239,62 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LogOut } from "lucide-react";
 import { CallButtonList } from "../CallButtonList";
+import { useSession } from "next-auth/react";
+import { LogoutAlert } from "../logout-alert";
 
 const AccountButton = () => {
   const t = useTranslations();
   const pathname = usePathname();
 
-  const isAuth = true;
+  const { data, status } = useSession();
 
   return (
     <>
-      {isAuth ? (
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="white" className="ring-0">
-              Victor Morari <ChevronDown />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent align="end" className="w-50 p-2">
-            {PRIVATE_LINKS?.map((link, index) => (
-              <Link
-                href={link.path}
-                key={index}
-                className={cn(
-                  "hover:text-blue flex w-full p-2 text-left transition",
-                  pathname === link.path && "text-blue",
-                )}
-              >
-                {t(link.label)}
-              </Link>
-            ))}
-          </PopoverContent>
-        </Popover>
+      {status === "loading" ? (
+        <div>Loading...</div>
       ) : (
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="white">Contul meu</Button>
-          </DialogTrigger>
-          <DialogContent className="max-h-[calc(100dvh)] w-[calc(100dvw)] overflow-y-auto">
-            <DialogHeader className="sr-only">
-              <DialogTitle />
-              <DialogDescription />
-            </DialogHeader>
+        <>
+          {status === "authenticated" ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="white" className="ring-0">
+                  {data?.user?.name || "Contul meu"} <ChevronDown />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-50 p-2">
+                {PRIVATE_LINKS?.map((link, index) => (
+                  <Link
+                    href={link.path}
+                    key={index}
+                    className={cn(
+                      "hover:text-blue flex w-full p-2 text-left transition",
+                      pathname === link.path && "text-blue",
+                    )}
+                  >
+                    {t(link.label)}
+                  </Link>
+                ))}
 
-            <div className="lg:p-20">
-              <AuthForm />
-            </div>
-          </DialogContent>
-        </Dialog>
+                <LogoutAlert>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive flex w-full justify-start p-2 font-normal transition"
+                  >
+                    <LogOut />
+                    Logout
+                  </Button>
+                </LogoutAlert>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <Button variant="white" asChild>
+              <Link href="/login">Contul meu</Link>
+            </Button>
+          )}
+        </>
       )}
     </>
   );

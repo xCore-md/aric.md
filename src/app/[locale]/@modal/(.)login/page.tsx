@@ -12,8 +12,10 @@ import { AuthForm } from "@/components/shared/AuthForm";
 
 export default function Page() {
   const { back } = useRouter();
+  const [open, setOpen] = React.useState(true);
+
   return (
-    <Dialog defaultOpen onOpenChange={() => back()}>
+    <Dialog open={open} onOpenChange={() => back()}>
       <DialogContent className="h-[90vh] max-h-[calc(100dvh)] w-[calc(100dvw)] overflow-y-auto">
         <DialogHeader className="sr-only">
           <DialogTitle />
@@ -21,7 +23,7 @@ export default function Page() {
         </DialogHeader>
 
         <div className="lg:p-20">
-          <AuthForm />
+          <AuthForm onDialogClose={() => setOpen(false)} />
         </div>
       </DialogContent>
     </Dialog>

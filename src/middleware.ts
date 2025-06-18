@@ -1,15 +1,61 @@
+import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
-import { NextRequest } from "next/server";
+import { auth } from "@/auth";
 import { routing } from "@/i18n/routing";
+import { SUPORTED_LANGUAGES } from "./utils/constants";
 
 const handleI18nRouting = createMiddleware(routing);
 
-export default async function middleware(request: NextRequest) {
-  const response = handleI18nRouting(request);
+const publicPages = [
+  "/",
+  "/about",
+  "/faq",
+  "/contacts",
+  "/legal",
+  "/login",
+  "/search",
+];
 
-  response.headers.set("x-current-path", request.nextUrl.pathname);
+const loginRegex = new RegExp(
+  `^/(?:(${SUPORTED_LANGUAGES.join("|")})/)?login/?$`,
+  "i",
+);
 
-  return response;
+const authMiddleware = auth((req) => {
+  const pathname = req.nextUrl.pathname;
+
+  if (req.auth && loginRegex.test(pathname)) {
+    const localeMatch = pathname.match(loginRegex);
+    const locale = localeMatch?.[1] ?? routing.defaultLocale ?? "en";
+    return NextResponse.redirect(new URL(`/${locale}/booking`, req.url));
+  }
+
+  if (req.auth) {
+    return handleI18nRouting(req);
+  }
+
+  if (!req.auth && pathname !== "/") {
+    return NextResponse.redirect(
+      new URL(`/login?callbackUrl=${encodeURIComponent(pathname)}`, req.url),
+    );
+  }
+});
+
+export default function middleware(req: NextRequest) {
+  const publicPathnameRegex = RegExp(
+    `^(/(${SUPORTED_LANGUAGES.join("|")}))?(${publicPages
+      .flatMap((p) => (p === "/" ? ["", "/"] : p))
+      .join("|")})/?$`,
+    "i",
+  );
+
+  const isPublicPage = publicPathnameRegex.test(req.nextUrl.pathname);
+
+  if (isPublicPage) {
+    return handleI18nRouting(req);
+  } else {
+    return (authMiddleware as any)(req);
+  }
 }
 
 export const config = {

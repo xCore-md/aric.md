@@ -1,42 +1,63 @@
-import type { DefaultSession } from "next-auth";
-import type { ILoginResponse } from "@/types/index";
+import NextAuth from "next-auth";
+import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
-  interface JWT {
-    accessToken?: string;
-    refreshToken?: string;
-    accessTokenExpires?: Date | null;
-    id?: string;
+  interface User {
+    id: string;
+    name: string;
+    email: string | null;
+    first_name?: string | null;
+    last_name?: string | null;
+    phone?: string | null;
+    language?: string | null;
+    token: string;
   }
 
   interface Session {
-    user: {} & DefaultSession["user"] & ILoginResponse;
-    error: string | null;
-    accessToken?: string;
-    refreshToken?: string;
-    accessTokenExpires?: Date | null;
+    user: {
+      id: string;
+      name: string;
+      email: string | null;
+      first_name?: string | null;
+      last_name?: string | null;
+      phone?: string | null;
+      language?: string | null;
+    };
+    accessToken: string;
   }
-
-  // interface User extends ILoginResponse {}
 }
 
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    name: string;
+    email: string | null;
+    accessToken: string;
+    first_name?: string | null;
+    last_name?: string | null;
+    phone?: string | null;
+    language?: string | null;
+  }
+}
 
-import 'usehooks-ts'
+import "usehooks-ts";
 
-  // React 19 issue: https://github.com/juliencrn/usehooks-ts/issues/663
-declare module 'usehooks-ts' {
+// React 19 issue: https://github.com/juliencrn/usehooks-ts/issues/663
+declare module "usehooks-ts" {
   declare function useOnClickOutside<T extends HTMLElement = HTMLElement>(
     ref: RefObject<T | null | undefined> | RefObject<T | null | undefined>[],
     handler: (event: MouseEvent | TouchEvent | FocusEvent) => void,
     eventType?: EventType,
-    eventListenerOptions?: AddEventListenerOptions
-  ): void
+    eventListenerOptions?: AddEventListenerOptions,
+  ): void;
 
-  declare function useHover<T extends HTMLElement = HTMLElement>(elementRef: RefObject<T | null | undefined>): boolean;
+  declare function useHover<T extends HTMLElement = HTMLElement>(
+    elementRef: RefObject<T | null | undefined>,
+  ): boolean;
 }
- 
-declare module 'next-intl' {
+
+declare module "next-intl" {
   interface AppConfig {
-    Messages: import('./common.types').Messages;
+    Messages: import("./common.types").Messages;
   }
 }

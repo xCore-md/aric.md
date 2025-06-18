@@ -44,7 +44,6 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
-  console.log(modal);
 
   return (
     <html lang={locale}>

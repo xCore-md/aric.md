@@ -29,7 +29,7 @@ class AuthService {
   }
 
   async logout() {
-    await signOut();
+    await signOut({ redirectTo: "/", redirect: true });
   }
 }
 

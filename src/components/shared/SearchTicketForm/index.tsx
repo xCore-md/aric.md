@@ -114,7 +114,7 @@ export const SearchTicketForm: React.FC<{
   });
 
   React.useEffect(() => {
-    setToStationId("");
+    setToStationId(0);
     refetchStationsDestinations();
   }, [fromStationId]);
 
@@ -124,8 +124,8 @@ export const SearchTicketForm: React.FC<{
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <SelectCity
             placeholder={t("booking.departure_city")}
-            value={fromStationId}
-            setValue={setFromStationId}
+            value={String(fromStationId)}
+            setValue={(value) => setFromStationId(+value)}
             data={
               stations?.map((s) => ({
                 value: String(s.id),
@@ -136,8 +136,8 @@ export const SearchTicketForm: React.FC<{
 
           <SelectCity
             placeholder={t("booking.arrival_city")}
-            value={toStationId}
-            setValue={setToStationId}
+            value={String(toStationId)}
+            setValue={(value) => setToStationId(+value)}
             data={
               stationsDestinations?.map((s) => ({
                 value: String(s.id),
@@ -164,7 +164,10 @@ export const SearchTicketForm: React.FC<{
           />
 
           <div className="col-span-full flex w-full flex-col gap-4 sm:flex-row lg:col-span-1">
-            <SelectPassengers value={passengers} setValue={setPassengers} />
+            <SelectPassengers
+              value={String(passengers)}
+              setValue={(value) => setPassengers(+value)}
+            />
 
             <Button
               className="h-16 flex-none lg:size-16"

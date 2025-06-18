@@ -12,6 +12,7 @@ import { ProgressProvider } from "@bprogress/next/app";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { HTTPError } from "ky";
+import { SessionProvider } from "next-auth/react";
 
 function handleApiError(error: unknown) {
   console.log(error);
@@ -53,13 +54,15 @@ export const Providers: React.FC<{ children: React.ReactNode }> = ({
   // const queryClient = getQueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <NuqsAdapter>
-        <ProgressProvider height="4px" color="#00C9FF" shallowRouting>
-          {children}
-          <Toaster richColors />
-        </ProgressProvider>
-      </NuqsAdapter>
-    </QueryClientProvider>
+    <SessionProvider>
+      <QueryClientProvider client={queryClient}>
+        <NuqsAdapter>
+          <ProgressProvider height="4px" color="#00C9FF" shallowRouting>
+            {children}
+            <Toaster richColors />
+          </ProgressProvider>
+        </NuqsAdapter>
+      </QueryClientProvider>
+    </SessionProvider>
   );
 };

@@ -28,19 +28,26 @@ import {
 } from "@/components/ui/form";
 import { useLocale } from "next-intl";
 import { signIn } from "next-auth/react";
+import { profileService } from "@/services/profile.service";
+import { useRouter } from "@/i18n/navigation";
+import { toast } from "sonner";
 
 const FormSchema = z.object({
   code: z.string().min(6).max(6).nullable(),
-  phone: z.string().min(8).max(6),
+  email: z.union([z.literal(""), z.string().email()]),
+  phone: z.string().min(8).max(8),
 });
 
 const MOLDOVA_PHONE_CODE = "+373";
 
-export const AuthForm: React.FC = () => {
+export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
+  onDialogClose,
+}) => {
+  const { push } = useRouter();
   const locale = useLocale();
   const [timer, setTimer] = React.useState(0);
   const [canResend, setCanResend] = React.useState(false);
-  const [step, setStep] = React.useState<"phone" | "code">("phone");
+  const [step, setStep] = React.useState<"phone" | "code" | "email">("phone");
 
   const mutationSendVerificationCode = useMutation({
     mutationFn: (data: SendCodePayload) =>
@@ -53,9 +60,28 @@ export const AuthForm: React.FC = () => {
 
   const mutationVerifyCode = useMutation({
     mutationFn: (data: VerifyCodePayload) => authService.verify(data),
+    onSuccess: async (res) => {
+      const response = await signIn("credentials", {
+        token: JSON.stringify(res?.data?.token),
+        user: JSON.stringify(res?.data?.user),
+        redirect: false,
+      });
+
+      if (response.ok && !res?.data?.user?.email) {
+        setStep("email");
+      } else {
+        push("/booking");
+        onDialogClose?.();
+      }
+    },
+  });
+
+  const mutationUpdateEmail = useMutation({
+    mutationFn: (email: string) => profileService.updateEmail(email),
     onSuccess: (res) => {
-      // setStep("email");
-      console.log(res.data.token);
+      push("/booking");
+      onDialogClose?.();
+      toast.success("Email updated!");
     },
   });
 
@@ -93,19 +119,27 @@ export const AuthForm: React.FC = () => {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       phone: "",
+      email: "",
       code: null,
     },
   });
 
-  const { control, handleSubmit, watch } = form;
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = form;
+
+  console.log({ errors });
 
   const phone = watch("phone");
   const code = watch("code");
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (phone && step === "phone") {
-      const phoneWithoutSpaces = phone.replace(/\s+/g, "");
+    const phoneWithoutSpaces = phone.replace(/\s+/g, "");
 
+    if (phone && step === "phone") {
       mutationSendVerificationCode.mutate({
         phone: MOLDOVA_PHONE_CODE + phoneWithoutSpaces,
         language: locale,
@@ -115,11 +149,20 @@ export const AuthForm: React.FC = () => {
     }
 
     if (code && step === "code") {
-      mutationVerifyCode.mutate({ phone, code, language: locale });
+      mutationVerifyCode.mutate({
+        phone: MOLDOVA_PHONE_CODE + phoneWithoutSpaces,
+        code,
+        language: locale,
+      });
       return;
     }
 
-    console.log(data);
+    if (data?.email && step === "email") {
+      mutationUpdateEmail.mutate(data?.email);
+      return;
+    }
+
+    console.log("onSubmit data", data);
   }
 
   return (
@@ -132,7 +175,9 @@ export const AuthForm: React.FC = () => {
           height={logo.height}
           alt="Aric.md"
         />
-        <h1 className="h2 mt-12">Conectează-te</h1>
+        <h1 className="h2 mt-12">
+          {step === "email" ? "Adaugă adresa de e-mail" : "Conectează-te"}
+        </h1>
 
         <Form {...form}>
           <form
@@ -141,7 +186,7 @@ export const AuthForm: React.FC = () => {
           >
             {step === "phone" && (
               <>
-                <p className="text-text-gray mb-12">
+                <p className="text-text-gray mb-10">
                   Pentru autentificare îți vom trimite o parolă de unică
                   folosință pe numărul tău de telefon mobil
                 </p>
@@ -185,61 +230,110 @@ export const AuthForm: React.FC = () => {
               </>
             )}
 
-            {/* Verification Code */}
             {step === "code" && (
               <>
-                <p className="text-text-gray mb-12">
+                <p className="text-text-gray mb-10">
                   Introduceți codul OTP trimis la{" "}
-                  <span className="font-semibold text-black">{phone}</span>
+                  <span className="font-semibold text-black">
+                    {MOLDOVA_PHONE_CODE + " " + phone}
+                  </span>
                 </p>
 
-                <FormField
-                  control={control}
-                  name="code"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <InputOTP
-                          maxLength={6}
-                          pattern={REGEXP_ONLY_DIGITS}
-                          {...field}
-                          value={field?.value || ""}
-                        >
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
-                          </InputOTPGroup>
-                        </InputOTP>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {mutationVerifyCode?.isPending ? (
+                  <div className="flex h-32">
+                    <div className="loader m-auto" />
+                  </div>
+                ) : (
+                  <>
+                    <FormField
+                      control={control}
+                      name="code"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <InputOTP
+                              maxLength={6}
+                              pattern={REGEXP_ONLY_DIGITS}
+                              {...field}
+                              value={field?.value || ""}
+                            >
+                              <InputOTPGroup>
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                                <InputOTPSlot index={2} />
+                                <InputOTPSlot index={3} />
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
+                              </InputOTPGroup>
+                            </InputOTP>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <Button type="submit" size="lg">
-                  Verifică
-                  <ChevronRightIcon />
-                </Button>
+                    <Button type="submit" size="lg">
+                      Verifică
+                      <ChevronRightIcon />
+                    </Button>
 
-                <div className="mt-auto space-y-4">
-                  <div className="text-2xl">📩 Nu ai primit codul OTP?</div>
-                  <Button
-                    variant="reverse"
-                    className="gap-4"
-                    onClick={handleResend}
-                  >
-                    {!canResend && (
-                      <span className="inline-block w-10">
-                        {formatTime(timer)}
-                      </span>
-                    )}
-                    <span>Retrimite codul</span>
-                  </Button>
-                </div>
+                    <div className="mt-auto space-y-4">
+                      <div className="text-2xl">📩 Nu ai primit codul OTP?</div>
+                      <Button
+                        variant="reverse"
+                        className="gap-4"
+                        onClick={handleResend}
+                      >
+                        {!canResend && (
+                          <span className="inline-block w-10">
+                            {formatTime(timer)}
+                          </span>
+                        )}
+                        <span>Retrimite codul</span>
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+
+            {step === "email" && (
+              <>
+                <p className="text-text-gray mb-10">
+                  Te rugăm să introduci adresa de email unde vom trimite
+                  biletele tale.
+                </p>
+
+                {mutationUpdateEmail.isPending ? (
+                  <div className="flex h-32">
+                    <div className="loader m-auto" />
+                  </div>
+                ) : (
+                  <>
+                    <FormField
+                      control={control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="E-mail"
+                              className="h-16"
+                              {...field}
+                              value={field?.value || ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button type="submit" size="lg" className="w-full">
+                      Adaugă
+                      <ChevronRightIcon />
+                    </Button>
+                  </>
+                )}
               </>
             )}
           </form>
