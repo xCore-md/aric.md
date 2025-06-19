@@ -19,6 +19,28 @@ import { EmailSubscriptionSection } from "@/components/sections/EmailSubscriptio
 import bgChairs from "@/assets/images/chairs.jpg";
 import heroBackground from "@/assets/images/hero.jpg";
 import { useTicketForm } from "@/hooks/useTicketForm";
+import { Messages } from "@/types";
+
+type FeatureKeys = keyof Messages["planning"];
+type TitleDescription = {
+  title: `planning.${FeatureKeys}.title`;
+  description: `planning.${FeatureKeys}.description`;
+};
+
+export const planningData = [
+  {
+    title: "planning.feature1.title",
+    description: "planning.feature1.description",
+  },
+  {
+    title: "planning.feature2.title",
+    description: "planning.feature2.description",
+  },
+  {
+    title: "planning.feature3.title",
+    description: "planning.feature3.description",
+  },
+] as const satisfies readonly TitleDescription[];
 
 export const HomeContainer: React.FC = () => {
   const t = useTranslations();
@@ -61,20 +83,7 @@ export const HomeContainer: React.FC = () => {
           <p className="subtitle">{t("planning.subtitle")}</p>
 
           <div className="relative mt-10 grid gap-4 md:grid-cols-3 xl:gap-8">
-            {[
-              {
-                title: "planning.feature1.title",
-                description: "planning.feature1.description",
-              },
-              {
-                title: "planning.feature2.title",
-                description: "planning.feature2.description",
-              },
-              {
-                title: "planning.feature3.title",
-                description: "planning.feature3.description",
-              },
-            ].map(({ title, description }, index) => (
+            {planningData.map(({ title, description }, index) => (
               <div
                 key={index}
                 className="flex items-center gap-4 rounded-xl sm:bg-white sm:p-4 sm:shadow-[0_4px_16px_rgba(17,34,17,0.05)]"

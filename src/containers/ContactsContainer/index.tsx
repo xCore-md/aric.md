@@ -38,12 +38,6 @@ export const ContactsContainer: React.FC = () => {
     },
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = form;
-
   function onSubmit(data: z.infer<typeof schema>) {
     console.log(data);
   }

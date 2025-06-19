@@ -8,6 +8,12 @@ class ProfileService {
     return this.clientApi.get("customer/profile").json<ApiResponse<User>>();
   }
 
+  update(data: Partial<User>) {
+    return this.clientApi
+      .patch("customer/profile", { json: data })
+      .json<ApiResponse<User>>();
+  }
+
   updateEmail(email: string) {
     return this.clientApi
       .patch("customer/profile/email", { json: { email } })

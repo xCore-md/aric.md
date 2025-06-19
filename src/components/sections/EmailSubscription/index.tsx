@@ -33,11 +33,7 @@ export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
     },
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = form;
+  const { control, handleSubmit } = form;
 
   function onSubmit(data: z.infer<typeof schema>) {
     console.log(data);
@@ -54,12 +50,12 @@ export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
 
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(onSubmit)}
+                onSubmit={handleSubmit(onSubmit)}
                 className="w-full max-w-xl"
               >
                 <div className="relative flex w-full items-center gap-3 md:gap-5">
                   <FormField
-                    control={form.control}
+                    control={control}
                     name="email"
                     render={({ field }) => (
                       <FormItem className="w-full">

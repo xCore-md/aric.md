@@ -31,6 +31,10 @@ import { signIn } from "next-auth/react";
 import { profileService } from "@/services/profile.service";
 import { useRouter } from "@/i18n/navigation";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
+import { MOLDOVA_PHONE_CODE } from "@/utils/constants";
+import { formatTime } from "@/utils";
+import { cn } from "@/lib/utils";
 
 const FormSchema = z.object({
   code: z.string().min(6).max(6).nullable(),
@@ -38,83 +42,22 @@ const FormSchema = z.object({
   phone: z.string().min(8).max(8),
 });
 
-const MOLDOVA_PHONE_CODE = "+373";
+const SECONDS = 60;
 
 export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
   onDialogClose,
 }) => {
   const { push } = useRouter();
   const locale = useLocale();
-  const [timer, setTimer] = React.useState(0);
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
+
+  console.log(callbackUrl);
+
+  const [timer, setTimer] = React.useState(SECONDS);
   const [canResend, setCanResend] = React.useState(false);
   const [step, setStep] = React.useState<"phone" | "code" | "email">("phone");
 
-  const mutationSendVerificationCode = useMutation({
-    mutationFn: (data: SendCodePayload) =>
-      authService.sendVerificationCode(data),
-    onSuccess: (res) => {
-      setTimer(res.data.expires_in);
-      setStep("code");
-    },
-  });
-
-  const mutationVerifyCode = useMutation({
-    mutationFn: (data: VerifyCodePayload) => authService.verify(data),
-    onSuccess: async (res) => {
-      const response = await signIn("credentials", {
-        token: JSON.stringify(res?.data?.token),
-        user: JSON.stringify(res?.data?.user),
-        redirect: false,
-      });
-
-      if (response.ok && !res?.data?.user?.email) {
-        setStep("email");
-      } else {
-        push("/booking");
-        onDialogClose?.();
-      }
-    },
-  });
-
-  const mutationUpdateEmail = useMutation({
-    mutationFn: (email: string) => profileService.updateEmail(email),
-    onSuccess: (res) => {
-      push("/booking");
-      onDialogClose?.();
-      toast.success("Email updated!");
-    },
-  });
-
-  React.useEffect(() => {
-    if (timer <= 0) {
-      setCanResend(true);
-      return;
-    }
-
-    const interval = setInterval(() => {
-      setTimer((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [timer]);
-
-  const handleResend = () => {
-    if (!canResend) return;
-    setTimer(180);
-    setCanResend(false);
-
-    console.log("Cod OTP retrimis");
-  };
-
-  const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60)
-      .toString()
-      .padStart(2, "0");
-    const s = (seconds % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
-  };
-
-  // ********************************************
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -136,9 +79,56 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
   const phone = watch("phone");
   const code = watch("code");
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
-    const phoneWithoutSpaces = phone.replace(/\s+/g, "");
+  const phoneWithoutSpaces = React.useMemo(
+    () => phone.replace(/\s+/g, ""),
+    [phone],
+  );
 
+  const mutationSendVerificationCode = useMutation({
+    mutationFn: (data: SendCodePayload) =>
+      authService.sendVerificationCode(data),
+    onSuccess: () => setStep("code"),
+  });
+
+  const mutationVerifyCode = useMutation({
+    mutationFn: (data: VerifyCodePayload) => authService.verify(data),
+    onSuccess: async (res) => {
+      const response = await signIn("credentials", {
+        token: JSON.stringify(res?.data?.token),
+        user: JSON.stringify(res?.data?.user),
+        redirect: false,
+      });
+
+      if (response.ok && !res?.data?.user?.email) {
+        setStep("email");
+      } else {
+        push(callbackUrl || "/booking");
+        onDialogClose?.();
+      }
+    },
+  });
+
+  const mutationUpdateEmail = useMutation({
+    mutationFn: (email: string) => profileService.updateEmail(email),
+    onSuccess: () => {
+      push(callbackUrl || "/booking");
+      onDialogClose?.();
+      toast.success("Email updated!");
+    },
+  });
+
+  const handleResend = () => {
+    if (!canResend) return;
+    setTimer(SECONDS);
+    setCanResend(false);
+
+    mutationSendVerificationCode.mutate({
+      phone: MOLDOVA_PHONE_CODE + phoneWithoutSpaces,
+      language: locale,
+    });
+  };
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     if (phone && step === "phone") {
       mutationSendVerificationCode.mutate({
         phone: MOLDOVA_PHONE_CODE + phoneWithoutSpaces,
@@ -164,6 +154,19 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
 
     console.log("onSubmit data", data);
   }
+
+  React.useEffect(() => {
+    if (timer <= 0) {
+      setCanResend(true);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timer]);
 
   return (
     <div className="grid h-full w-full md:grid-cols-2">
@@ -276,12 +279,14 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
                       Verifică
                       <ChevronRightIcon />
                     </Button>
-
                     <div className="mt-auto space-y-4">
                       <div className="text-2xl">📩 Nu ai primit codul OTP?</div>
                       <Button
                         variant="reverse"
-                        className="gap-4"
+                        className={cn(
+                          "gap-4",
+                          !canResend && "pointer-events-none",
+                        )}
                         onClick={handleResend}
                       >
                         {!canResend && (

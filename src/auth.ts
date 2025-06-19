@@ -1,5 +1,5 @@
 import Credentials from "@auth/core/providers/credentials";
-import { skipCSRFCheck } from "@auth/core";
+// import { skipCSRFCheck } from "@auth/core";
 import NextAuth, { type User } from "next-auth";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -53,7 +53,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     async session({ session, token }) {
-      // @ts-ignore
+      // @ts-expect-error: extended user fields are defined in global.d.ts
       session.user = {
         id: token.id,
         name: token.name,

@@ -44,11 +44,7 @@ export const FAQSection: React.FC = () => {
     },
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = form;
+  const { control, handleSubmit } = form;
 
   function onSubmit(data: z.infer<typeof schema>) {
     console.log(data);
@@ -119,12 +115,9 @@ export const FAQSection: React.FC = () => {
             </CardHeader>
             <CardContent>
               <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-6"
-                >
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <FormField
-                    control={form.control}
+                    control={control}
                     name="name"
                     render={({ field }) => (
                       <FormItem>

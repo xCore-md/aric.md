@@ -320,3 +320,39 @@ body {
 @keyframes l13{ 
   100%{transform: rotate(1turn)}
 }
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  opacity: 0.6;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 400%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    #eee,
+    #eee 25%,
+    #eee calc(25% + 1px),
+    #f1f1f1,
+    #fbfbfb,
+    #f1f1f1 40%,
+    #eee calc(40% + 1px)
+  );
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+
+@keyframes shimmer {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(75%, 0, 0);
+  }
+}

@@ -1,5 +1,6 @@
-import NextAuth from "next-auth";
-import { JWT } from "next-auth/jwt";
+import "next-auth";
+import "next-auth/jwt";
+import "usehooks-ts";
 
 declare module "next-auth" {
   interface User {
@@ -40,7 +41,11 @@ declare module "next-auth/jwt" {
   }
 }
 
-import "usehooks-ts";
+declare module "next-intl" {
+  interface AppConfig {
+    Messages: import("./common.types").Messages;
+  }
+}
 
 // React 19 issue: https://github.com/juliencrn/usehooks-ts/issues/663
 declare module "usehooks-ts" {
@@ -54,10 +59,4 @@ declare module "usehooks-ts" {
   declare function useHover<T extends HTMLElement = HTMLElement>(
     elementRef: RefObject<T | null | undefined>,
   ): boolean;
-}
-
-declare module "next-intl" {
-  interface AppConfig {
-    Messages: import("./common.types").Messages;
-  }
 }

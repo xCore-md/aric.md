@@ -26,7 +26,7 @@ const authMiddleware = auth((req) => {
 
   if (req.auth && loginRegex.test(pathname)) {
     const localeMatch = pathname.match(loginRegex);
-    const locale = localeMatch?.[1] ?? routing.defaultLocale ?? "en";
+    const locale = localeMatch?.[1] ?? routing.defaultLocale ?? "";
     return NextResponse.redirect(new URL(`/${locale}/booking`, req.url));
   }
 

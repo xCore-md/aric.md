@@ -7,14 +7,13 @@ import {
 } from "@/components/ui/collapsible";
 import { TripSegment } from "@/types";
 import { Check, ChevronRightIcon } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale } from "next-intl";
 import { getLocalizedField } from "@/utils/getLocalizedField";
 import { cn } from "@/lib/utils";
 
 export const TicketDetailsCollapsible: React.FC<{ data: TripSegment }> = ({
   data,
 }) => {
-  const t = useTranslations();
   const locale = useLocale();
   return (
     <Collapsible>

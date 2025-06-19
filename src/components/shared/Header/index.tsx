@@ -20,7 +20,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CONTACTS, NAV_LINKS, PRIVATE_LINKS } from "@/utils/constants";
+import {
+  CONTACTS,
+  NAV_LINKS,
+  PRIVATE_LINKS,
+  QUERY_KEYS,
+} from "@/utils/constants";
 
 const language: {
   [key: string]: {
@@ -243,16 +248,24 @@ import { ChevronDown, LogOut } from "lucide-react";
 import { CallButtonList } from "../CallButtonList";
 import { useSession } from "next-auth/react";
 import { LogoutAlert } from "../logout-alert";
+import { useQuery } from "@tanstack/react-query";
+import { profileService } from "@/services/profile.service";
 
 const AccountButton = () => {
   const t = useTranslations();
   const pathname = usePathname();
 
-  const { data, status } = useSession();
+  const { status } = useSession();
+
+  const { data, isLoading } = useQuery({
+    queryKey: [QUERY_KEYS.profile],
+    queryFn: () => profileService.get(),
+    enabled: status === "authenticated",
+  });
 
   return (
     <>
-      {status === "loading" ? (
+      {status === "loading" || isLoading ? (
         <div>Loading...</div>
       ) : (
         <>
@@ -260,7 +273,7 @@ const AccountButton = () => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="white" className="ring-0">
-                  {data?.user?.name || "Contul meu"} <ChevronDown />
+                  {data?.data?.email || "Contul meu"} <ChevronDown />
                 </Button>
               </PopoverTrigger>
               <PopoverContent align="end" className="w-50 p-2">

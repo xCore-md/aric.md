@@ -5,7 +5,6 @@ import { API_URL } from "@/utils/constants";
 import type {
   ApiResponse,
   ExpiresInResponseData,
-  ILogin,
   SendCodePayload,
   TokenResponseData,
   VerifyCodePayload,

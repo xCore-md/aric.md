@@ -1,5 +1,3 @@
-import { HomeContainer } from "@/containers/HomeContainer";
-
 export default function Page() {
   return (
     <div className="html container py-12">
