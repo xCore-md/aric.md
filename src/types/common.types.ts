@@ -1,6 +1,7 @@
 import { SUPORTED_LANGUAGES } from "@/utils/constants";
 import ro from "../../messages/ro.json";
 import { TripItem } from "./trip.types";
+import { Station } from "./station.types";
 
 export type Messages = typeof ro;
 
@@ -42,7 +43,7 @@ export interface PaginationParams {
   search?: string;
 }
 
-export interface PaginatedResponse<T> {
+export interface PaginatedResponse<T = null> {
   current_page: number;
   per_page: number;
   total: number;
@@ -82,9 +83,14 @@ export interface DepartureArrivalTime {
   arrival_time: string;
 }
 
-export interface SearchResponse extends PaginatedResponse<TripItem> {
+export interface SearchResponse {
   data: TripItem[];
   // filters: FiltersBlock;
+  meta: Omit<PaginatedResponse, "data">;
+  metadata: {
+    from_station: Station;
+    to_station: Station;
+  };
 }
 
 export interface User {
@@ -122,4 +128,11 @@ export interface VerifyCodePayload {
   phone: string;
   code: string;
   language: string;
+}
+
+export interface RefundCondition {
+  id: number;
+  hours_before: number;
+  percent: string;
+  description: string;
 }

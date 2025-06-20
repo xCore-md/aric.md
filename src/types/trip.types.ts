@@ -33,14 +33,25 @@ export interface TripUpdateDto extends DepartureArrivalTime {
   bus_id: number;
 }
 
+export type Currency = "mdl" | "uah";
+
+export type Prices = {
+  [K in Currency as `price_${K}`]?: number;
+};
+
 export interface TripSegment extends DepartureArrivalTime {
   id: number;
   bus: BusWithFacilities;
   route: Route & { stations: Station[] };
+  seats_available: number;
+  seats_taken: number;
+  seats_total: number;
 }
 
 export interface TripItem {
   type: "round-trip" | "one-way";
+  prices: Prices;
   route_departure: TripSegment;
   routes_return: TripSegment[];
+  duration_minutes: number;
 }

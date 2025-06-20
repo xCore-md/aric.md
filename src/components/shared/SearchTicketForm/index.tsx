@@ -42,7 +42,8 @@ interface SelectCityProps extends IProps {
 
 export const SearchTicketForm: React.FC<{
   onSubmit: (data: TicketFormValues) => void;
-}> = ({ onSubmit }) => {
+  isLoading?: boolean;
+}> = ({ onSubmit, isLoading }) => {
   const t = useTranslations();
   const {
     fromStationId,
@@ -172,7 +173,7 @@ export const SearchTicketForm: React.FC<{
             <Button
               className="h-16 flex-none lg:size-16"
               type="button"
-              disabled={!canSearch}
+              disabled={!canSearch || isLoading}
               onClick={handleSubmit}
             >
               <span className="lg:sr-only">Căutare</span>

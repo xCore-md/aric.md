@@ -1,15 +1,38 @@
 "use client";
 import React from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { getLocalizedField } from "@/utils/getLocalizedField";
+import type { SearchResponse, TripSegment } from "@/types";
 
-export const TripRouteDetails: React.FC = () => {
+export const TripRouteDetails: React.FC<{
+  data: SearchResponse;
+  route: TripSegment;
+  duration: number;
+}> = ({ data, route: routeData, duration: durationMinutes }) => {
+  const t = useTranslations();
+  const locale = useLocale();
+
+  const durationLabel = React.useMemo(() => {
+    const hours = Math.floor(durationMinutes / 60);
+    const minutes = durationMinutes % 60;
+
+    if (hours && minutes) {
+      return t("duration.hoursMinutes", { hours, minutes });
+    }
+    if (hours) {
+      return t("duration.hours", { hours });
+    }
+    return t("duration.minutes", { minutes });
+  }, [durationMinutes, t]);
+
   return (
     <div className="flex gap-4">
       <div className="w-full grid-cols-5 items-center gap-4 space-y-3 md:grid md:space-y-0">
         <div className="col-span-2 flex flex-row-reverse items-center justify-between md:block">
           <div className="flex flex-col items-end md:mb-6 md:flex-row md:items-center md:gap-5">
-            <div className="font-semibold md:text-lg">01:00</div>
+            <div className="bg-red-500 font-semibold md:text-lg">01:00</div>
             <div className="text-text-gray text-xs md:text-base">
-              02 Mai 2025
+              {routeData?.departure_time}
             </div>
           </div>
 
@@ -17,12 +40,17 @@ export const TripRouteDetails: React.FC = () => {
             <div className="flex md:items-center">
               <div className="w-5 font-semibold md:text-xl">⚲</div>
               <div className="sr-only text-2xl font-medium md:not-sr-only">
-                Chișinău
+                {getLocalizedField(data?.metadata.from_station, "name", locale)}
               </div>
             </div>
             <div className="md:ml-5">
-              Stația &#34;NORD&#34;,
-              <br /> str. Calea Mosilor 2/1
+              Stația,
+              <br />{" "}
+              {getLocalizedField(
+                data?.metadata.from_station,
+                "address",
+                locale,
+              )}
             </div>
           </div>
         </div>
@@ -30,16 +58,16 @@ export const TripRouteDetails: React.FC = () => {
         <div className="flex items-center justify-center">
           <div className="bg-platinum after:border-blue relative h-px w-full min-w-12 after:absolute after:top-1/2 after:left-0 after:hidden after:size-2 after:flex-none after:-translate-y-1/2 after:rounded-full after:border after:bg-white md:after:block" />
           <div className="bg-platinum flex-none rounded-md px-2 py-1 text-sm font-medium">
-            Durata 12 ore
+            {durationLabel}
           </div>
           <div className="bg-platinum after:bg-blue after:border-blue relative hidden h-px w-full min-w-12 after:absolute after:top-1/2 after:right-0 after:block after:size-2 after:flex-none after:-translate-y-1/2 after:rounded-full after:border md:block" />
         </div>
 
         <div className="col-span-2 flex flex-row-reverse items-center justify-between md:block md:justify-end">
           <div className="flex flex-col items-end md:mb-6 md:flex-row md:items-center md:justify-end md:gap-5">
-            <div className="font-semibold md:text-lg">01:00</div>
+            <div className="bg-red-500 font-semibold md:text-lg">01:00</div>
             <div className="text-text-gray text-xs md:text-base">
-              02 Mai 2025
+              {routeData?.arrival_time}
             </div>
           </div>
 
@@ -47,12 +75,13 @@ export const TripRouteDetails: React.FC = () => {
             <div className="flex flex-row-reverse md:items-center">
               <div className="w-5 font-semibold md:text-xl">⚲</div>
               <div className="sr-only text-2xl font-medium md:not-sr-only">
-                Chișinău
+                {getLocalizedField(data?.metadata.to_station, "name", locale)}
               </div>
             </div>
             <div className="md:mr-5">
               Stația,
-              <br /> str. Pushkina 70
+              <br />{" "}
+              {getLocalizedField(data?.metadata.to_station, "address", locale)}
             </div>
           </div>
         </div>

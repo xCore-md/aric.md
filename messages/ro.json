@@ -86,5 +86,10 @@
   "email_subscription": {
     "title": "Primește notificări despre reduceri!",
     "description": "Planifică-ți călătoriile mai ușor, mai rapid și mai convenabil."
+  },
+  "duration": {
+    "hoursMinutes": "Durata {hours} ore {minutes} min",
+    "hours": "Durata {hours} ore",
+    "minutes": "Durata {minutes} min"
   }
 }

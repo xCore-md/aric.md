@@ -5,18 +5,51 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { TripSegment } from "@/types";
-import { Check, ChevronRightIcon } from "lucide-react";
+import { TripItem, TripSegment } from "@/types";
+import { Check, ChevronRightIcon, MapPin, MapPinned } from "lucide-react";
 import { useLocale } from "next-intl";
 import { getLocalizedField } from "@/utils/getLocalizedField";
 import { cn } from "@/lib/utils";
+import { QUERY_KEYS } from "@/utils/constants";
+import { refundPolicyService } from "@/services/refund-policy.service";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-export const TicketDetailsCollapsible: React.FC<{ data: TripSegment }> = ({
-  data,
-}) => {
+export const TicketDetailsCollapsible: React.FC<{
+  data: TripItem;
+  route: TripSegment;
+}> = ({ data, route: routeData }) => {
   const locale = useLocale();
+  const [open, setOpen] = React.useState(false);
+
+  const {
+    data: refoundPolicy,
+    isLoading,
+    refetch,
+    isFetched,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.refundPolicy, data?.prices?.price_mdl],
+    queryFn: () =>
+      refundPolicyService.getAll({
+        price: String(data?.prices?.price_mdl),
+        language: locale,
+      }),
+    enabled: false,
+  });
+
+  React.useEffect(() => {
+    if (open && data?.prices?.price_mdl && !isFetched) {
+      refetch();
+    }
+  }, [open, data?.prices?.price_mdl, isFetched, refetch]);
+
   return (
-    <Collapsible>
+    <Collapsible open={open} onOpenChange={setOpen}>
       <CollapsibleTrigger className="hover:text-blue data-[state=open]:text-blue bg-back mt-6 flex w-full cursor-pointer items-center justify-between gap-1 rounded-full px-6 py-4 font-semibold transition data-[state=open]:rounded-t-2xl data-[state=open]:rounded-b-none [&[data-state=open]>svg]:rotate-90">
         <span>Informații despre bilet</span>
         <ChevronRightIcon className="size-5" />
@@ -26,14 +59,25 @@ export const TicketDetailsCollapsible: React.FC<{ data: TripSegment }> = ({
           <div className="space-y-4">
             <div>1. Traseu</div>
             <div className="border-platinum ml-8 space-y-4 border-l pl-8">
-              {data?.route?.stations?.map((station, index) => (
-                <div key={station?.id} className="flex items-center gap-2">
-                  <div className="-ml-9 flex w-32 items-center gap-8">
+              {routeData?.route?.stations?.map((station, index) => (
+                <div
+                  key={station?.id}
+                  className="relative flex items-center gap-2"
+                >
+                  <div className="mr-8 -ml-9 flex w-44 items-center gap-8">
                     <div className="bg-blue size-2 flex-none rounded-full" />
+                    {index === 0 && (
+                      <div className="bg-back absolute top-0 h-[calc(50%_-_theme(spacing.1))] w-2" />
+                    )}
+
+                    {index === routeData?.route?.stations?.length - 1 && (
+                      <div className="bg-back absolute bottom-0 h-[calc(50%_-_theme(spacing.1))] w-2" />
+                    )}
+
                     <div
                       className={cn(
                         (index === 0 ||
-                          index === data?.route?.stations?.length - 1) &&
+                          index === routeData?.route?.stations?.length - 1) &&
                           "font-semibold",
                       )}
                     >
@@ -41,54 +85,40 @@ export const TicketDetailsCollapsible: React.FC<{ data: TripSegment }> = ({
                     </div>
                   </div>
 
-                  <div className="text-text-gray">
-                    {getLocalizedField(station, "address", locale)}
+                  <div className="flex items-center gap-2">
+                    <div className="text-text-gray">
+                      {getLocalizedField(station, "address", locale)}
+                    </div>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="sm-icon"
+                          variant="link"
+                          className="te max-h-max max-w-max"
+                          asChild
+                        >
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer nofollow"
+                            href={`https://www.google.com/maps?q=${station?.latitude},${station?.longitude}`}
+                          >
+                            <MapPin />
+                          </a>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Vezi pe Google Maps</TooltipContent>
+                    </Tooltip>
                   </div>
                 </div>
               ))}
-
-              {/* ******************* */}
-              <div className="relative flex items-center gap-2">
-                <div className="-ml-9 flex w-32 items-center gap-8">
-                  <div className="bg-back absolute top-0 h-[calc(50%_-_theme(spacing.1))] w-2" />
-                  <div className="border-blue size-2 rounded-full border bg-white" />
-                  <div className="font-semibold">Chișinău</div>
-                </div>
-
-                <div className="text-text-gray">
-                  Stația &#34;NORD&#34;, str. Calea Mosilor 2/1
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <div className="-ml-9 flex w-32 items-center gap-8">
-                  <div className="bg-blue size-2 rounded-full" />
-                  <div>Chișinău</div>
-                </div>
-
-                <div className="text-text-gray">
-                  Stația &#34;NORD&#34;, str. Calea Mosilor 2/1
-                </div>
-              </div>
-
-              <div className="relative flex items-center gap-2">
-                <div className="-ml-9 flex w-32 items-center gap-8">
-                  <div className="bg-back absolute bottom-0 h-[calc(50%_-_theme(spacing.1))] w-2" />
-                  <div className="bg-blue size-2 rounded-full" />
-                  <div className="font-semibold">Chișinău</div>
-                </div>
-
-                <div className="text-text-gray">
-                  Stația &#34;NORD&#34;, str. Calea Mosilor 2/1
-                </div>
-              </div>
             </div>
           </div>
 
           <div className="space-y-4">
             <div>2. Servicii disponibile:</div>
             <ul className="flex flex-wrap gap-2 gap-x-6">
-              {data?.bus?.facilities?.map((item, index) => (
+              {routeData?.bus?.facilities?.map((item, index) => (
                 <li key={index} className="flex items-center gap-2">
                   <div className="bg-yellow flex size-5 items-center justify-center rounded-full">
                     <Check className="size-4 stroke-white" />
@@ -103,13 +133,21 @@ export const TicketDetailsCollapsible: React.FC<{ data: TripSegment }> = ({
 
           <div className="space-y-4">
             <div>3. Condiții de returnare:</div>
-            <p className="text-text-gray">
-              Pînă la 24 ora, pînă la plecare: 150 MDL
-              <br />
-              Din 24 ora. pînă la 12 ora. pînă la plecare: 90 MDL
-              <br />
-              Mai puțin 12 ora. pînă la plecare: biletul nu se întoarce
-            </p>
+            <div className="">
+              {isLoading ? (
+                <div className="space-y-2">
+                  <div className="skeleton h-5 w-full rounded-full" />
+                  <div className="skeleton h-5 w-3/4 rounded-full" />
+                  <div className="skeleton h-5 w-2/3 rounded-full" />
+                </div>
+              ) : (
+                refoundPolicy?.map((item, index) => (
+                  <p key={index} className="text-text-gray">
+                    {item?.description}
+                  </p>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </CollapsibleContent>
