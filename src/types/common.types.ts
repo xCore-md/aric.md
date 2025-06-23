@@ -43,7 +43,7 @@ export interface PaginationParams {
   search?: string;
 }
 
-export interface PaginatedResponse<T = null> {
+export interface PaginatedResponse<T> {
   current_page: number;
   per_page: number;
   total: number;

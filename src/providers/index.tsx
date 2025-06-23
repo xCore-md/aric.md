@@ -21,6 +21,8 @@ function handleApiError(error: unknown) {
     error.response
       .json()
       .then((responseJson) => {
+        const status = error.response.status;
+
         const serverMessage =
           responseJson?.message ||
           Object.values(responseJson?.errors || {})?.flat()?.[0] ||

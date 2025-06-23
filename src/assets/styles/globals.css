@@ -347,6 +347,26 @@ body {
   animation: shimmer 2s ease-in-out infinite;
 }
 
+.skeleton.dark::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 400%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    #3f3f3f,
+    #3f3f3f 25%,
+    #3f3f3f calc(25% + 1px),
+    #444444,
+    #505050,
+    #444444 40%,
+    #3f3f3f calc(40% + 1px)
+  );
+  animation: shimmer 2s ease-in-out infinite;
+}
+
 
 @keyframes shimmer {
   from {

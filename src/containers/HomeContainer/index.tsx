@@ -133,8 +133,8 @@ export const HomeContainer: React.FC = () => {
                   {t("reservation.subtitle")}: <br /> Chișinău – Ismail!
                 </p>
 
-                <Button className="mt-8 mb-12" variant="white">
-                  {t("reservation.button")}
+                <Button className="mt-8 mb-12" variant="white" asChild>
+                  <Link href="/search">{t("reservation.button")}</Link>
                 </Button>
               </div>
 
@@ -240,7 +240,7 @@ export const HomeContainer: React.FC = () => {
 
                             <div className="my-4 w-full border-b border-dashed md:my-6" />
 
-                            <TripRouteDetails />
+                            {/* <TripRouteDetails data={undefined} route={undefined} duration={0} /> */}
                           </li>
                         ))}
                       </ul>

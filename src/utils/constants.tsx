@@ -41,6 +41,7 @@ export const QUERY_KEYS = {
   searchReturnTripDates: "searchReturnTripDates",
   profile: "profile",
   refundPolicy: "refundPolicy",
+  passengers: "passengers",
 } as const;
 
 export const SUPORTED_LANGUAGES = ["ru", "ro", "en"] as const;

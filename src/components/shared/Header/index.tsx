@@ -11,6 +11,16 @@ import logo from "@/assets/images/logo-white.svg";
 import roFlag from "@/assets/images/languages/ro.svg";
 import ruFlag from "@/assets/images/languages/ru.svg";
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ChevronDown, LogOut } from "lucide-react";
+import { CallButtonList } from "../CallButtonList";
+import { useSession } from "next-auth/react";
+import { LogoutAlert } from "../logout-alert";
+import { useProfile } from "@/hooks/profile";
 
 import {
   Dialog,
@@ -20,12 +30,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  CONTACTS,
-  NAV_LINKS,
-  PRIVATE_LINKS,
-  QUERY_KEYS,
-} from "@/utils/constants";
+import { CONTACTS, NAV_LINKS, PRIVATE_LINKS } from "@/utils/constants";
+import { getFullName } from "@/utils/getFullName";
 
 const language: {
   [key: string]: {
@@ -239,41 +245,32 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
   );
 };
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { ChevronDown, LogOut } from "lucide-react";
-import { CallButtonList } from "../CallButtonList";
-import { useSession } from "next-auth/react";
-import { LogoutAlert } from "../logout-alert";
-import { useQuery } from "@tanstack/react-query";
-import { profileService } from "@/services/profile.service";
-
 const AccountButton = () => {
   const t = useTranslations();
   const pathname = usePathname();
-
   const { status } = useSession();
-
-  const { data, isLoading } = useQuery({
-    queryKey: [QUERY_KEYS.profile],
-    queryFn: () => profileService.get(),
-    enabled: status === "authenticated",
-  });
+  const { profileData, isLoadingProfileData } = useProfile();
 
   return (
     <>
-      {status === "loading" || isLoading ? (
-        <div>Loading...</div>
+      {status === "loading" || isLoadingProfileData ? (
+        <div className="skeleton dark h-12 w-44 flex-none rounded-full" />
       ) : (
         <>
           {status === "authenticated" ? (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="white" className="ring-0">
-                  {data?.data?.email || "Contul meu"} <ChevronDown />
+                <Button variant="white" className="max-w-44 ring-0">
+                  <span className="truncate">
+                    {getFullName(
+                      profileData?.data?.first_name,
+                      profileData?.data?.last_name,
+                    ) ||
+                      profileData?.data?.email ||
+                      "Contul meu"}
+                    {/* Мой аккаунт */}
+                  </span>{" "}
+                  <ChevronDown />
                 </Button>
               </PopoverTrigger>
               <PopoverContent align="end" className="w-50 p-2">

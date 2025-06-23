@@ -90,32 +90,32 @@ export const SearchContainer: React.FC = () => {
                 </div>
               )}
 
-              {/* <Card className="mt-8 border">
-            <CardContent>
-              <div className="flex flex-col items-center gap-10">
-                <div className="flex flex-col items-center gap-4 text-center md:flex-row">
-                  <svg
-                    className="size-10 flex-none fill-black"
-                    viewBox="0 0 41 34"
-                  >
-                    <path
-                      d="M32.7 17.6a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-2.4 4.2a1.1 1.1 0 0 0-.9 2l2 2-2 2a1.1 1.1 0 0 0 .8 1.9 1.1 1.1 0 0 0 .9-.4l1.8-1.9 1.8 2a1.1 1.1 0 0 0 1.4.1 1.1 1.1 0 0 0 .2-1.7l-1.9-2 2-2a1.1 1.1 0 0 0-1.7-1.6L32.9 24l-1.8-2a1.1 1.1 0 0 0-.8-.3Z"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                    />
-                    <path d="M9.5 22.5a1.1 1.1 0 0 1 .8 2l-8.4 8.3a1.1 1.1 0 0 1-1.6-1.6L8.6 23a1.1 1.1 0 0 1 .9-.4Z" />
-                    <path d="M17.5.3a13.1 13.1 0 0 1 15.6 14.6 1.1 1.1 0 0 1-2.2-.3v-1.5a10.8 10.8 0 1 0-9 10.7 1.2 1.2 0 0 1 .3 2.3l-2 .1a13.1 13.1 0 0 1-2.7-26Z" />
-                  </svg>
+              <Card className="mt-8 border">
+                <CardContent>
+                  <div className="flex flex-col items-center gap-10">
+                    <div className="flex flex-col items-center gap-4 text-center md:flex-row">
+                      <svg
+                        className="size-10 flex-none fill-black"
+                        viewBox="0 0 41 34"
+                      >
+                        <path
+                          d="M32.7 17.6a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-2.4 4.2a1.1 1.1 0 0 0-.9 2l2 2-2 2a1.1 1.1 0 0 0 .8 1.9 1.1 1.1 0 0 0 .9-.4l1.8-1.9 1.8 2a1.1 1.1 0 0 0 1.4.1 1.1 1.1 0 0 0 .2-1.7l-1.9-2 2-2a1.1 1.1 0 0 0-1.7-1.6L32.9 24l-1.8-2a1.1 1.1 0 0 0-.8-.3Z"
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                        />
+                        <path d="M9.5 22.5a1.1 1.1 0 0 1 .8 2l-8.4 8.3a1.1 1.1 0 0 1-1.6-1.6L8.6 23a1.1 1.1 0 0 1 .9-.4Z" />
+                        <path d="M17.5.3a13.1 13.1 0 0 1 15.6 14.6 1.1 1.1 0 0 1-2.2-.3v-1.5a10.8 10.8 0 1 0-9 10.7 1.2 1.2 0 0 1 .3 2.3l-2 .1a13.1 13.1 0 0 1-2.7-26Z" />
+                      </svg>
 
-                  <div className="h4">
-                    Nu a fost găsit nici un bilet pentru această rută!
+                      <div className="h4">
+                        Nu a fost găsit nici un bilet pentru această rută!
+                      </div>
+                    </div>
+
+                    <Button>Modifică căutarea</Button>
                   </div>
-                </div>
-
-                <Button>Modifică căutarea</Button>
-              </div>
-            </CardContent>
-          </Card> */}
+                </CardContent>
+              </Card>
 
               <div className="mt-8 flex flex-col-reverse gap-8 lg:flex-row">
                 <ul className="space-y-4">

@@ -40,14 +40,18 @@ export const TripRouteDetails: React.FC<{
             <div className="flex md:items-center">
               <div className="w-5 font-semibold md:text-xl">⚲</div>
               <div className="sr-only text-2xl font-medium md:not-sr-only">
-                {getLocalizedField(data?.metadata.from_station, "name", locale)}
+                {getLocalizedField(
+                  data?.metadata?.from_station,
+                  "name",
+                  locale,
+                )}
               </div>
             </div>
             <div className="md:ml-5">
               Stația,
               <br />{" "}
               {getLocalizedField(
-                data?.metadata.from_station,
+                data?.metadata?.from_station,
                 "address",
                 locale,
               )}
@@ -75,13 +79,13 @@ export const TripRouteDetails: React.FC<{
             <div className="flex flex-row-reverse md:items-center">
               <div className="w-5 font-semibold md:text-xl">⚲</div>
               <div className="sr-only text-2xl font-medium md:not-sr-only">
-                {getLocalizedField(data?.metadata.to_station, "name", locale)}
+                {getLocalizedField(data?.metadata?.to_station, "name", locale)}
               </div>
             </div>
             <div className="md:mr-5">
               Stația,
               <br />{" "}
-              {getLocalizedField(data?.metadata.to_station, "address", locale)}
+              {getLocalizedField(data?.metadata?.to_station, "address", locale)}
             </div>
           </div>
         </div>
