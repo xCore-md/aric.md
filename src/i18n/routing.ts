@@ -1,8 +1,8 @@
-import { SUPORTED_LANGUAGES } from "@/utils/constants";
+import { AVAILABLE_LANGUAGES } from "@/utils/constants";
 import { defineRouting } from "next-intl/routing";
 
 export const routing = defineRouting({
-  locales: SUPORTED_LANGUAGES,
+  locales: AVAILABLE_LANGUAGES,
   defaultLocale: "ro",
   localePrefix: "as-needed",
 });

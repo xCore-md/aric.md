@@ -1,9 +1,19 @@
-import { SUPORTED_LANGUAGES } from "@/utils/constants";
+import { AVAILABLE_LANGUAGES } from "@/utils/constants";
 import ro from "../../messages/ro.json";
 import { TripItem } from "./trip.types";
 import { Station } from "./station.types";
 
 export type Messages = typeof ro;
+
+export type Currency = "mdl" | "uah";
+
+export type Prices = {
+  [K in Currency as `price_${K}`]?: number;
+};
+
+export type TotalAmounts = {
+  [K in Currency as `total_amount_${K}`]: number;
+};
 
 export interface ILoginResponse {
   access: string;
@@ -63,7 +73,7 @@ export interface Timestamps {
   updated_at: string;
 }
 
-export type SupportedLanguages = (typeof SUPORTED_LANGUAGES)[number];
+export type SupportedLanguages = (typeof AVAILABLE_LANGUAGES)[number];
 
 export type NamesDTO = {
   [K in SupportedLanguages as `name_${K}`]: string;
@@ -86,7 +96,7 @@ export interface DepartureArrivalTime {
 export interface SearchResponse {
   data: TripItem[];
   // filters: FiltersBlock;
-  meta: Omit<PaginatedResponse, "data">;
+  meta: Omit<PaginatedResponse<null>, "data">;
   metadata: {
     from_station: Station;
     to_station: Station;
@@ -135,4 +145,15 @@ export interface RefundCondition {
   hours_before: number;
   percent: string;
   description: string;
+}
+
+export enum CurrencyEnum {
+  MDL = "MDL",
+  UAH = "UAH",
+}
+
+export enum LanguageEnum {
+  RU = "ru",
+  EN = "en",
+  RO = "ro",
 }

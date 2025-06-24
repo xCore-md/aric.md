@@ -1,5 +1,4 @@
 import Credentials from "@auth/core/providers/credentials";
-// import { skipCSRFCheck } from "@auth/core";
 import NextAuth, { type User } from "next-auth";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -73,6 +72,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signOut: "/",
   },
   trustHost: true,
-  // skipCSRFCheck: skipCSRFCheck,
   debug: process.env.NODE_ENV !== "production",
 });

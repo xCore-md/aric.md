@@ -1,4 +1,4 @@
-import { Messages } from "@/types";
+import { CurrencyEnum, LanguageEnum, Messages } from "@/types";
 
 type NavKey = keyof Messages["nav"];
 type NavLabel = `nav.${NavKey}`;
@@ -43,8 +43,6 @@ export const QUERY_KEYS = {
   refundPolicy: "refundPolicy",
   passengers: "passengers",
 } as const;
-
-export const SUPORTED_LANGUAGES = ["ru", "ro", "en"] as const;
 
 export const PRIVATE_LINK = {
   booking: {
@@ -97,3 +95,7 @@ export const CONTACTS = {
   email: "contact@aric.md",
   phone: "+373 79 435 990",
 };
+
+export const AVAILABLE_CURRENCIES = Object.values(CurrencyEnum);
+export const AVAILABLE_LANGUAGES = Object.values(LanguageEnum);
+export const CURRENCIES = Object.values(CurrencyEnum);

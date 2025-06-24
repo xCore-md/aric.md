@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import logo from "@/assets/images/logo-white.svg";
 import roFlag from "@/assets/images/languages/ro.svg";
 import ruFlag from "@/assets/images/languages/ru.svg";
+import enFlag from "@/assets/images/languages/en.svg";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -22,6 +23,9 @@ import { useSession } from "next-auth/react";
 import { LogoutAlert } from "../logout-alert";
 import { useProfile } from "@/hooks/profile";
 
+import { useRouter } from "next/navigation";
+import { getCookie, setCookie } from "cookies-next";
+
 import {
   Dialog,
   DialogContent,
@@ -30,36 +34,40 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CONTACTS, NAV_LINKS, PRIVATE_LINKS } from "@/utils/constants";
+import {
+  CONTACTS,
+  CURRENCIES,
+  NAV_LINKS,
+  PRIVATE_LINKS,
+} from "@/utils/constants";
 import { getFullName } from "@/utils/getFullName";
+import { CurrencyEnum, LanguageEnum } from "@/types";
 
-const language: {
-  [key: string]: {
-    alt: string;
-    label: string;
-    next: string;
-    flag: { src: string; width: number; height: number };
-  };
-} = {
-  ru: {
+const languages: {
+  key: string;
+  alt: string;
+  label: string;
+  flag: { src: string; width: number; height: number };
+}[] = [
+  {
+    key: LanguageEnum.RO,
     flag: roFlag,
     alt: "Româna",
     label: "Ro",
-    next: "ro",
   },
-  ro: {
+  {
+    key: LanguageEnum.RU,
     flag: ruFlag,
     alt: "Русский",
     label: "Ру",
-    next: "ru",
   },
-  en: {
-    flag: ruFlag,
-    alt: "Русский",
-    label: "Ру",
-    next: "ru",
+  {
+    key: LanguageEnum.EN,
+    flag: enFlag,
+    alt: "English",
+    label: "En",
   },
-};
+];
 
 export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
   const [openMenu, setOpenMenu] = React.useState(false);
@@ -133,22 +141,9 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
             </div>
 
             <div className="flex items-center gap-4">
-              <NextLink
-                href={
-                  `/${language[locale]?.next}/${pathname}` +
-                  (searchParams.size ? `?${searchParams}` : "")
-                }
-                className="xs:flex hidden items-center gap-2 font-semibold text-white"
-              >
-                <Image
-                  src={language[locale]?.flag?.src}
-                  alt={language[locale]?.alt}
-                  width={language[locale]?.flag?.width}
-                  height={language[locale]?.flag?.height}
-                  className="size-5"
-                />
-                <span>{language[locale]?.label}</span>
-              </NextLink>
+              <LanguagePopover />
+
+              <CurrencyPopover />
 
               <div className="flex gap-4">
                 <AccountButton />
@@ -170,28 +165,15 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
                     </DialogHeader>
 
                     <div className="space-y-8 pt-2 pb-10">
-                      <div
-                        className="flex gap-10"
-                        onClick={() => setOpenMenu(false)}
-                      >
+                      <div className="flex gap-10">
                         <div className="flex items-center gap-1 text-white">
                           <span>🕔</span>
                           <span>Mereu disponibili 24/24</span>
                         </div>
 
-                        <NextLink
-                          href={`/${language[locale]?.next}/${pathname}`}
-                          className="xs:flex hidden items-center gap-2 font-semibold text-white"
-                        >
-                          <Image
-                            src={language[locale]?.flag?.src}
-                            alt={language[locale]?.alt}
-                            width={language[locale]?.flag?.width}
-                            height={language[locale]?.flag?.height}
-                            className="size-5"
-                          />
-                          <span>{language[locale]?.label}</span>
-                        </NextLink>
+                        <LanguagePopover />
+
+                        <CurrencyPopover />
                       </div>
 
                       <div
@@ -242,6 +224,68 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
         </div>
       </div>
     </header>
+  );
+};
+
+const LanguagePopover = () => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const locale = useLocale();
+
+  const selectedLocale = React.useMemo(() => {
+    return languages?.find((lang) => lang?.key === locale) || languages[0];
+  }, [locale]);
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="flex items-center gap-2 rounded-lg font-semibold text-white uppercase"
+        >
+          <Image
+            src={selectedLocale?.flag?.src}
+            alt={selectedLocale?.alt}
+            width={selectedLocale?.flag?.width}
+            height={selectedLocale?.flag?.height}
+            className="size-5 flex-none rounded-full"
+          />
+          <span>{selectedLocale?.label}</span>
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-32 space-y-2 p-1">
+        {languages?.map(({ flag, alt, key }, index) => (
+          <Button
+            key={index}
+            variant="ghost"
+            size="sm"
+            className={cn(
+              "flex justify-start gap-2 rounded-lg text-left font-semibold",
+              key === locale && "pointer-events-none opacity-50 grayscale",
+            )}
+            asChild
+          >
+            <NextLink
+              href={
+                `/${key + pathname}` +
+                (searchParams.size ? `?${searchParams}` : "")
+              }
+            >
+              <Image
+                src={flag?.src}
+                alt={alt}
+                width={flag?.width}
+                height={flag?.height}
+                className="size-5 flex-none rounded-full"
+              />
+              <span>{alt}</span>
+            </NextLink>
+          </Button>
+        ))}
+      </PopoverContent>
+    </Popover>
   );
 };
 
@@ -307,5 +351,57 @@ const AccountButton = () => {
         </>
       )}
     </>
+  );
+};
+
+export const CurrencyPopover = () => {
+  const router = useRouter();
+  const [selectedCurrency, setSelectedCurrency] =
+    React.useState<CurrencyEnum | null>(null);
+
+  React.useEffect(() => {
+    const savedCurrency = getCookie("currency") || CurrencyEnum.MDL;
+    setSelectedCurrency(savedCurrency as CurrencyEnum);
+  }, []);
+
+  const handleChange = (currency: CurrencyEnum) => {
+    setSelectedCurrency(currency);
+    setCookie("currency", currency);
+    router.refresh();
+  };
+
+  if (!selectedCurrency)
+    return <div className="skeleton dark h-8 w-18 rounded-full" />;
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="font-semibold text-white uppercase"
+        >
+          {selectedCurrency}
+          <ChevronDown strokeWidth={3} />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-16 space-y-2 p-1">
+        {CURRENCIES.map((currency) => (
+          <Button
+            key={currency}
+            variant="ghost"
+            size="sm"
+            className={cn(
+              "w-full justify-start rounded-lg font-semibold",
+              currency === selectedCurrency &&
+                "pointer-events-none opacity-50 grayscale",
+            )}
+            onClick={() => handleChange(currency)}
+          >
+            {currency}
+          </Button>
+        ))}
+      </PopoverContent>
+    </Popover>
   );
 };

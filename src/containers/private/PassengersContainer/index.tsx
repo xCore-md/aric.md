@@ -1,7 +1,11 @@
 "use client";
 import React from "react";
 import { useTranslations } from "use-intl";
-import { PRIVATE_LINK, QUERY_KEYS } from "@/utils/constants";
+import {
+  MOLDOVA_PHONE_CODE,
+  PRIVATE_LINK,
+  QUERY_KEYS,
+} from "@/utils/constants";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader, Trash2 } from "lucide-react";
@@ -113,7 +117,7 @@ const PassengerRow: React.FC<{
       first_name,
       last_name,
       birth_date,
-      phone,
+      phone: MOLDOVA_PHONE_CODE + phone.replace(/\s+/g, ""),
       type: "adult",
     });
     setEdit(false);

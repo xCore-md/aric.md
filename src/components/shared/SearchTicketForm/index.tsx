@@ -115,9 +115,15 @@ export const SearchTicketForm: React.FC<{
   });
 
   React.useEffect(() => {
-    setToStationId(0);
+    // setToStationId(0);
     refetchStationsDestinations();
   }, [fromStationId]);
+
+  React.useEffect(() => {
+    if (canSearch) {
+      handleSubmit();
+    }
+  }, []);
 
   return (
     <Card className="ring-platinum ring ring-inset">

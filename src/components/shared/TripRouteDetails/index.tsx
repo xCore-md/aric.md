@@ -3,6 +3,10 @@ import React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { getLocalizedField } from "@/utils/getLocalizedField";
 import type { SearchResponse, TripSegment } from "@/types";
+import { parse } from "date-fns/parse";
+import { format } from "date-fns/format";
+import { dateFnsLocalesByCode } from "@/utils";
+import { enUS } from "date-fns/locale/en-US";
 
 export const TripRouteDetails: React.FC<{
   data: SearchResponse;
@@ -25,14 +29,34 @@ export const TripRouteDetails: React.FC<{
     return t("duration.minutes", { minutes });
   }, [durationMinutes, t]);
 
+  const date = React.useMemo(() => {
+    const dateFnsLocale = dateFnsLocalesByCode[locale] || enUS;
+
+    const formatDate = (value: string) =>
+      format(parse(value, "yyyy-MM-dd", new Date()), "dd MMMM yyyy", {
+        locale: dateFnsLocale,
+      });
+
+    return {
+      departure_date: routeData?.departure_date
+        ? formatDate(routeData.departure_date)
+        : "",
+      arrival_date: routeData?.arrival_date
+        ? formatDate(routeData.arrival_date)
+        : "",
+    };
+  }, [routeData, locale]);
+
   return (
     <div className="flex gap-4">
       <div className="w-full grid-cols-5 items-center gap-4 space-y-3 md:grid md:space-y-0">
         <div className="col-span-2 flex flex-row-reverse items-center justify-between md:block">
           <div className="flex flex-col items-end md:mb-6 md:flex-row md:items-center md:gap-5">
-            <div className="bg-red-500 font-semibold md:text-lg">01:00</div>
-            <div className="text-text-gray text-xs md:text-base">
+            <div className="font-semibold md:text-lg">
               {routeData?.departure_time}
+            </div>
+            <div className="text-text-gray text-xs md:text-base">
+              {date?.departure_date}
             </div>
           </div>
 
@@ -69,9 +93,11 @@ export const TripRouteDetails: React.FC<{
 
         <div className="col-span-2 flex flex-row-reverse items-center justify-between md:block md:justify-end">
           <div className="flex flex-col items-end md:mb-6 md:flex-row md:items-center md:justify-end md:gap-5">
-            <div className="bg-red-500 font-semibold md:text-lg">01:00</div>
-            <div className="text-text-gray text-xs md:text-base">
+            <div className="font-semibold md:text-lg">
               {routeData?.arrival_time}
+            </div>
+            <div className="text-text-gray text-xs md:text-base">
+              {date?.arrival_date}
             </div>
           </div>
 

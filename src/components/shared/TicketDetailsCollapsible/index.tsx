@@ -58,20 +58,21 @@ export const TicketDetailsCollapsible: React.FC<{
         <div className="space-y-6">
           <div className="space-y-4">
             <div>1. Traseu</div>
-            <div className="border-platinum ml-8 space-y-4 border-l pl-8">
+            <div className="border-platinum ml-4 space-y-4 border-l pl-4 md:ml-8 md:pl-8">
               {routeData?.route?.stations?.map((station, index) => (
                 <div
                   key={station?.id}
-                  className="relative flex items-center gap-2"
+                  className="relative flex flex-col gap-2 md:flex-row"
                 >
-                  <div className="mr-8 -ml-9 flex w-44 items-center gap-8">
-                    <div className="bg-blue size-2 flex-none rounded-full" />
+                  <div className="mr-4 -ml-5 flex w-44 items-center gap-4 md:mr-8 md:-ml-9 md:gap-8">
+                    <div
+                      className={cn(
+                        "border-blue bg-blue size-2 flex-none rounded-full border",
+                        index === 0 && "bg-white",
+                      )}
+                    />
                     {index === 0 && (
-                      <div className="bg-back absolute top-0 h-[calc(50%_-_theme(spacing.1))] w-2" />
-                    )}
-
-                    {index === routeData?.route?.stations?.length - 1 && (
-                      <div className="bg-back absolute bottom-0 h-[calc(50%_-_theme(spacing.1))] w-2" />
+                      <div className="bg-back absolute top-0 hidden h-[calc(50%_-_theme(spacing.1))] w-2 md:block" />
                     )}
 
                     <div
@@ -83,32 +84,31 @@ export const TicketDetailsCollapsible: React.FC<{
                     >
                       {getLocalizedField(station, "name", locale)}
                     </div>
+
+                    {index === routeData?.route?.stations?.length - 1 && (
+                      <div className="bg-back absolute bottom-0 hidden h-[calc(50%_-_theme(spacing.1))] w-2 md:block" />
+                    )}
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col items-start md:flex-row md:items-center md:gap-6">
                     <div className="text-text-gray">
                       {getLocalizedField(station, "address", locale)}
                     </div>
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          size="sm-icon"
-                          variant="link"
-                          className="te max-h-max max-w-max"
-                          asChild
-                        >
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer nofollow"
-                            href={`https://www.google.com/maps?q=${station?.latitude},${station?.longitude}`}
-                          >
-                            <MapPin />
-                          </a>
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Vezi pe Google Maps</TooltipContent>
-                    </Tooltip>
+                    <Button
+                      size="sm"
+                      variant="link"
+                      className="text-text-gray h-auto flex-none !px-0 text-xs text-nowrap"
+                      asChild
+                    >
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        href={`https://www.google.com/maps?q=${station?.latitude},${station?.longitude}`}
+                      >
+                        Vezi pe hartă
+                      </a>
+                    </Button>
                   </div>
                 </div>
               ))}

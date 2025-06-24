@@ -34,6 +34,16 @@ export const useTicketForm = () => {
     searchQueryState?.passengers,
   );
 
+  console.log("🔍 searchQueryState:", searchQueryState);
+
+  console.log("🔍 useStates:", {
+    fromStationId,
+    toStationId,
+    departureDate,
+    returnDate,
+    passengers,
+  });
+
   const canSearch = React.useMemo(() => {
     return [fromStationId, toStationId, departureDate, passengers].every(
       Boolean,

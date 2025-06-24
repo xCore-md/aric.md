@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { auth } from "@/auth";
 import { routing } from "@/i18n/routing";
-import { SUPORTED_LANGUAGES } from "./utils/constants";
+import { AVAILABLE_LANGUAGES } from "./utils/constants";
 
 const handleI18nRouting = createMiddleware(routing);
 
@@ -17,7 +17,7 @@ const publicPages = [
 ];
 
 const loginRegex = new RegExp(
-  `^/(?:(${SUPORTED_LANGUAGES.join("|")})/)?login/?$`,
+  `^/(?:(${AVAILABLE_LANGUAGES.join("|")})/)?login/?$`,
   "i",
 );
 
@@ -43,7 +43,7 @@ const authMiddleware = auth((req) => {
 
 export default function middleware(req: NextRequest) {
   const publicPathnameRegex = RegExp(
-    `^(/(${SUPORTED_LANGUAGES.join("|")}))?(${publicPages
+    `^(/(${AVAILABLE_LANGUAGES.join("|")}))?(${publicPages
       .flatMap((p) => (p === "/" ? ["", "/"] : p))
       .join("|")})/?$`,
     "i",
