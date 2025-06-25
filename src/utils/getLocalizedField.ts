@@ -3,7 +3,6 @@ export function getLocalizedField<T extends Record<string, any>>(
   key: string,
   locale: string,
 ): string | undefined {
-  console.log(obj);
   if (!obj) return;
   const localizedValue = obj?.[`${key}_${locale}`];
 

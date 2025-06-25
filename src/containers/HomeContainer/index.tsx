@@ -9,7 +9,6 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { FAQSection } from "@/components/sections/FAQ";
 import { DiscountSection } from "@/components/sections/Discount";
-import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
 import { ReviewsCarouselSection } from "@/components/sections/ReviewsCarousel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

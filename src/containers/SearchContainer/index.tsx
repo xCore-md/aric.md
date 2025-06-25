@@ -8,7 +8,11 @@ import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
 import { useTicketForm } from "@/hooks/useTicketForm";
 
-import type { SearchResponse, TicketFormValues, TripItem } from "@/types";
+import type {
+  DraftBookingPayload,
+  SearchResponse,
+  TicketFormValues,
+} from "@/types";
 import { searchService } from "@/services/search.service";
 import { TicketDetailsCollapsible } from "@/components/shared/TicketDetailsCollapsible";
 import { toApiDate } from "@/utils/format-date";
@@ -17,11 +21,17 @@ import { Label } from "@radix-ui/react-label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getLocalizedField } from "@/utils/getLocalizedField";
 import { useLocale } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
+import { useMutation } from "@tanstack/react-query";
+import { bookingService } from "@/services/booking.service";
+import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
+import { useCurrency } from "@/hooks/useCurrency";
+import { useBookingDraft } from "@/hooks/useBookingDraft";
 
 export const SearchContainer: React.FC = () => {
   const locale = useLocale();
+  const { formatCurrency } = useCurrency();
   const { updateTicketSearchParams } = useTicketForm();
   const [searchData, setSearchData] = React.useState<SearchResponse>();
   const [isLoading, setLoading] = React.useState(false);
@@ -49,8 +59,6 @@ export const SearchContainer: React.FC = () => {
       setLoading(false);
     }
   }
-
-  console.log("🔍 search data:", searchData);
 
   return (
     <>
@@ -96,31 +104,53 @@ export const SearchContainer: React.FC = () => {
                 <div className="mt-8 flex flex-col-reverse gap-8 lg:flex-row">
                   <ul className="space-y-4">
                     {searchData?.data?.map((item, index) => {
-                      const { route_departure, prices, duration_minutes } =
-                        item;
+                      const {
+                        route_departure,
+                        prices,
+                        duration_minutes,
+                        type,
+                      } = item;
 
                       return (
                         <li
                           key={index}
-                          className="border-platinum rounded-xl border bg-white p-4 md:px-10 md:py-6"
+                          className="border-platinum rounded-xl border bg-white p-4 md:p-6"
                         >
                           <div className="grid grid-cols-1 items-center justify-between gap-x-8 gap-y-2 sm:grid-cols-2 md:flex">
-                            <div className="text-text-gray bg-back flex max-w-max items-center gap-2 rounded-full px-3 py-1 text-sm">
-                              <div className="text-text-gray">
-                                {route_departure?.seats_total} pasageri
+                            <div className="space-y-1">
+                              <div className="text-text-gray bg-back flex max-w-max items-center gap-2 rounded-full px-3 py-1 text-sm">
+                                <div className="text-text-gray">
+                                  {route_departure?.seats_total} pasageri
+                                </div>
+                                <div className="text-green">
+                                  / {route_departure?.seats_available} rămase
+                                </div>
                               </div>
-                              <div className="text-green">
-                                / {route_departure?.seats_available} rămase
+
+                              <div className="bg-yellow max-w-max rounded-full px-2.5 py-0.5">
+                                <span>{type}</span>
                               </div>
                             </div>
 
                             <div className="sm:ml-auto">
                               <div className="text-2xl font-medium">
-                                {prices?.price_mdl} MDL
+                                {formatCurrency(getAmountByCurrency(prices))}
                               </div>
                             </div>
 
-                            <BookingButton id={route_departure?.id} />
+                            <BookingButton
+                              trip_id={route_departure?.id}
+                              from_station_id={
+                                searchData?.metadata?.from_station?.id
+                              }
+                              to_station_id={
+                                searchData?.metadata?.to_station?.id
+                              }
+                              return_trip_id={null}
+                              draft_booking_id={
+                                route_departure?.draft_booking_id
+                              }
+                            />
                           </div>
 
                           <div className="my-6 w-full border-b border-dashed" />
@@ -219,17 +249,48 @@ export const SearchContainer: React.FC = () => {
   );
 };
 
-export const BookingButton: React.FC<{ id: number }> = ({ id }) => {
+export const BookingButton: React.FC<DraftBookingPayload> = ({
+  trip_id,
+  from_station_id,
+  to_station_id,
+  return_trip_id,
+  draft_booking_id,
+}) => {
   const { status } = useSession();
   const { push } = useRouter();
+  const { saveBookingDraft } = useBookingDraft();
+
+  const bookingInit = useMutation({
+    mutationFn: bookingService.init,
+    onSuccess: (data) => {
+      push(`/booking/${data?.booking_id}`);
+    },
+  });
+
   const handleClick = () => {
-    console.log({ status });
-    // push(`/booking/${data?.route_departure?.id}`);
+    const payload = { trip_id, from_station_id, to_station_id, return_trip_id };
+
+    if (status !== "authenticated") {
+      saveBookingDraft(payload);
+      push(`/login?callbackUrl=${encodeURIComponent("/booking/init")}`);
+      return;
+    }
+
+    bookingInit.mutate(payload);
   };
 
-  return (
-    <Button variant="reverse" className="col-span-full" onClick={handleClick}>
-      Rezervează
+  return draft_booking_id ? (
+    <Button variant="white" className="col-span-full" asChild>
+      <Link href={"/booking/" + draft_booking_id}>Termină rezervarea</Link>
+    </Button>
+  ) : (
+    <Button
+      variant="reverse"
+      className="col-span-full"
+      onClick={handleClick}
+      disabled={bookingInit.isPending}
+    >
+      {bookingInit.isPending ? "Se procesează..." : "Rezervează"}
     </Button>
   );
 };

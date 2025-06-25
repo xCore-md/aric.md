@@ -131,7 +131,7 @@ const PassengerRow: React.FC<{
 
   const deletePassenger = useMutation({
     mutationFn: passengerService.delete,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Sters");
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.passengers],

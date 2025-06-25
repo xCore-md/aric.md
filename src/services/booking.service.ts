@@ -1,8 +1,22 @@
 import { apiInstance } from "@/utils/api";
-import { BookingInitDto, BookingInitResponse } from "@/types/booking.types";
+import {
+  Booking,
+  BookingInitDto,
+  BookingInitResponse,
+} from "@/types/booking.types";
 
 class BookingService {
   private clientApi = apiInstance;
+
+  getById = (id: number) => {
+    return this.clientApi.get(`customer/bookings/bulk/${id}`).json<Booking>();
+  };
+
+  init = (data: BookingInitDto) => {
+    return this.clientApi
+      .post("customer/bookings/init", { json: data })
+      .json<BookingInitResponse>();
+  };
 
   // getAll(params?: PaginationParams) {
   //   return this.clientApi
@@ -15,12 +29,6 @@ class BookingService {
   //     .post("customer/passengers", { json: data })
   //     .json<Passenger>();
   // };
-
-  init = (data: BookingInitDto) => {
-    return this.clientApi
-      .post("customer/bookings/init", { json: data })
-      .json<BookingInitResponse>();
-  };
 
   // update = ({ id, ...data }: PassengerUpdateDto) => {
   //   return this.clientApi

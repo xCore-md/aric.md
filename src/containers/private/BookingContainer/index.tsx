@@ -15,12 +15,10 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PRIVATE_LINK } from "@/utils/constants";
 import { Link } from "@/i18n/navigation";
-import { useProfile } from "@/hooks/profile";
 import logoMaib from "@/assets/images/bank/maib.svg";
 
 export const BookingContainer: React.FC = () => {
   const t = useTranslations();
-  const { profileData } = useProfile();
 
   return (
     <>

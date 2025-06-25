@@ -13,14 +13,21 @@ import { Check, ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PRIVATE_LINK } from "@/utils/constants";
+import { PRIVATE_LINK, QUERY_KEYS } from "@/utils/constants";
 import { Link } from "@/i18n/navigation";
-import { useProfile } from "@/hooks/profile";
 import logoMaib from "@/assets/images/bank/maib.svg";
+import { useQuery } from "@tanstack/react-query";
+import { bookingService } from "@/services/booking.service";
 
-export const BookingByIdContainer: React.FC = () => {
+export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
   const t = useTranslations();
-  const { profileData } = useProfile();
+
+  const { data: booking } = useQuery({
+    queryKey: [QUERY_KEYS.booking, id],
+    queryFn: () => bookingService.getById(id),
+  });
+
+  console.log(booking);
 
   return (
     <>
@@ -255,7 +262,7 @@ export const BookingByIdContainer: React.FC = () => {
 
         <Card className="ring-blue max-h-max ring ring-inset">
           <CardHeader>
-            <CardTitle className="h4">Comanda 10756023</CardTitle>
+            <CardTitle className="h4">Comanda {booking?.id}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">

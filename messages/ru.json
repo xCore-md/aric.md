@@ -91,5 +91,9 @@
     "hoursMinutes": "Durata {hours} ore {minutes} min",
     "hours": "Durata {hours} ore",
     "minutes": "Durata {minutes} min"
+  },
+  "currency": {
+    "MDL": "MDL",
+    "UAH": "UAH"
   }
 }

@@ -72,10 +72,7 @@ const languages: {
 export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
   const [openMenu, setOpenMenu] = React.useState(false);
   const t = useTranslations();
-
-  const searchParams = useSearchParams();
   const pathname = usePathname();
-  const locale = useLocale();
 
   if ((isHomePage && pathname !== "/") || (!isHomePage && pathname === "/"))
     return null;

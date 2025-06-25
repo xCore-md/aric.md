@@ -1,10 +1,5 @@
 import { apiInstance } from "@/utils/api";
-import type {
-  ApiResponse,
-  PaginatedResponse,
-  PaginationParams,
-  User,
-} from "@/types";
+import type { PaginatedResponse, PaginationParams } from "@/types";
 import type {
   Passenger,
   PassengerCreateDto,

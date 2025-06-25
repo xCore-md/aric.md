@@ -31,6 +31,7 @@ export interface ILogin {
 
 export interface IParams {
   routeId?: string;
+  bookingId?: string;
 }
 
 export interface ISearchParams {
@@ -38,8 +39,8 @@ export interface ISearchParams {
 }
 
 export interface IParamsAndSearchParams {
-  params?: IParams;
-  searchParams?: ISearchParams;
+  params?: Promise<IParams>;
+  searchParams?: Promise<ISearchParams>;
 }
 
 export interface PaginationParams {

@@ -6,7 +6,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { TripItem, TripSegment } from "@/types";
-import { Check, ChevronRightIcon, MapPin, MapPinned } from "lucide-react";
+import { Check, ChevronRightIcon } from "lucide-react";
 import { useLocale } from "next-intl";
 import { getLocalizedField } from "@/utils/getLocalizedField";
 import { cn } from "@/lib/utils";
@@ -14,11 +14,7 @@ import { QUERY_KEYS } from "@/utils/constants";
 import { refundPolicyService } from "@/services/refund-policy.service";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 
 export const TicketDetailsCollapsible: React.FC<{
   data: TripItem;

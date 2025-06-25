@@ -42,6 +42,7 @@ export const QUERY_KEYS = {
   profile: "profile",
   refundPolicy: "refundPolicy",
   passengers: "passengers",
+  booking: "booking",
 } as const;
 
 export const PRIVATE_LINK = {
