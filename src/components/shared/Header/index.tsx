@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import NextLink from "next/link";
 import { useLocale, useTranslations } from "use-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -264,11 +263,11 @@ const LanguagePopover = () => {
             )}
             asChild
           >
-            <NextLink
+            <Link
               href={
-                `/${key + pathname}` +
-                (searchParams.size ? `?${searchParams}` : "")
+                `${pathname}` + (searchParams.size ? `?${searchParams}` : "")
               }
+              locale={key}
             >
               <Image
                 src={flag?.src}
@@ -278,7 +277,7 @@ const LanguagePopover = () => {
                 className="size-5 flex-none rounded-full"
               />
               <span>{alt}</span>
-            </NextLink>
+            </Link>
           </Button>
         ))}
       </PopoverContent>

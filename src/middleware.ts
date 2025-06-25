@@ -23,11 +23,10 @@ const loginRegex = new RegExp(
 
 const authMiddleware = auth((req) => {
   const pathname = req.nextUrl.pathname;
-
   if (req.auth && loginRegex.test(pathname)) {
     const localeMatch = pathname.match(loginRegex);
     const locale = localeMatch?.[1] ?? routing?.defaultLocale ?? "";
-    return NextResponse.redirect(new URL(`/${locale}/booking`, req.url));
+    return NextResponse.redirect(new URL(`/${locale}/tickets`, req.url));
   }
 
   if (req.auth) {

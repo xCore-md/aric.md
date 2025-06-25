@@ -53,7 +53,7 @@ export const TripRouteDetails: React.FC<{
         <div className="col-span-2 flex flex-row-reverse items-center justify-between md:block">
           <div className="flex flex-col items-end md:mb-6 md:flex-row md:items-center md:gap-5">
             <div className="font-semibold md:text-lg">
-              {routeData?.departure_time}
+              {routeData?.departure_datetime}
             </div>
             <div className="text-text-gray text-xs md:text-base">
               {date?.departure_date}
@@ -94,7 +94,7 @@ export const TripRouteDetails: React.FC<{
         <div className="col-span-2 flex flex-row-reverse items-center justify-between md:block md:justify-end">
           <div className="flex flex-col items-end md:mb-6 md:flex-row md:items-center md:justify-end md:gap-5">
             <div className="font-semibold md:text-lg">
-              {routeData?.arrival_time}
+              {routeData?.arrival_datetime}
             </div>
             <div className="text-text-gray text-xs md:text-base">
               {date?.arrival_date}

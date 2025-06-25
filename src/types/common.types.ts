@@ -55,10 +55,11 @@ export interface PaginationParams {
 }
 
 export interface PaginatedResponse<T> {
-  current_page: number;
-  per_page: number;
-  total: number;
+  current_page?: number;
+  per_page?: number;
+  total?: number;
   data: Array<T>;
+  meta?: { current_page: number; per_page: number; total: number };
 }
 
 export type TicketFormValues = {
@@ -90,8 +91,8 @@ export interface Coordinates {
 }
 
 export interface DepartureArrivalTime {
-  departure_time: string;
-  arrival_time: string;
+  departure_datetime: string;
+  arrival_datetime: string;
 }
 
 export interface SearchResponse {
@@ -157,4 +158,14 @@ export enum LanguageEnum {
   RU = "ru",
   EN = "en",
   RO = "ro",
+}
+
+export interface PaginationUIProps {
+  totalItems?: number;
+  page: number;
+  perPage: number;
+  onPageChange: (newPage: number) => void;
+  onPageSizeChange: (page: number, newLimit: number) => void;
+  pageSizeOptions?: number[];
+  maxPageButtons?: number;
 }

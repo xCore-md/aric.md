@@ -14,7 +14,7 @@ export const apiInstance = ky.create({
     beforeRequest: [
       async (request) => {
         let token = "";
-        let locale = LanguageEnum.EN as string;
+        let locale = LanguageEnum.RO as string;
         let currency = CurrencyEnum.MDL as string;
 
         if (typeof window === "undefined") {
@@ -28,7 +28,7 @@ export const apiInstance = ky.create({
           const session = await getSession();
           token = session?.accessToken || "";
 
-          locale = document.documentElement.lang || LanguageEnum.EN;
+          locale = document.documentElement.lang || LanguageEnum.RO;
           currency = getCookie("currency")?.toString() || CurrencyEnum.MDL;
         }
 
