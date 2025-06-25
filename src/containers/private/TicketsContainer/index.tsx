@@ -21,6 +21,7 @@ import { usePagination } from "@/hooks/usePagination";
 import { ticketService } from "@/services/ticket.service";
 import { PaginationUI } from "@/components/shared/pagination-ui";
 import { bookingService } from "@/services/booking.service";
+import { TicketStatusBadge } from "@/components/shared/TicketStatusBadge";
 
 export const TicketsContainer: React.FC = () => {
   const queryClient = useQueryClient();
@@ -47,22 +48,18 @@ export const TicketsContainer: React.FC = () => {
         <h3 className="h3 !mb-0">{t(PRIVATE_LINK.tickets.label)}</h3>
       </div>
 
-      {isLoading ? (
-        Array.from({ length: 5 }).map((_, index) => (
-          <div key={index} className="skeleton h-56" />
-        ))
-      ) : (
-        <>
-          <Card className="ring-platinum p-1 ring ring-inset sm:py-4">
-            <CardContent className="space-y-4 p-1 sm:px-4">
-              {tickets?.data?.map((ticket) => (
+      <Card className="ring-platinum p-1 ring ring-inset sm:py-4">
+        <CardContent className="space-y-4 p-1 sm:px-4">
+          {isLoading
+            ? Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="skeleton h-40" />
+              ))
+            : tickets?.data?.map((ticket) => (
                 <div key={ticket.id} className="space-y-4">
                   <div className="bg-back flex flex-wrap items-center justify-between gap-6 rounded-xl p-6 lg:flex-nowrap">
                     <div className="">
                       <div className="text-text-gray text-sm">ID #0234</div>
-                      <div className="bg-yellow max-w-max rounded-full px-2.5">
-                        {ticket?.status}
-                      </div>
+                      <TicketStatusBadge status={ticket?.status} />
                     </div>
 
                     <Separator
@@ -198,18 +195,16 @@ export const TicketsContainer: React.FC = () => {
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
+        </CardContent>
+      </Card>
 
-          <PaginationUI
-            totalItems={tickets?.meta?.total}
-            page={page}
-            perPage={per_page}
-            onPageChange={updatePage}
-            onPageSizeChange={updateLimit}
-          />
-        </>
-      )}
+      <PaginationUI
+        totalItems={tickets?.meta?.total}
+        page={page}
+        perPage={per_page}
+        onPageChange={updatePage}
+        onPageSizeChange={updateLimit}
+      />
     </>
   );
 };

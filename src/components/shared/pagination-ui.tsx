@@ -83,7 +83,7 @@ export const PaginationUI = ({
             <PaginationItem key={pg}>
               <Button
                 variant="black"
-                className={cn(pg === page && "bg-black text-white")}
+                className={cn(pg === page && "min-w-12 bg-black text-white")}
                 onClick={() => onPageChange(pg)}
               >
                 {pg}
@@ -115,13 +115,13 @@ export const PaginationUI = ({
       </Pagination>
 
       {/* Page size selector */}
-      {/* <div className="flex items-center gap-2 text-sm text-muted-foreground flex-none">
+      <div className="text-muted-foreground hidden flex-none items-center gap-2 text-sm">
         <span>Показать</span>
         <Select
           value={String(perPage)}
           onValueChange={(v) => onPageSizeChange(1, parseInt(v))}
         >
-          <SelectTrigger className="w-[80px] h-8">
+          <SelectTrigger className="h-8 w-[80px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -133,7 +133,7 @@ export const PaginationUI = ({
           </SelectContent>
         </Select>
         <span>на странице</span>
-      </div> */}
+      </div>
     </div>
   );
 };

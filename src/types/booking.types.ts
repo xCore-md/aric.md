@@ -13,6 +13,7 @@ export enum BookingStatus {
   Draft = "draft",
   Reserved = "reserved",
   Paid = "paid",
+  Cancelled = "cancelled",
 }
 
 export interface Booking extends Timestamps, TotalAmounts {

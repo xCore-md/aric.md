@@ -20,11 +20,13 @@ import {
 } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { parse } from "date-fns/parse";
 import { Calendar } from "@/components/ui/calendar";
-import { isValid } from "date-fns/isValid";
-import { format } from "date-fns/format";
+
 import { removeMoldovaPrefix } from "@/utils";
+import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
+import { format } from "date-fns/format";
+import { parse } from "date-fns/parse";
+import { isValid } from "date-fns/isValid";
 
 export const PassengersContainer: React.FC = () => {
   const queryClient = useQueryClient();
@@ -35,10 +37,9 @@ export const PassengersContainer: React.FC = () => {
     queryFn: () => passengerService.getAll(),
   });
 
-  const mutation = useMutation({
+  const updatePassenger = useMutation({
     mutationFn: passengerService.update,
     onSuccess: () => {
-      toast.success("Рейс успешно создан!");
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.passengers],
         exact: false,
@@ -80,9 +81,9 @@ export const PassengersContainer: React.FC = () => {
                   {passengers?.data?.map((passenger) => (
                     <PassengerRow
                       key={passenger.id}
-                      onChange={(values) => mutation.mutate(values)}
+                      onChange={(values) => updatePassenger.mutate(values)}
                       data={passenger}
-                      loading={mutation.isPending}
+                      loading={updatePassenger.isPending}
                     />
                   ))}
                 </>
@@ -102,12 +103,13 @@ const PassengerRow: React.FC<{
 }> = ({ data, onChange, loading }) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = React.useState(false);
+  const { formatUTC } = useFormatUTCToLocal();
 
   const [edit, setEdit] = React.useState(false);
-  const [first_name, setFirstName] = React.useState(data?.first_name || "");
-  const [last_name, setLastName] = React.useState(data?.last_name || "");
-  const [phone, setPhone] = React.useState(data?.phone || "");
-  const [birth_date, setBirthDate] = React.useState(data?.birth_date || "");
+  const [first_name, setFirstName] = React.useState("");
+  const [last_name, setLastName] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [birth_date, setBirthDate] = React.useState("");
 
   const refInput = React.useRef<HTMLInputElement>(null);
 
@@ -147,6 +149,8 @@ const PassengerRow: React.FC<{
 
   const selectedDate = React.useMemo(() => {
     if (!birth_date) return undefined;
+
+    console.log({ birth_date });
     const parsed = parse(birth_date, "yyyy-MM-dd", new Date());
     return isValid(parsed) ? parsed : undefined;
   }, [birth_date]);
@@ -154,6 +158,15 @@ const PassengerRow: React.FC<{
   const handleDelete = () => {
     if (data.id) deletePassenger.mutate(data.id);
   };
+
+  React.useEffect(() => {
+    if (!data) return;
+
+    setFirstName(data.first_name || "");
+    setLastName(data.last_name || "");
+    setPhone(data.phone || "");
+    setBirthDate(data.birth_date || "");
+  }, [data]);
 
   return (
     <tr className="mb-4 block rounded-xl lg:table-row lg:rounded-none">
@@ -243,7 +256,7 @@ const PassengerRow: React.FC<{
             </PopoverContent>
           </Popover>
         ) : (
-          <span>{format(birth_date, "dd.MM.yyyy")}</span>
+          <span>{formatUTC(birth_date)?.date}</span>
         )}
       </td>
 

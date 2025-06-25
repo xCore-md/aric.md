@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useTranslations } from "use-intl";
+import { useLocale, useTranslations } from "use-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -18,9 +18,11 @@ import { Link } from "@/i18n/navigation";
 import logoMaib from "@/assets/images/bank/maib.svg";
 import { useQuery } from "@tanstack/react-query";
 import { bookingService } from "@/services/booking.service";
+import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 
 export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
   const t = useTranslations();
+  const { formatUTC } = useFormatUTCToLocal();
 
   const { data: booking } = useQuery({
     queryKey: [QUERY_KEYS.booking, id],
@@ -262,19 +264,32 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
 
         <Card className="ring-blue max-h-max ring ring-inset">
           <CardHeader>
-            <CardTitle className="h4">Comanda {booking?.id}</CardTitle>
+            <CardTitle className="h4">Comanda #{booking?.id}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               <div className="bg-back grid grid-cols-2 rounded-3xl px-6 py-4">
                 <div className="">
                   <div className="font-semibold">Data plecării:</div>
-                  <div className="text-text-gray">02 Mai 2025</div>
+                  <div className="text-text-gray">
+                    {
+                      formatUTC(booking?.trip?.departure_time, {
+                        dateFormat: "dd MMMM yyyy",
+                      }).date
+                    }
+                  </div>
                 </div>
 
                 <div className="text-right">
                   <div className="font-semibold">Data sosirii:</div>
-                  <div className="text-text-gray">03 Mai 2025</div>
+                  <div className="text-text-gray">
+                    {" "}
+                    {
+                      formatUTC(booking?.trip?.arrival_time, {
+                        dateFormat: "dd MMMM yyyy",
+                      }).date
+                    }
+                  </div>
                 </div>
               </div>
 

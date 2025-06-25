@@ -28,6 +28,7 @@ import { bookingService } from "@/services/booking.service";
 import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useBookingDraft } from "@/hooks/useBookingDraft";
+import { ArrowRight } from "lucide-react";
 
 export const SearchContainer: React.FC = () => {
   const locale = useLocale();
@@ -280,8 +281,11 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
   };
 
   return draft_booking_id ? (
-    <Button variant="white" className="col-span-full" asChild>
-      <Link href={"/booking/" + draft_booking_id}>Termină rezervarea</Link>
+    <Button className="col-span-full" asChild>
+      <Link href={"/booking/" + draft_booking_id}>
+        Termină rezervarea
+        <ArrowRight />
+      </Link>
     </Button>
   ) : (
     <Button

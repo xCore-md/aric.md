@@ -95,5 +95,11 @@
   "currency": {
     "MDL": "MDL",
     "UAH": "UAH"
+  },
+  "booking_status": {
+    "draft": "În așteptare",
+    "reserved": "Rezervat",
+    "paid": "Achitat",
+    "cancelled": "Anulat"
   }
 }

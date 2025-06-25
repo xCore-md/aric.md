@@ -113,7 +113,6 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
     onSuccess: () => {
       push(callbackUrl || "/booking");
       onDialogClose?.();
-      toast.success("Email updated!");
     },
   });
 
@@ -151,8 +150,6 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
       mutationUpdateEmail.mutate(data?.email);
       return;
     }
-
-    console.log("onSubmit data", data);
   }
 
   React.useEffect(() => {

@@ -1,4 +1,11 @@
 import { CurrencyEnum, LanguageEnum, Messages } from "@/types";
+import { ro, enUS, ru, Locale } from "date-fns/locale";
+
+export const DATE_FNS_LOCALE_MAP: Record<string, Locale> = {
+  ro,
+  en: enUS,
+  ru,
+};
 
 type NavKey = keyof Messages["nav"];
 type NavLabel = `nav.${NavKey}`;
