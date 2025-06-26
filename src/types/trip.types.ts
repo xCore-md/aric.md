@@ -13,6 +13,10 @@ export interface Trip extends Timestamps, DepartureArrivalTime {
   id: number;
   route_id: number;
   bus_id: number;
+  recurring_trip_id: number;
+  route: {
+    stations: Station;
+  };
 }
 
 export interface TripWithRelations extends Timestamps, DepartureArrivalTime {

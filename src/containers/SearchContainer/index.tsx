@@ -34,6 +34,7 @@ export const SearchContainer: React.FC = () => {
   const locale = useLocale();
   const { formatCurrency } = useCurrency();
   const { updateTicketSearchParams } = useTicketForm();
+
   const [searchData, setSearchData] = React.useState<SearchResponse>();
   const [isLoading, setLoading] = React.useState(false);
 

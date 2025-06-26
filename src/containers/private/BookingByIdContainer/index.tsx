@@ -15,13 +15,21 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PRIVATE_LINK, QUERY_KEYS } from "@/utils/constants";
 import { Link } from "@/i18n/navigation";
-import logoMaib from "@/assets/images/bank/maib.svg";
+
 import { useQuery } from "@tanstack/react-query";
 import { bookingService } from "@/services/booking.service";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 
+import flagMD from "@/assets/images/languages/md.svg";
+import flagUA from "@/assets/images/languages/ua.svg";
+import logoMaib from "@/assets/images/bank/maib.svg";
+import { TicketDetailsCollapsible } from "@/components/shared/TicketDetailsCollapsible";
+import { PassengerForm } from "./PassengerForm";
+import { getLocalizedField } from "@/utils/getLocalizedField";
+
 export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
   const t = useTranslations();
+  const locale = useLocale();
   const { formatUTC } = useFormatUTCToLocal();
 
   const { data: booking } = useQuery({
@@ -40,8 +48,9 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
       <div className="flex grid-cols-3 flex-col gap-8 lg:grid">
         <Card className="ring-platinum col-span-2 ring ring-inset">
           <CardHeader platinum>
-            <CardTitle className="h4">Finalizează rezervarea</CardTitle>
+            <CardTitle className="h4">{t("$Finalizează rezervarea")}</CardTitle>
           </CardHeader>
+
           <CardContent>
             <div className="space-y-8">
               {/* <Collapsible className="bg-back ring-back rounded ring-8">
@@ -91,11 +100,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
 
               <div className="space-y-4">
                 <div className="text-lg font-semibold">Date pasager:</div>
-
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <Input className="h-16" placeholder="Nume *" />
-                  <Input className="h-16" placeholder="Prenume *" />
-                </div>
+                <PassengerForm />
               </div>
             </div>
 
@@ -103,19 +108,36 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
               <div className="space-y-4">
                 <div className="text-lg font-semibold">1. Alegeți moneda:</div>
 
-                <RadioGroup defaultValue="option-one123">
+                <RadioGroup defaultValue="mdl">
                   <div className="flex flex-wrap gap-6">
                     <label
-                      htmlFor="option-one"
+                      htmlFor="currency_mdl"
                       className="bg-back flex items-center gap-2 rounded-full border p-4 font-bold"
                     >
-                      <RadioGroupItem value="option-one" id="option-one" />
-                      <span>120 MDL</span>
+                      <RadioGroupItem value="mdl" id="currency_mdl" />
+                      <span>77777777 MDL</span>
 
                       <div className="relative ml-12 size-6 flex-none overflow-hidden rounded-full">
                         <Image
-                          src="https://placehold.co/60x400/png"
-                          alt="Image"
+                          src={flagMD.src}
+                          alt="MDL"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    </label>
+
+                    <label
+                      htmlFor="currency_uah"
+                      className="bg-back flex items-center gap-2 rounded-full border p-4 font-bold"
+                    >
+                      <RadioGroupItem value="uah" id="currency_uah" />
+                      <span>88888888 UAH</span>
+
+                      <div className="relative ml-12 size-6 flex-none overflow-hidden rounded-full">
+                        <Image
+                          src={flagUA.src}
+                          alt="UAH"
                           fill
                           className="object-cover"
                         />
@@ -179,114 +201,41 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
               </div>
             </div>
 
-            <Collapsible>
-              <CollapsibleTrigger className="hover:text-blue data-[state=open]:text-blue bg-back mt-6 flex w-full cursor-pointer items-center justify-between gap-1 rounded-full px-6 py-4 font-semibold transition data-[state=open]:rounded-t-2xl data-[state=open]:rounded-b-none [&[data-state=open]>svg]:rotate-90">
-                <span>Informații despre bilet</span>
-                <ChevronRightIcon className="size-5" />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="bg-back rounded-b-2xl px-6 pb-4">
-                <div className="space-y-6">
-                  <div className="space-y-4">
-                    <div>1. Traseu</div>
-                    <div className="border-platinum ml-8 space-y-4 border-l pl-8">
-                      <div className="relative flex items-center gap-2">
-                        <div className="-ml-9 flex w-32 items-center gap-8">
-                          <div className="bg-back absolute top-0 h-[calc(50%_-_theme(spacing.1))] w-2" />
-                          <div className="border-blue size-2 rounded-full border bg-white" />
-                          <div className="font-semibold">Chișinău</div>
-                        </div>
-
-                        <div className="text-text-gray">
-                          Stația &#34;NORD&#34;, str. Calea Mosilor 2/1
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <div className="-ml-9 flex w-32 items-center gap-8">
-                          <div className="bg-blue size-2 rounded-full" />
-                          <div>Chișinău</div>
-                        </div>
-
-                        <div className="text-text-gray">
-                          Stația &#34;NORD&#34;, str. Calea Mosilor 2/1
-                        </div>
-                      </div>
-
-                      <div className="relative flex items-center gap-2">
-                        <div className="-ml-9 flex w-32 items-center gap-8">
-                          <div className="bg-back absolute bottom-0 h-[calc(50%_-_theme(spacing.1))] w-2" />
-                          <div className="bg-blue size-2 rounded-full" />
-                          <div className="font-semibold">Chișinău</div>
-                        </div>
-
-                        <div className="text-text-gray">
-                          Stația &#34;NORD&#34;, str. Calea Mosilor 2/1
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div>2. Servicii disponibile:</div>
-                    <ul className="flex flex-wrap gap-2 gap-x-6">
-                      {[
-                        "Wi-fi",
-                        "Un bagaj gratis",
-                        "Bilet în telefon",
-                        "Muzică",
-                        "USB încărcător",
-                      ]?.map((item, index) => (
-                        <li key={index} className="flex items-center gap-2">
-                          <div className="bg-yellow flex size-5 items-center justify-center rounded-full">
-                            <Check className="size-4 stroke-white" />
-                          </div>
-                          <div className="text-sm font-medium">{item}</div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div>3. Condiții de returnare:</div>
-                    <p className="text-text-gray">
-                      Pînă la 24 ora, pînă la plecare: 150 MDL
-                      <br />
-                      Din 24 ora. pînă la 12 ora. pînă la plecare: 90 MDL
-                      <br />
-                      Mai puțin 12 ora. pînă la plecare: biletul nu se întoarce
-                    </p>
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
+            <TicketDetailsCollapsible
+              data={booking?.trip!}
+              route={booking?.trip?.route_departure!}
+            />
           </CardContent>
         </Card>
 
         <Card className="ring-blue max-h-max ring ring-inset">
           <CardHeader>
-            <CardTitle className="h4">Comanda #{booking?.id}</CardTitle>
+            <CardTitle className="h4">
+              {t("$Comanda")} #{booking?.id}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               <div className="bg-back grid grid-cols-2 rounded-3xl px-6 py-4">
                 <div className="">
-                  <div className="font-semibold">Data plecării:</div>
+                  <div className="font-semibold">
+                    {t("booking.departure_date")}:
+                  </div>
                   <div className="text-text-gray">
                     {
-                      formatUTC(booking?.trip?.departure_time, {
-                        dateFormat: "dd MMMM yyyy",
+                      formatUTC(booking?.departure_datetime!, {
+                        dateFormat: "d MMMM yyyy",
                       }).date
                     }
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <div className="font-semibold">Data sosirii:</div>
+                  <div className="font-semibold">{t("$Data sosirii")}:</div>
                   <div className="text-text-gray">
-                    {" "}
                     {
-                      formatUTC(booking?.trip?.arrival_time, {
-                        dateFormat: "dd MMMM yyyy",
+                      formatUTC(booking?.arrival_datetime!, {
+                        dateFormat: "d MMMM yyyy",
                       }).date
                     }
                   </div>
@@ -294,37 +243,59 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
               </div>
 
               <div className="bg-back rounded-3xl px-6 py-4">
-                <div className="font-semibold">Stații:</div>
+                <div className="font-semibold">{t("$Stații")}:</div>
                 <div className="mt-4 flex items-center justify-between gap-10">
                   <div className="">
                     <div className="flex items-center">
                       <div className="w-5 text-lg font-semibold">⚲</div>
-                      <div className="text-lg font-medium">Chișinău</div>
+                      <div className="text-lg font-medium">
+                        {getLocalizedField(
+                          booking?.station_from!,
+                          "name",
+                          locale,
+                        )}
+                      </div>
                     </div>
 
                     <div className="text-text-gray ml-5">
-                      Stația &#34;NORD&#34;,
-                      <br /> str. Calea Mosilor 2/1
+                      {getLocalizedField(
+                        booking?.station_from!,
+                        "address",
+                        locale,
+                      )}
                     </div>
                   </div>
 
-                  <div className="font-semibold">01:00</div>
+                  <div className="font-semibold">
+                    {formatUTC(booking?.departure_datetime!)?.time}
+                  </div>
                 </div>
 
                 <div className="mt-4 flex items-center justify-between gap-10">
                   <div className="">
                     <div className="flex items-center">
                       <div className="w-5 text-lg font-semibold">⚲</div>
-                      <div className="text-lg font-medium">Chișinău</div>
+                      <div className="text-lg font-medium">
+                        {getLocalizedField(
+                          booking?.station_to!,
+                          "name",
+                          locale,
+                        )}
+                      </div>
                     </div>
 
                     <div className="text-text-gray ml-5">
-                      Stația &#34;NORD&#34;,
-                      <br /> str. Calea Mosilor 2/1
+                      {getLocalizedField(
+                        booking?.station_to!,
+                        "address",
+                        locale,
+                      )}
                     </div>
                   </div>
 
-                  <div className="font-semibold">01:00</div>
+                  <div className="font-semibold">
+                    {formatUTC(booking?.arrival_datetime!)?.time}
+                  </div>
                 </div>
               </div>
 

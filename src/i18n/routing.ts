@@ -6,4 +6,5 @@ export const routing = defineRouting({
   locales: AVAILABLE_LANGUAGES,
   defaultLocale: LanguageEnum.RO,
   localePrefix: "as-needed",
+  localeDetection: false,
 });

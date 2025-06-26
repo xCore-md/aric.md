@@ -233,7 +233,7 @@ body {
 .thead {
   @apply text-text-gray text-left text-xl [&_th]:font-normal [&_th]:first:pl-6;
 }
-
+ 
 .tbody {
   @apply [&_tr]:bg-back text-lg font-semibold [&_td]:py-4 [&_td]:first:pl-6  [&_td]:first:rounded-l-xl [&_td]:last:rounded-r-xl;
 }

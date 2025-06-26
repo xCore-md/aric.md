@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { ChevronRightIcon, Search } from "lucide-react";
+import { CalendarSearch, ChevronRightIcon, Search } from "lucide-react";
 import { useMaskito } from "@maskito/react";
 import { maskitoDateOptionsGenerator } from "@maskito/kit";
 import { format, isValid, parse } from "date-fns";
@@ -31,6 +31,9 @@ interface IProps {
   setValue: React.Dispatch<React.SetStateAction<string>>;
   placeholder?: string;
   disabled?: boolean;
+  messages?: {
+    noData?: string;
+  };
 }
 
 interface SelectCityProps extends IProps {
@@ -85,7 +88,7 @@ export const SearchTicketForm: React.FC<{
       enabled: !!fromStationId,
     });
 
-  const { data: tripDates } = useQuery({
+  const { data: tripDates, refetch: refetchTripDates } = useQuery({
     queryKey: [QUERY_KEYS.searchTripDates, fromStationId, toStationId],
     queryFn: () =>
       searchService.getTripDates({
@@ -115,9 +118,13 @@ export const SearchTicketForm: React.FC<{
   });
 
   React.useEffect(() => {
-    // setToStationId(0);
     refetchStationsDestinations();
   }, [fromStationId]);
+
+  React.useEffect(() => {
+    setDepartureDate("");
+    refetchTripDates();
+  }, [toStationId]);
 
   React.useEffect(() => {
     if (canSearch) {
@@ -209,7 +216,7 @@ const SelectCity: React.FC<SelectCityProps> = ({
     if (value) {
       setInputValue(data?.find((item) => item.value === value)?.label || "");
     }
-  }, [value]);
+  }, [value, data]);
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -260,40 +267,49 @@ const SelectCity: React.FC<SelectCityProps> = ({
   );
 };
 
-const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
+export const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
   placeholder = "",
   setValue,
   value,
   disabled,
   allowedDates,
+  messages,
 }) => {
+  const noDataMessage =
+    messages?.noData ?? "Momentan nu sunt date disponibile.";
+
   const maskedInputRef = useMaskito({
     options,
   });
-  const [inputValue, setInputValue] = React.useState(value);
+
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+
+  const combinedRef = React.useCallback(
+    (el: HTMLInputElement | null) => {
+      inputRef.current = el;
+      maskedInputRef(el);
+    },
+    [maskedInputRef],
+  );
+
+  const allowedDatesMap = React.useMemo(
+    () => allowedDates?.map((d) => new Date(d)),
+    [allowedDates],
+  );
+
+  const isDayDisabled = React.useCallback(
+    (date: Date) =>
+      !allowedDatesMap?.some(
+        (allowedDate) => allowedDate.toDateString() === date.toDateString(),
+      ),
+    [allowedDatesMap],
+  );
 
   const handleChange = (date: Date | undefined) => {
     if (date) {
       setValue(format(date, "dd.MM.yyyy"));
     }
   };
-
-  React.useEffect(() => {
-    if (value) {
-      setInputValue(value);
-    }
-  }, [value]);
-
-  const allowedDatesMap = allowedDates?.map((d) => new Date(d));
-
-  const isDayDisabled = React.useCallback(
-    (date: Date) => {
-      return !allowedDatesMap?.some(
-        (allowedDate) => allowedDate.toDateString() === date.toDateString(),
-      );
-    },
-    [allowedDatesMap],
-  );
 
   return (
     <Popover>
@@ -307,21 +323,18 @@ const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
             )}
           >
             <div>🗓️</div>
-            <div className="">
+            <div className="flex flex-col">
               <div className="text-sm">{placeholder}</div>
               <input
-                ref={maskedInputRef}
-                value={inputValue}
+                ref={combinedRef}
+                value={value}
                 onInput={(e) => {
-                  const value = e.currentTarget.value;
-                  setInputValue(value);
+                  const val = e.currentTarget.value;
+                  if (val.length !== 10) return;
 
-                  if (value.length !== 10) return;
-
-                  const parsedDate = parse(value, "dd.MM.yyyy", new Date());
-
-                  if (isValid(parsedDate)) {
-                    setValue(format(parsedDate, "dd.MM.yyyy"));
+                  const parsed = parse(val, "dd.MM.yyyy", new Date());
+                  if (isValid(parsed)) {
+                    setValue(format(parsed, "dd.MM.yyyy"));
                   }
                 }}
                 type="text"
@@ -333,18 +346,23 @@ const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
         </PopoverTrigger>
       </div>
       <PopoverContent
-        className="w-auto p-0"
-        onOpenAutoFocus={(event) => {
-          event.preventDefault();
-        }}
+        className={cn("w-auto p-0", !allowedDates?.length && "w-56 p-4")}
+        onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        <Calendar
-          mode="single"
-          selected={parse(inputValue, "dd.MM.yyyy", new Date())}
-          onSelect={handleChange}
-          className="rounded-md border"
-          disabled={isDayDisabled}
-        />
+        {!allowedDates?.length ? (
+          <div className="text-muted-foreground flex flex-col items-center gap-1 text-center text-sm">
+            <CalendarSearch className="size-6 flex-none" />
+            <span>{noDataMessage}</span>
+          </div>
+        ) : (
+          <Calendar
+            mode="single"
+            selected={parse(value, "dd.MM.yyyy", new Date())}
+            onSelect={handleChange}
+            className="rounded-md border"
+            disabled={isDayDisabled}
+          />
+        )}
       </PopoverContent>
     </Popover>
   );

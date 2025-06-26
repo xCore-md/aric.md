@@ -101,5 +101,16 @@
     "reserved": "Rezervat",
     "paid": "Achitat",
     "cancelled": "Anulat"
+  },
+  "passengers": {
+    "label": "Număr de pasageri",
+    "none": "Niciun pasager",
+    "adult": "{count, plural, one {# adult} other {# adulți}}",
+    "child": "{count, plural, one {# copil} other {# copii}}",
+    "adults": "Adulți",
+    "children": "Copii",
+    "adults_hint": "12 ani și mai mare",
+    "children_hint": "de la 2 până la 11",
+    "max_seats_reached": "S-au atins cele {count} locuri disponibile"
   }
 }

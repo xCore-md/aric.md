@@ -50,6 +50,7 @@ export const QUERY_KEYS = {
   refundPolicy: "refundPolicy",
   passengers: "passengers",
   booking: "booking",
+  drafts: "drafts",
   tickets: "tickets",
 } as const;
 

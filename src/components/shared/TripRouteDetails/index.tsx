@@ -7,14 +7,16 @@ import { parse } from "date-fns/parse";
 import { format } from "date-fns/format";
 import { dateFnsLocalesByCode } from "@/utils";
 import { enUS } from "date-fns/locale/en-US";
+import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 
 export const TripRouteDetails: React.FC<{
   data: SearchResponse;
   route: TripSegment;
   duration: number;
 }> = ({ data, route: routeData, duration: durationMinutes }) => {
-  const t = useTranslations();
   const locale = useLocale();
+  const t = useTranslations();
+  const { formatUTC } = useFormatUTCToLocal();
 
   const durationLabel = React.useMemo(() => {
     const hours = Math.floor(durationMinutes / 60);
@@ -29,34 +31,20 @@ export const TripRouteDetails: React.FC<{
     return t("duration.minutes", { minutes });
   }, [durationMinutes, t]);
 
-  const date = React.useMemo(() => {
-    const dateFnsLocale = dateFnsLocalesByCode[locale] || enUS;
-
-    const formatDate = (value: string) =>
-      format(parse(value, "yyyy-MM-dd", new Date()), "dd MMMM yyyy", {
-        locale: dateFnsLocale,
-      });
-
-    return {
-      departure_date: routeData?.departure_date
-        ? formatDate(routeData.departure_date)
-        : "",
-      arrival_date: routeData?.arrival_date
-        ? formatDate(routeData.arrival_date)
-        : "",
-    };
-  }, [routeData, locale]);
-
   return (
     <div className="flex gap-4">
       <div className="w-full grid-cols-5 items-center gap-4 space-y-3 md:grid md:space-y-0">
         <div className="col-span-2 flex flex-row-reverse items-center justify-between md:block">
           <div className="flex flex-col items-end md:mb-6 md:flex-row md:items-center md:gap-5">
             <div className="font-semibold md:text-lg">
-              {routeData?.departure_datetime}
+              {formatUTC(routeData?.departure_datetime)?.time}
             </div>
             <div className="text-text-gray text-xs md:text-base">
-              {date?.departure_date}
+              {
+                formatUTC(routeData?.departure_datetime, {
+                  dateFormat: "d MMMM yyyy",
+                })?.date
+              }
             </div>
           </div>
 
@@ -72,8 +60,6 @@ export const TripRouteDetails: React.FC<{
               </div>
             </div>
             <div className="md:ml-5">
-              Stația,
-              <br />{" "}
               {getLocalizedField(
                 data?.metadata?.from_station,
                 "address",
@@ -93,11 +79,16 @@ export const TripRouteDetails: React.FC<{
 
         <div className="col-span-2 flex flex-row-reverse items-center justify-between md:block md:justify-end">
           <div className="flex flex-col items-end md:mb-6 md:flex-row md:items-center md:justify-end md:gap-5">
-            <div className="font-semibold md:text-lg">
-              {routeData?.arrival_datetime}
-            </div>
             <div className="text-text-gray text-xs md:text-base">
-              {date?.arrival_date}
+              {
+                formatUTC(routeData?.arrival_datetime, {
+                  dateFormat: "d MMMM yyyy",
+                })?.date
+              }
+            </div>
+
+            <div className="font-semibold md:text-lg">
+              {formatUTC(routeData?.arrival_datetime)?.time}
             </div>
           </div>
 
@@ -109,8 +100,6 @@ export const TripRouteDetails: React.FC<{
               </div>
             </div>
             <div className="md:mr-5">
-              Stația,
-              <br />{" "}
               {getLocalizedField(data?.metadata?.to_station, "address", locale)}
             </div>
           </div>

@@ -8,22 +8,24 @@ type TicketStatusBadgeProps = {
   status: BookingStatus;
 };
 
+const text = "text-black";
+
 const statusStyleMap: Record<BookingStatus, { bg: string; text: string }> = {
   [BookingStatus.Draft]: {
     bg: "bg-gray-100",
-    text: "text-gray-950",
+    text,
   },
   [BookingStatus.Reserved]: {
     bg: "bg-blue",
-    text: "text-black",
+    text,
   },
   [BookingStatus.Paid]: {
     bg: "bg-green",
-    text: "text-black",
+    text,
   },
   [BookingStatus.Cancelled]: {
     bg: "bg-red",
-    text: "text-black",
+    text,
   },
 };
 

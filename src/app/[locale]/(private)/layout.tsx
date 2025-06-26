@@ -13,7 +13,6 @@ export default function PrivateLayout({
   const t = useTranslations();
   const pathname = usePathname();
 
-  console.log({ pathname });
   return (
     <div className="container mt-4 mb-20">
       <Card className="hidden border lg:block">

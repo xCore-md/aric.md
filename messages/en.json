@@ -101,5 +101,16 @@
     "reserved": "Rezervat",
     "paid": "Plătit",
     "cancelled": "Anulat"
+  },
+  "passengers": {
+    "label": "Number of passengers",
+    "none": "No passengers",
+    "adult": "{count, plural, one {# adult} other {# adults}}",
+    "child": "{count, plural, one {# child} other {# children}}",
+    "adults": "Adults",
+    "children": "Children",
+    "adults_hint": "12 years and older",
+    "children_hint": "from 2 to 11 years",
+    "max_seats_reached": "The limit of {count} available seats has been reached"
   }
 }

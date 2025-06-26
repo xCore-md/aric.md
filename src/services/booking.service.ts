@@ -16,6 +16,14 @@ class BookingService {
       .json<PaginatedResponse<Booking>>();
   }
 
+  getDrafts(params?: PaginationParams) {
+    return this.clientApi
+      .get("customer/bookings/bulk", {
+        searchParams: { ...params, status: "draft" },
+      })
+      .json<PaginatedResponse<Booking>>();
+  }
+
   getById = (id: number) => {
     return this.clientApi.get(`customer/bookings/bulk/${id}`).json<Booking>();
   };

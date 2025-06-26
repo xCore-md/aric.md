@@ -7,6 +7,8 @@ import type {
   Station,
   User,
   Ticket,
+  DepartureArrivalTime,
+  TripItem,
 } from "@/types";
 
 export enum BookingStatus {
@@ -16,7 +18,10 @@ export enum BookingStatus {
   Cancelled = "cancelled",
 }
 
-export interface Booking extends Timestamps, TotalAmounts {
+export interface Booking
+  extends Timestamps,
+    TotalAmounts,
+    DepartureArrivalTime {
   id: number;
   customer_id: number;
   trip_id: number;
@@ -30,7 +35,7 @@ export interface Booking extends Timestamps, TotalAmounts {
   status: BookingStatus;
 
   customer: User;
-  trip: Trip;
+  trip: TripItem;
   return_trip: Trip | null;
   station_from: Station | null;
   station_to: Station | null;

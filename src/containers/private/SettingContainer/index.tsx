@@ -20,7 +20,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { profileService } from "@/services/profile.service";
 import { removeMoldovaPrefix } from "@/utils";
 import { User } from "@/types";
@@ -33,6 +33,7 @@ const formSchema = z.object({
 });
 
 export const SettingContainer: React.FC = () => {
+  const queryClient = useQueryClient();
   const t = useTranslations();
   const locale = useLocale();
 
@@ -55,10 +56,13 @@ export const SettingContainer: React.FC = () => {
 
   const updateProfileData = useMutation({
     mutationFn: (data: Partial<User>) => profileService.update(data),
-    onSuccess: () => toast.success("Profile updated!"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.profile],
+      });
+      toast.success(t("$Profile updated!"));
+    },
   });
-
-  console.log("🔍 errors:", form.formState.errors);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
