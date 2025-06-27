@@ -9,6 +9,7 @@ import type {
   Ticket,
   DepartureArrivalTime,
   TripItem,
+  PassengerCreateDto,
 } from "@/types";
 
 export enum BookingStatus {
@@ -61,4 +62,16 @@ export type DraftBookingPayload = {
   to_station_id: number;
   return_trip_id: number | null;
   draft_booking_id: number | null;
+};
+
+export type BookingPricePayload = {
+  booking_id: number;
+  adults: number;
+  children: number;
+};
+
+export type BookingPayload = {
+  currency: Currency;
+  passengers: PassengerCreateDto;
+  // payment: Payment;
 };

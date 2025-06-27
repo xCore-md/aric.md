@@ -9,26 +9,41 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useFormContext, useWatch } from "react-hook-form";
 
 export const PassengerCountSelect: React.FC<{
   availableSeats: number;
 }> = ({ availableSeats }) => {
   const t = useTranslations();
   const [open, setOpen] = React.useState(false);
-
-  const [adults, setAdults] = React.useState(1);
-  const [children, setChildren] = React.useState(0);
-
-  const totalLabel = () => {
-    const parts = [];
-    if (adults > 0) parts.push(`${t("passengers.adult", { count: adults })}`);
-    if (children > 0)
-      parts.push(`${t("passengers.child", { count: children })}`);
-    return parts.join(", ") || t("passengers.none");
+  const { setValue, control } = useFormContext();
+  const passengerCounts = useWatch({ control, name: "passengerCounts" }) || {
+    adults: 1,
+    children: 0,
   };
 
-  const totalPassengers = adults + children;
+  const totalPassengers = passengerCounts.adults + passengerCounts.children;
   const isAtLimit = totalPassengers >= availableSeats;
+
+  const updateCount = (type: "adults" | "children", value: number) => {
+    setValue("passengerCounts", {
+      ...passengerCounts,
+      [type]: value,
+    });
+  };
+
+  const totalLabel = () => {
+    const parts = [
+      passengerCounts?.adults > 0
+        ? t("passengers.adult", { count: passengerCounts?.adults })
+        : null,
+      passengerCounts?.children > 0
+        ? t("passengers.child", { count: passengerCounts?.children })
+        : null,
+    ].filter(Boolean);
+
+    return parts.join(", ") || t("passengers.none");
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -60,16 +75,20 @@ export const PassengerCountSelect: React.FC<{
             </div>
             <div className="mt-2 flex items-center justify-between">
               <ControlButton
-                onClick={() => setAdults(Math.max(1, adults - 1))}
-                disabled={adults <= 1}
+                onClick={() =>
+                  updateCount("adults", Math.max(1, passengerCounts.adults - 1))
+                }
+                disabled={passengerCounts.adults <= 1}
               />
               <span className="flex size-10 flex-none items-center justify-center">
-                {adults}
+                {passengerCounts.adults}
               </span>
               <ControlButton
-                onClick={() => setAdults(adults + 1)}
-                icon="plus"
+                onClick={() =>
+                  updateCount("adults", passengerCounts.adults + 1)
+                }
                 disabled={isAtLimit}
+                icon="plus"
               />
             </div>
           </div>
@@ -88,16 +107,23 @@ export const PassengerCountSelect: React.FC<{
             </div>
             <div className="mt-2 flex items-center justify-between">
               <ControlButton
-                onClick={() => setChildren(Math.max(0, children - 1))}
-                disabled={children <= 0}
+                onClick={() =>
+                  updateCount(
+                    "children",
+                    Math.max(0, passengerCounts.children - 1),
+                  )
+                }
+                disabled={passengerCounts.children <= 0}
               />
               <span className="flex size-10 flex-none items-center justify-center">
-                {children}
+                {passengerCounts.children}
               </span>
               <ControlButton
-                onClick={() => setChildren(children + 1)}
-                icon="plus"
+                onClick={() =>
+                  updateCount("children", passengerCounts.children + 1)
+                }
                 disabled={isAtLimit}
+                icon="plus"
               />
             </div>
           </div>
@@ -129,6 +155,7 @@ const ControlButton: React.FC<{
       className={cn("rounded-full", disabled && "opacity-40")}
       onClick={onClick}
       disabled={disabled}
+      type="button"
     >
       <Icon className="h-4 w-4" />
     </Button>

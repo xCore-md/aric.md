@@ -2,9 +2,9 @@ import { getCookie } from "cookies-next";
 import { CurrencyEnum } from "@/types";
 
 export const getAmountByCurrency = (
-  obj: Record<string, number> | undefined,
-  fallbackCurrency: CurrencyEnum = CurrencyEnum.MDL,
+  obj: Record<string, any> | undefined,
   prefix = "price_",
+  fallbackCurrency: CurrencyEnum = CurrencyEnum.MDL,
 ): number | null => {
   if (!obj) return null;
 

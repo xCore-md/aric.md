@@ -51,7 +51,7 @@ export const useCurrency = () => {
   const setCurrency = useCallback((value: CurrencyEnum) => {
     setCookie("currency", value, {
       path: "/",
-      maxAge: 60 * 60 * 24 * 365, // 1 an
+      maxAge: 60 * 60 * 24 * 365,
     });
   }, []);
 

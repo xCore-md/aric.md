@@ -3,8 +3,10 @@ import {
   Booking,
   BookingInitDto,
   BookingInitResponse,
+  BookingPricePayload,
   PaginatedResponse,
   PaginationParams,
+  Prices,
 } from "@/types";
 
 class BookingService {
@@ -24,6 +26,12 @@ class BookingService {
       .json<PaginatedResponse<Booking>>();
   }
 
+  getPrice(data: BookingPricePayload) {
+    return this.clientApi
+      .post("customer/bookings/price", { json: data })
+      .json<Prices>();
+  }
+
   getById = (id: number) => {
     return this.clientApi.get(`customer/bookings/bulk/${id}`).json<Booking>();
   };
@@ -31,6 +39,12 @@ class BookingService {
   init = (data: BookingInitDto) => {
     return this.clientApi
       .post("customer/bookings/init", { json: data })
+      .json<BookingInitResponse>();
+  };
+
+  complete = ({ id, ...data }: PassengerUpdateDto) => {
+    return this.clientApi
+      .post(`customer/bookings/${id}/complete`, { json: data })
       .json<BookingInitResponse>();
   };
 

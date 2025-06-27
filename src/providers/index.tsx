@@ -15,7 +15,7 @@ import { HTTPError } from "ky";
 import { SessionProvider } from "next-auth/react";
 
 function handleApiError(error: unknown) {
-  console.log(error);
+  console.error(error);
 
   if (error instanceof HTTPError) {
     error.response

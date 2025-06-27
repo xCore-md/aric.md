@@ -22,16 +22,13 @@ import { ticketService } from "@/services/ticket.service";
 import { PaginationUI } from "@/components/shared/pagination-ui";
 import { bookingService } from "@/services/booking.service";
 import { TicketStatusBadge } from "@/components/shared/TicketStatusBadge";
+import { useCurrency } from "@/hooks/useCurrency";
+import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
 
 export const TicketsContainer: React.FC = () => {
   const queryClient = useQueryClient();
   const t = useTranslations();
-  // const { per_page, page, updateLimit, updatePage } = usePagination();
-
-  // const { data: tickets, isLoading } = useQuery({
-  //   queryKey: [QUERY_KEYS.tickets, page, per_page],
-  //   queryFn: () => ticketService.getAll({ page, per_page }),
-  // });
+  const { formatCurrency } = useCurrency();
 
   const { per_page, page, updateLimit, updatePage } = usePagination();
 
@@ -58,7 +55,9 @@ export const TicketsContainer: React.FC = () => {
                 <div key={ticket.id} className="space-y-4">
                   <div className="bg-back flex flex-wrap items-center justify-between gap-6 rounded-xl p-6 lg:flex-nowrap">
                     <div className="">
-                      <div className="text-text-gray text-sm">ID #0234</div>
+                      <div className="text-text-gray text-sm">
+                        ID #{ticket?.ticket_code}
+                      </div>
                       <TicketStatusBadge status={ticket?.status} />
                     </div>
 
@@ -85,7 +84,12 @@ export const TicketsContainer: React.FC = () => {
                         <div className="">
                           <div className="text-text-gray text-xs">Preț</div>
                           <div className="-mt-1 text-lg font-semibold">
-                            120 MDL
+                            {formatCurrency(
+                              getAmountByCurrency(
+                                ticket?.booking,
+                                "total_amount_",
+                              ),
+                            )}
                           </div>
                         </div>
                       </div>
