@@ -10,6 +10,7 @@ import type {
   DepartureArrivalTime,
   TripItem,
   PassengerCreateDto,
+  CurrencyEnum,
 } from "@/types";
 
 export enum BookingStatus {
@@ -70,14 +71,22 @@ export type BookingRecalculatePricePayload = {
   child_count: number;
 };
 
+export enum PaymentMethodEnum {
+  Cash = "cash",
+  Card = "card",
+}
+
 export type PaymentInput = {
   method: "cash" | "card";
   gateway?: string;
 };
 
 export type BookingPayload = {
-  currency: Currency;
-  passengers: PassengerCreateDto;
+  currency: CurrencyEnum;
+  passengers: {
+    new: PassengerCreateDto[];
+    existing: number[];
+  };
   payment: PaymentInput;
 };
 

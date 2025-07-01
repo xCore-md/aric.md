@@ -17,7 +17,6 @@ export interface PassengerCreateDto {
   last_name: string;
   birth_date: string | null;
   phone: string | null;
-  type: PassengerType;
 }
 
 export interface PassengerUpdateDto extends Omit<PassengerCreateDto, "type"> {

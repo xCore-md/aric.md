@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { PRIVATE_LINK, QUERY_KEYS } from "@/utils/constants";
 import { Link } from "@/i18n/navigation";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { bookingService } from "@/services/booking.service";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 
@@ -29,20 +29,17 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { isValidPhoneNumber } from "libphonenumber-js";
-import { CurrencyEnum } from "@/types";
+import { CurrencyEnum, PaymentMethodEnum } from "@/types";
+import { toast } from "sonner";
 
-export const phoneNumberSchema = z
-  .string()
-  .nullable()
-  .refine(
-    (val) => {
-      if (!val) return true; // acceptăm null
-      return isValidPhoneNumber(val);
-    },
-    {
-      message: "Numărul de telefon este invalid",
-    },
-  );
+export const phoneNumberSchema = z.string().refine(
+  (val) => {
+    return isValidPhoneNumber(val);
+  },
+  {
+    message: "Numărul de telefon este invalid",
+  },
+);
 
 export const passengerFormSchema = z.object({
   passengers: z.object({
@@ -51,7 +48,7 @@ export const passengerFormSchema = z.object({
         z.object({
           first_name: z.string().min(3),
           last_name: z.string().min(3),
-          birth_date: z.string().nullable().optional(),
+          birth_date: z.date(),
           phone: phoneNumberSchema,
         }),
       )
@@ -65,13 +62,13 @@ export const passengerFormSchema = z.object({
   }),
 
   payment: z.object({
-    method: z.string(),
+    method: z.nativeEnum(PaymentMethodEnum),
   }),
 });
 
 const defaultValues = {
   passengers: {
-    new: [{ first_name: "", last_name: "", phone: null, birth_date: null }],
+    new: [],
     existing: [],
   },
   passengerCounts: {
@@ -79,7 +76,7 @@ const defaultValues = {
     child: 0,
   },
   payment: {
-    method: "cash",
+    method: PaymentMethodEnum.Cash,
   },
 };
 
@@ -113,9 +110,33 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
     passengerCounts,
   });
 
-  console.log(booking);
+  const bookingComplete = useMutation({
+    mutationFn: bookingService.complete,
+    onSuccess: (data) => {
+      console.log(data);
+      toast.success(`Succes => ${data.booking_id} => ${data.redirect_url}`);
+    },
+  });
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: PassengerFormSchema) => {
+    const { passengers, payment } = data;
+    bookingComplete.mutate({
+      booking_id: id,
+      passengers: {
+        new: passengers?.new?.map((p) => ({
+          ...p,
+          birth_date: String(p?.birth_date),
+        })),
+        existing: { ...passengers?.existing },
+      },
+      payment: {
+        method: payment.method,
+        ...(payment.method === PaymentMethodEnum.Card && { gateway: "fake" }),
+      },
+      currency,
+    });
+    console.log(data);
+  };
 
   return isLoading ? (
     <div className="flex justify-center pt-20">
@@ -225,15 +246,20 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                   </div>
 
                   <RadioGroup
-                    value={paymentMethod || "cash"}
-                    onValueChange={(value) => setValue("payment.method", value)}
+                    value={paymentMethod || PaymentMethodEnum.Cash}
+                    onValueChange={(value: PaymentMethodEnum) =>
+                      setValue("payment.method", value)
+                    }
                   >
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
                       <label
                         htmlFor="payment-method-card"
                         className="flex items-center gap-2 font-bold"
                       >
-                        <RadioGroupItem value="card" id="payment-method-card" />
+                        <RadioGroupItem
+                          value={PaymentMethodEnum.Card}
+                          id="payment-method-card"
+                        />
                         <span>Achitare online</span>
                       </label>
 
@@ -241,7 +267,10 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                         htmlFor="payment-method-cash"
                         className="flex items-center gap-2 font-bold"
                       >
-                        <RadioGroupItem value="cash" id="payment-method-cash" />
+                        <RadioGroupItem
+                          value={PaymentMethodEnum.Cash}
+                          id="payment-method-cash"
+                        />
                         <span>Rezervare</span>
                       </label>
                     </div>
@@ -249,7 +278,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                 </div>
 
                 {/* Third step form */}
-                {paymentMethod === "card" && (
+                {paymentMethod === PaymentMethodEnum.Card && (
                   <div className="space-y-4">
                     <div className="text-lg font-semibold">
                       3. {t("$Alegeți o poartă de plată")}:
@@ -417,7 +446,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                 </div>
 
                 <Button type="submit" size="lg" className="w-full">
-                  Achită
+                  {paymentMethod === "cash" ? t("$Rezervare") : t("$Achită")}
                   <ChevronRightIcon />
                 </Button>
               </div>
