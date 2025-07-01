@@ -22,9 +22,9 @@ export const BookingInitContainer = () => {
 
   React.useEffect(() => {
     const payload = getBookingDraft();
-
-    console.log({ payload });
-    payload && bookingInit.mutate(payload);
+    if (payload) {
+      bookingInit.mutate(payload);
+    }
   }, [getBookingDraft]);
 
   return (
