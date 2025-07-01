@@ -16,17 +16,15 @@ import {
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import logo from "@/assets/images/logo-black.svg";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { usePagination } from "@/hooks/usePagination";
 import { ticketService } from "@/services/ticket.service";
 import { PaginationUI } from "@/components/shared/pagination-ui";
-import { bookingService } from "@/services/booking.service";
 import { TicketStatusBadge } from "@/components/shared/TicketStatusBadge";
 import { useCurrency } from "@/hooks/useCurrency";
 import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
 
 export const TicketsContainer: React.FC = () => {
-  const queryClient = useQueryClient();
   const t = useTranslations();
   const { formatCurrency } = useCurrency();
 

@@ -1,12 +1,7 @@
-import { CurrencyEnum } from "@/types";
-import { getCookie, setCookie } from "cookies-next";
+import { useContext, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { useMemo, useCallback } from "react";
-
-const DEFAULT_CURRENCY = CurrencyEnum.MDL;
-
-const isValidCurrency = (value: any): value is CurrencyEnum =>
-  Object.values(CurrencyEnum).includes(value);
+import { CurrencyEnum } from "@/types";
+import { CurrencyContext } from "@/providers/contexts/CurrencyContext";
 
 type FormatCurrencyOptions = {
   with?: "symbol" | "label" | "none";
@@ -19,9 +14,13 @@ const symbolMap: Record<CurrencyEnum, string> = {
 
 export const useCurrency = () => {
   const t = useTranslations();
+  const context = useContext(CurrencyContext);
 
-  const raw = getCookie("currency")?.toString().toUpperCase();
-  const currency = isValidCurrency(raw) ? raw : DEFAULT_CURRENCY;
+  if (!context) {
+    throw new Error("useCurrency must be used within a CurrencyProvider");
+  }
+
+  const { currency, setCurrency } = context;
 
   const currencySymbol = useMemo(() => symbolMap[currency], [currency]);
   const currencyLabel = useMemo(() => t(`currency.${currency}`), [currency, t]);
@@ -42,24 +41,16 @@ export const useCurrency = () => {
       };
 
       const suffix = suffixMap[options.with ?? "label"];
-
       return `${formatted}${suffix ? ` ${suffix}` : ""}`;
     },
     [currencySymbol, currencyLabel],
   );
 
-  const setCurrency = useCallback((value: CurrencyEnum) => {
-    setCookie("currency", value, {
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365,
-    });
-  }, []);
-
   return {
     currency,
+    setCurrency,
     currencySymbol,
     currencyLabel,
     formatCurrency,
-    setCurrency,
   };
 };

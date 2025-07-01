@@ -11,18 +11,20 @@ import {
 import { QUERY_KEYS } from "@/utils/constants";
 import { passengerService } from "@/services/passenger.service";
 import { useQuery } from "@tanstack/react-query";
-import { PassengerType } from "@/types";
+import { Passenger, PassengerType } from "@/types";
 
 type Props = {
   type?: PassengerType;
-  selectedIds: number[];
-  onSelect: (ids: number[]) => void;
+  selected: Passenger[];
+  onSelect: (passengers: Passenger[]) => void;
+  defaultSelectedIds?: number[];
 };
 
 export const PassengerSelectExisting: React.FC<Props> = ({
   type = "adult",
-  selectedIds,
+  selected,
   onSelect,
+  defaultSelectedIds,
 }) => {
   const t = useTranslations();
   const [open, setOpen] = React.useState(false);
@@ -30,12 +32,29 @@ export const PassengerSelectExisting: React.FC<Props> = ({
   const { data: passengers, isLoading } = useQuery({
     queryKey: [QUERY_KEYS.passengers, type],
     queryFn: () => passengerService.getAll({ type }),
+    enabled: open || !!defaultSelectedIds?.length,
   });
 
-  const toggleSelection = (id: number) => {
-    const newSelected = selectedIds.includes(id)
-      ? selectedIds.filter((i) => i !== id)
-      : [...selectedIds, id];
+  // // Aplică defaultSelectedIds o singură dată când pasagerii sunt încărcați
+  // React.useEffect(() => {
+  //   if (!passengers?.data || !defaultSelectedIds?.length) return;
+
+  //   const defaults = passengers.data.filter((p) =>
+  //     defaultSelectedIds.includes(p.id),
+  //   );
+
+  //   if (defaults.length) {
+  //     onSelect(defaults);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [passengers?.data, defaultSelectedIds]);
+
+  const toggleSelection = (passenger: Passenger) => {
+    const isSelected = selected?.some((p) => p.id === passenger.id);
+    const newSelected = isSelected
+      ? selected?.filter((p) => p.id !== passenger.id)
+      : [...selected, passenger];
+
     onSelect(newSelected);
   };
 
@@ -61,14 +80,14 @@ export const PassengerSelectExisting: React.FC<Props> = ({
           </div>
         ) : (
           <ul className="space-y-1">
-            {passengers?.data?.map((passenger) => {
-              const selected = selectedIds.includes(passenger.id);
+            {passengers?.data.map((passenger) => {
+              const isSelected = selected.some((p) => p.id === passenger.id);
               return (
                 <li
                   key={passenger.id}
-                  onClick={() => toggleSelection(passenger.id)}
+                  onClick={() => toggleSelection(passenger)}
                   className={`flex cursor-pointer items-center justify-between rounded-md px-3 py-2 ${
-                    selected
+                    isSelected
                       ? "bg-accent text-accent-foreground"
                       : "hover:bg-muted"
                   }`}
@@ -76,7 +95,7 @@ export const PassengerSelectExisting: React.FC<Props> = ({
                   <span>
                     {passenger.first_name} {passenger.last_name}
                   </span>
-                  {selected && <Check className="size-4" />}
+                  {isSelected && <Check className="size-4" />}
                 </li>
               );
             })}

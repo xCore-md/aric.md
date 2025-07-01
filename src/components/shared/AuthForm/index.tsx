@@ -30,7 +30,6 @@ import { useLocale } from "next-intl";
 import { signIn } from "next-auth/react";
 import { profileService } from "@/services/profile.service";
 import { useRouter } from "@/i18n/navigation";
-import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import { MOLDOVA_PHONE_CODE } from "@/utils/constants";
 import { formatTime } from "@/utils";

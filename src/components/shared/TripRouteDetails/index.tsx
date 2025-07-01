@@ -3,10 +3,6 @@ import React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { getLocalizedField } from "@/utils/getLocalizedField";
 import type { SearchResponse, TripSegment } from "@/types";
-import { parse } from "date-fns/parse";
-import { format } from "date-fns/format";
-import { dateFnsLocalesByCode } from "@/utils";
-import { enUS } from "date-fns/locale/en-US";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 
 export const TripRouteDetails: React.FC<{

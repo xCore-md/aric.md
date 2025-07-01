@@ -20,6 +20,6 @@ export interface PassengerCreateDto {
   type: PassengerType;
 }
 
-export interface PassengerUpdateDto extends PassengerCreateDto {
+export interface PassengerUpdateDto extends Omit<PassengerCreateDto, "type"> {
   id: number;
 }

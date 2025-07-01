@@ -27,6 +27,7 @@ import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { isValid } from "date-fns/isValid";
+import { formatISO } from "date-fns/formatISO";
 
 export const PassengersContainer: React.FC = () => {
   const queryClient = useQueryClient();
@@ -118,9 +119,8 @@ const PassengerRow: React.FC<{
       id: data?.id,
       first_name,
       last_name,
-      birth_date,
+      birth_date: formatISO(birth_date),
       phone: MOLDOVA_PHONE_CODE + phone.replace(/\s+/g, ""),
-      type: "adult",
     });
     setEdit(false);
   };
@@ -150,7 +150,6 @@ const PassengerRow: React.FC<{
   const selectedDate = React.useMemo(() => {
     if (!birth_date) return undefined;
 
-    console.log({ birth_date });
     const parsed = parse(birth_date, "yyyy-MM-dd", new Date());
     return isValid(parsed) ? parsed : undefined;
   }, [birth_date]);

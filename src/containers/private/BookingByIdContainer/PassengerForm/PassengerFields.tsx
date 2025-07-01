@@ -11,6 +11,7 @@ export const PassengerFields: React.FC = () => {
     adult: 1,
     child: 0,
   };
+
   const total = passengerCounts.adult + passengerCounts.child;
 
   const { fields, append, remove } = useFieldArray({

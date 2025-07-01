@@ -8,7 +8,7 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
+  // CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
@@ -105,7 +105,7 @@ const CountrySelect = ({
   onChange,
 }: CountrySelectProps) => {
   const scrollAreaRef = React.useRef<HTMLDivElement>(null);
-  const [searchValue, setSearchValue] = React.useState("");
+  // const [searchValue, setSearchValue] = React.useState("");
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (

@@ -23,7 +23,6 @@ import { LogoutAlert } from "../logout-alert";
 import { useProfile } from "@/hooks/profile";
 
 import { useRouter } from "next/navigation";
-import { getCookie, setCookie } from "cookies-next";
 
 import {
   Dialog,
@@ -41,6 +40,7 @@ import {
 } from "@/utils/constants";
 import { getFullName } from "@/utils/getFullName";
 import { CurrencyEnum, LanguageEnum } from "@/types";
+import { useCurrency } from "@/hooks/useCurrency";
 
 const languages: {
   key: string;
@@ -352,22 +352,14 @@ const AccountButton = () => {
 
 export const CurrencyPopover = () => {
   const router = useRouter();
-  const [selectedCurrency, setSelectedCurrency] =
-    React.useState<CurrencyEnum | null>(null);
-
-  React.useEffect(() => {
-    const savedCurrency = getCookie("currency") || CurrencyEnum.MDL;
-    setSelectedCurrency(savedCurrency as CurrencyEnum);
-  }, []);
+  const { setCurrency, currency } = useCurrency();
 
   const handleChange = (currency: CurrencyEnum) => {
-    setSelectedCurrency(currency);
-    setCookie("currency", currency);
+    setCurrency(currency);
     router.refresh();
   };
 
-  if (!selectedCurrency)
-    return <div className="skeleton dark h-8 w-18 rounded-full" />;
+  if (!currency) return <div className="skeleton dark h-8 w-18 rounded-full" />;
 
   return (
     <Popover>
@@ -377,24 +369,24 @@ export const CurrencyPopover = () => {
           size="sm"
           className="font-semibold text-white uppercase"
         >
-          {selectedCurrency}
+          {currency}
           <ChevronDown strokeWidth={3} />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-16 space-y-2 p-1">
-        {CURRENCIES.map((currency) => (
+        {CURRENCIES?.map((currencyItem) => (
           <Button
-            key={currency}
+            key={currencyItem}
             variant="ghost"
             size="sm"
             className={cn(
               "w-full justify-start rounded-lg font-semibold",
-              currency === selectedCurrency &&
+              currencyItem === currency &&
                 "pointer-events-none opacity-50 grayscale",
             )}
-            onClick={() => handleChange(currency)}
+            onClick={() => handleChange(currencyItem)}
           >
-            {currency}
+            {currencyItem}
           </Button>
         ))}
       </PopoverContent>

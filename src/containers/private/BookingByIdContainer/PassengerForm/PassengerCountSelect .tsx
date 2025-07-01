@@ -18,10 +18,7 @@ export const PassengerCountSelect: React.FC<{
   const t = useTranslations();
   const [open, setOpen] = React.useState(false);
   const { setValue, control } = useFormContext();
-  const passengerCounts = useWatch({ control, name: "passengerCounts" }) || {
-    adult: 1,
-    child: 0,
-  };
+  const passengerCounts = useWatch({ control, name: "passengerCounts" });
 
   const totalPassengers = passengerCounts.adult + passengerCounts.child;
   const isAtLimit = totalPassengers >= availableSeats;

@@ -41,11 +41,11 @@ declare module "next-auth/jwt" {
   }
 }
 
-declare module "next-intl" {
-  interface AppConfig {
-    Messages: import("./common.types").Messages;
-  }
-}
+// declare module "next-intl" {
+//   interface AppConfig {
+//     Messages: import("./common.types").Messages;
+//   }
+// }
 
 // React 19 issue: https://github.com/juliencrn/usehooks-ts/issues/663
 declare module "usehooks-ts" {

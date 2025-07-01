@@ -8,11 +8,11 @@ import {
 } from "@tanstack/react-query";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ProgressProvider } from "@bprogress/next/app";
-// import { getQueryClient } from "@/query/get-query-client";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { HTTPError } from "ky";
 import { SessionProvider } from "next-auth/react";
+import { CurrencyProvider } from "./contexts/CurrencyContext";
 
 function handleApiError(error: unknown) {
   console.error(error);
@@ -51,15 +51,15 @@ const queryClient = new QueryClient({
 export const Providers: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // const queryClient = getQueryClient();
-
   return (
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
         <NuqsAdapter>
           <ProgressProvider height="4px" color="#00C9FF" shallowRouting>
-            {children}
-            <Toaster richColors />
+            <CurrencyProvider>
+              {children}
+              <Toaster richColors />
+            </CurrencyProvider>
           </ProgressProvider>
         </NuqsAdapter>
       </QueryClientProvider>

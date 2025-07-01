@@ -25,47 +25,103 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useBookingPrice } from "@/hooks/useBookingPrice ";
 import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { isValidPhoneNumber } from "libphonenumber-js";
+import { CurrencyEnum } from "@/types";
+
+export const phoneNumberSchema = z
+  .string()
+  .nullable()
+  .refine(
+    (val) => {
+      if (!val) return true; // acceptăm null
+      return isValidPhoneNumber(val);
+    },
+    {
+      message: "Numărul de telefon este invalid",
+    },
+  );
+
+export const passengerFormSchema = z.object({
+  passengers: z.object({
+    new: z
+      .array(
+        z.object({
+          first_name: z.string().min(3),
+          last_name: z.string().min(3),
+          birth_date: z.string().nullable().optional(),
+          phone: phoneNumberSchema,
+        }),
+      )
+      .min(1),
+    existing: z.array(z.number()),
+  }),
+
+  passengerCounts: z.object({
+    adult: z.number().min(0),
+    child: z.number().min(0),
+  }),
+
+  payment: z.object({
+    method: z.string(),
+  }),
+});
+
+const defaultValues = {
+  passengers: {
+    new: [{ first_name: "", last_name: "", phone: null, birth_date: null }],
+    existing: [],
+  },
+  passengerCounts: {
+    adult: 1,
+    child: 0,
+  },
+  payment: {
+    method: "cash",
+  },
+};
+
+export type PassengerFormSchema = z.infer<typeof passengerFormSchema>;
 
 export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
-  const form = useForm({
-    defaultValues: {
-      passengers: {
-        new: [],
-        existing: [],
-      },
-      passengerCounts: {
-        adult: 1,
-        child: 0,
-      },
-    },
-  });
-
-  const { watch, handleSubmit } = form;
-
   const t = useTranslations();
   const locale = useLocale();
   const { formatUTC } = useFormatUTCToLocal();
-  const { formatCurrency } = useCurrency();
+  const { formatCurrency, setCurrency, currency } = useCurrency();
 
-  const { data: booking } = useQuery({
+  const form = useForm<PassengerFormSchema>({
+    resolver: zodResolver(passengerFormSchema),
+    defaultValues,
+  });
+
+  const { watch, setValue, handleSubmit } = form;
+
+  console.warn(form.formState.errors);
+
+  const { data: booking, isLoading } = useQuery({
     queryKey: [QUERY_KEYS.booking, id],
     queryFn: () => bookingService.getById(id),
   });
 
   const passengerCounts = watch("passengerCounts");
+  const paymentMethod = watch("payment.method");
 
   const { recalculatedPrices, isRecalculatingPrice } = useBookingPrice({
     bookingId: id,
     passengerCounts,
   });
 
-  console.log({ recalculatedPrices });
-
   console.log(booking);
 
   const onSubmit = (data: any) => console.log(data);
 
-  return (
+  return isLoading ? (
+    <div className="flex justify-center pt-20">
+      <div className="loader" />
+    </div>
+  ) : (
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="py-8">
@@ -88,23 +144,38 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
               />
 
               <div className="my-8 space-y-12 border-y border-dashed py-8">
+                {/* First step form */}
                 <div className="space-y-4">
                   <div className="text-lg font-semibold">
-                    1. Alegeți moneda:
+                    1. {t("$Alegeți moneda")}:
                   </div>
 
-                  {booking?.trip?.prices?.price_mdl}
-
-                  <RadioGroup defaultValue="mdl">
+                  <RadioGroup
+                    value={currency}
+                    onValueChange={(value: CurrencyEnum) => {
+                      setCurrency(value);
+                      console.log(value);
+                    }}
+                  >
                     <div className="flex flex-wrap gap-6">
                       <label
                         htmlFor="currency_mdl"
                         className="bg-back flex items-center gap-2 rounded-full border p-4 font-bold"
                       >
-                        <RadioGroupItem value="MDL" id="currency_mdl" />
-                        <span>
-                          {formatCurrency(booking?.trip?.prices?.price_mdl)}
-                        </span>
+                        <RadioGroupItem
+                          value={CurrencyEnum.MDL}
+                          id="currency_mdl"
+                        />
+
+                        {isRecalculatingPrice ? (
+                          <div className="skeleton mr-2 h-5 w-20 rounded-full" />
+                        ) : (
+                          <div className="pr-6">
+                            {recalculatedPrices?.price_mdl ||
+                              booking?.trip?.prices?.price_mdl}{" "}
+                            MDL
+                          </div>
+                        )}
 
                         <div className="relative ml-12 size-6 flex-none overflow-hidden rounded-full">
                           <Image
@@ -120,11 +191,20 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                         htmlFor="currency_uah"
                         className="bg-back flex items-center gap-2 rounded-full border p-4 font-bold"
                       >
-                        <RadioGroupItem value="UAH" id="currency_uah" />
-                        <span>
-                          {formatCurrency(booking?.trip?.prices?.price_uah)} UAH
-                        </span>
+                        <RadioGroupItem
+                          value={CurrencyEnum.UAH}
+                          id="currency_uah"
+                        />
 
+                        {isRecalculatingPrice ? (
+                          <div className="skeleton mr-2 h-5 w-20 rounded-full" />
+                        ) : (
+                          <div className="pr-6">
+                            {recalculatedPrices?.price_uah ||
+                              booking?.trip?.prices?.price_uah}{" "}
+                            UAH
+                          </div>
+                        )}
                         <div className="relative ml-12 size-6 flex-none overflow-hidden rounded-full">
                           <Image
                             src={flagUA.src}
@@ -138,60 +218,68 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                   </RadioGroup>
                 </div>
 
+                {/* Second step form */}
                 <div className="space-y-4">
                   <div className="text-lg font-semibold">
-                    2. Metoda de plată:
+                    2. {t("$Metoda de plată")}:
                   </div>
 
-                  <RadioGroup defaultValue="option-one123">
+                  <RadioGroup
+                    value={paymentMethod || "cash"}
+                    onValueChange={(value) => setValue("payment.method", value)}
+                  >
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
                       <label
-                        htmlFor="option-one"
+                        htmlFor="payment-method-card"
                         className="flex items-center gap-2 font-bold"
                       >
-                        <RadioGroupItem value="option-one" id="option-one" />
+                        <RadioGroupItem value="card" id="payment-method-card" />
                         <span>Achitare online</span>
                       </label>
+
                       <label
-                        htmlFor="option-one"
+                        htmlFor="payment-method-cash"
                         className="flex items-center gap-2 font-bold"
                       >
-                        <RadioGroupItem value="option-one" id="option-one" />
+                        <RadioGroupItem value="cash" id="payment-method-cash" />
                         <span>Rezervare</span>
                       </label>
                     </div>
                   </RadioGroup>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="text-lg font-semibold">
-                    3. Alegeți o poartă de plată:
-                  </div>
-
-                  <RadioGroup defaultValue="option-one">
-                    <div className="flex flex-wrap gap-6">
-                      <RadioGroupItem
-                        value="maib"
-                        id="maib"
-                        className="sr-only data-[state=checked]:[&+label]:shadow data-[state=checked]:[&+label]:ring-2"
-                      />
-
-                      <label
-                        htmlFor="maib"
-                        className="bg-back ring-blue shadow-blue/10 flex h-14 items-center gap-2 rounded-full p-3 font-bold"
-                      >
-                        <div className="relative h-full w-28 flex-none overflow-hidden rounded-full">
-                          <Image
-                            src={logoMaib.src}
-                            alt="MAIB"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </label>
+                {/* Third step form */}
+                {paymentMethod === "card" && (
+                  <div className="space-y-4">
+                    <div className="text-lg font-semibold">
+                      3. {t("$Alegeți o poartă de plată")}:
                     </div>
-                  </RadioGroup>
-                </div>
+
+                    <RadioGroup defaultValue="maib">
+                      <div className="flex flex-wrap gap-6">
+                        <RadioGroupItem
+                          value="maib"
+                          id="maib"
+                          className="sr-only data-[state=checked]:[&+label]:shadow data-[state=checked]:[&+label]:ring-2"
+                        />
+
+                        <label
+                          htmlFor="maib"
+                          className="bg-back ring-blue shadow-blue/10 flex h-14 items-center gap-2 rounded-full p-3 font-bold"
+                        >
+                          <div className="relative h-full w-28 flex-none overflow-hidden rounded-full">
+                            <Image
+                              src={logoMaib.src}
+                              alt="MAIB"
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                        </label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+                )}
               </div>
 
               <TicketDetailsCollapsible
@@ -293,7 +381,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                 </div>
 
                 <div className="border-blue bg-back flex items-center justify-between gap-2 rounded-full border font-semibold">
-                  <div className="py-4 pl-6">Preț total:</div>
+                  <div className="py-4 pl-6">{t("$Preț total")}:</div>
                   {isRecalculatingPrice ? (
                     <div className="skeleton mr-2 h-10 w-32 rounded-full" />
                   ) : (

@@ -1,8 +1,6 @@
 "use client";
 import React from "react";
-import { useLocale, useTranslations } from "use-intl";
 import { PassengerCountSelect } from "./PassengerCountSelect ";
-import { FormProvider, useForm } from "react-hook-form";
 import { PassengerFields } from "./PassengerFields";
 
 export const PassengerForm: React.FC<{
