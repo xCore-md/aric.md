@@ -8,10 +8,10 @@ export const PassengerFields: React.FC = () => {
   const t = useTranslations();
   const { control, watch, setValue } = useFormContext();
   const passengerCounts = watch("passengerCounts") || {
-    adults: 1,
-    children: 0,
+    adult: 1,
+    child: 0,
   };
-  const total = passengerCounts.adults + passengerCounts.children;
+  const total = passengerCounts.adult + passengerCounts.child;
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -19,14 +19,12 @@ export const PassengerFields: React.FC = () => {
   });
 
   const handleRemove = (index: number) => {
-    const isAdult = index < (passengerCounts.adults || 0);
+    const isAdult = index < (passengerCounts.adult || 0);
     remove(index);
 
     setValue("passengerCounts", {
-      adults: isAdult ? passengerCounts.adults - 1 : passengerCounts.adults,
-      children: isAdult
-        ? passengerCounts.children
-        : passengerCounts.children - 1,
+      adult: isAdult ? passengerCounts.adult - 1 : passengerCounts.adult,
+      child: isAdult ? passengerCounts.child : passengerCounts.child - 1,
     });
   };
 
@@ -54,8 +52,9 @@ export const PassengerFields: React.FC = () => {
   return (
     <div className="space-y-4">
       <PassengerGroup
+        type="adult"
         title={t("passengers.adults")}
-        count={passengerCounts.adults}
+        count={passengerCounts.adult}
         offset={0}
         fields={fields}
         passengerCounts={passengerCounts}
@@ -63,10 +62,10 @@ export const PassengerFields: React.FC = () => {
       />
 
       <PassengerGroup
-        type="children"
-        title={t("passengers.adults")}
-        count={passengerCounts.children}
-        offset={passengerCounts.adults}
+        type="child"
+        title={t("passengers.children")}
+        count={passengerCounts.child}
+        offset={passengerCounts.adult}
         fields={fields}
         passengerCounts={passengerCounts}
         remove={handleRemove}

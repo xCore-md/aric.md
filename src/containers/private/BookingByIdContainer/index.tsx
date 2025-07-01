@@ -24,6 +24,7 @@ import { getLocalizedField } from "@/utils/getLocalizedField";
 import { FormProvider, useForm } from "react-hook-form";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useBookingPrice } from "@/hooks/useBookingPrice ";
+import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
 
 export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
   const form = useForm({
@@ -33,8 +34,8 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
         existing: [],
       },
       passengerCounts: {
-        adults: 1,
-        children: 0,
+        adult: 1,
+        child: 0,
       },
     },
   });
@@ -53,13 +54,16 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
 
   const passengerCounts = watch("passengerCounts");
 
-  const { prices } = useBookingPrice({ bookingId: id, passengerCounts });
+  const { recalculatedPrices, isRecalculatingPrice } = useBookingPrice({
+    bookingId: id,
+    passengerCounts,
+  });
 
-  console.log({ prices });
+  console.log({ recalculatedPrices });
 
   console.log(booking);
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data: any) => console.log(data);
 
   return (
     <FormProvider {...form}>
@@ -288,9 +292,19 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                   </div>
                 </div>
 
-                <div className="border-blue bg-back flex items-center justify-between gap-2 rounded-full border px-6 py-4 font-semibold">
-                  <div>Preț total:</div>
-                  <div>777777 MDL</div>
+                <div className="border-blue bg-back flex items-center justify-between gap-2 rounded-full border font-semibold">
+                  <div className="py-4 pl-6">Preț total:</div>
+                  {isRecalculatingPrice ? (
+                    <div className="skeleton mr-2 h-10 w-32 rounded-full" />
+                  ) : (
+                    <div className="pr-6">
+                      {formatCurrency(
+                        getAmountByCurrency(
+                          recalculatedPrices || booking?.trip?.prices,
+                        ),
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex gap-4 border-t py-6">

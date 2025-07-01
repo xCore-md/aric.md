@@ -52,6 +52,7 @@ export interface PaginationParams {
   departure_date?: string;
   passengers?: number;
   search?: string;
+  type?: string;
 }
 
 export interface PaginatedResponse<T> {

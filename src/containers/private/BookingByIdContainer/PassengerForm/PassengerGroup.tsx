@@ -7,14 +7,15 @@ import { subYears } from "date-fns/subYears";
 import { subDays } from "date-fns/subDays";
 import { PassengerRow } from "./PassengerRow";
 import { PassengerSelectExisting } from "./PassengerSelectExisting";
+import { PassengerType } from "@/types";
 
 type PassengerGroupProps = {
-  type?: "adults" | "children";
+  type?: PassengerType;
   title: string;
   count: number;
   offset: number;
   fields: FieldArrayWithId<any, "passengers.new", "id">[];
-  passengerCounts: { adults: number; children: number };
+  passengerCounts: { adult: number; child: number };
   remove: (index: number) => void;
 };
 
@@ -25,9 +26,12 @@ export const PassengerGroup: React.FC<PassengerGroupProps> = ({
   fields,
   passengerCounts,
   remove,
-  type = "adults",
+  type,
 }) => {
   const t = useTranslations();
+  const [selectedPassengerIds, setSelectedPassengerIds] = React.useState<
+    number[]
+  >([]);
 
   const today = new Date();
   const minDateChild = subYears(today, 11);
@@ -43,31 +47,40 @@ export const PassengerGroup: React.FC<PassengerGroupProps> = ({
             <div>{title}</div>
             <div className="text-text-gray text-sm font-normal">
               {t(
-                type === "adults"
+                type === "adult"
                   ? "passengers.adults_hint"
                   : "passengers.children_hint",
               )}
             </div>
           </div>
-          <PassengerSelectExisting />
+
+          <PassengerSelectExisting
+            type="adult"
+            selectedIds={selectedPassengerIds}
+            onSelect={setSelectedPassengerIds}
+          />
         </div>
 
-        {fields.slice(offset, offset + count).map((field) => {
-          const realIndex = fields.findIndex((f) => f.id === field.id);
-          const isAdult = realIndex < passengerCounts.adults;
-          const minDate = isAdult ? minDateAdult : minDateChild;
-          const maxDate = isAdult ? maxDateAdult : maxDateChild;
+        <div className="space-y-4">
+          {fields.slice(offset, offset + count).map((field, index) => {
+            const realIndex = fields.findIndex((f) => f.id === field.id);
+            const isAdult = realIndex < passengerCounts.adult;
+            const minDate = isAdult ? minDateAdult : minDateChild;
+            const maxDate = isAdult ? maxDateAdult : maxDateChild;
 
-          return (
-            <PassengerRow
-              key={field.id}
-              index={realIndex}
-              minDate={minDate}
-              maxDate={maxDate}
-              onRemove={() => remove(realIndex)}
-            />
-          );
-        })}
+            return (
+              <PassengerRow
+                key={field.id}
+                realIndex={realIndex}
+                index={index}
+                minDate={minDate}
+                maxDate={maxDate}
+                onRemove={() => remove(realIndex)}
+                hideRemoveButton={type === "adult" && index === 0}
+              />
+            );
+          })}
+        </div>
       </div>
     )
   );

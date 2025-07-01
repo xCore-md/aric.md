@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useFormContext, useWatch } from "react-hook-form";
+import { PassengerType } from "@/types";
 
 export const PassengerCountSelect: React.FC<{
   availableSeats: number;
@@ -18,14 +19,14 @@ export const PassengerCountSelect: React.FC<{
   const [open, setOpen] = React.useState(false);
   const { setValue, control } = useFormContext();
   const passengerCounts = useWatch({ control, name: "passengerCounts" }) || {
-    adults: 1,
-    children: 0,
+    adult: 1,
+    child: 0,
   };
 
-  const totalPassengers = passengerCounts.adults + passengerCounts.children;
+  const totalPassengers = passengerCounts.adult + passengerCounts.child;
   const isAtLimit = totalPassengers >= availableSeats;
 
-  const updateCount = (type: "adults" | "children", value: number) => {
+  const updateCount = (type: PassengerType, value: number) => {
     setValue("passengerCounts", {
       ...passengerCounts,
       [type]: value,
@@ -34,11 +35,11 @@ export const PassengerCountSelect: React.FC<{
 
   const totalLabel = () => {
     const parts = [
-      passengerCounts?.adults > 0
-        ? t("passengers.adult", { count: passengerCounts?.adults })
+      passengerCounts?.adult > 0
+        ? t("passengers.adult", { count: passengerCounts?.adult })
         : null,
-      passengerCounts?.children > 0
-        ? t("passengers.child", { count: passengerCounts?.children })
+      passengerCounts?.child > 0
+        ? t("passengers.child", { count: passengerCounts?.child })
         : null,
     ].filter(Boolean);
 
@@ -76,17 +77,15 @@ export const PassengerCountSelect: React.FC<{
             <div className="mt-2 flex items-center justify-between">
               <ControlButton
                 onClick={() =>
-                  updateCount("adults", Math.max(1, passengerCounts.adults - 1))
+                  updateCount("adult", Math.max(1, passengerCounts.adult - 1))
                 }
-                disabled={passengerCounts.adults <= 1}
+                disabled={passengerCounts.adult <= 1}
               />
               <span className="flex size-10 flex-none items-center justify-center">
-                {passengerCounts.adults}
+                {passengerCounts.adult}
               </span>
               <ControlButton
-                onClick={() =>
-                  updateCount("adults", passengerCounts.adults + 1)
-                }
+                onClick={() => updateCount("adult", passengerCounts.adult + 1)}
                 disabled={isAtLimit}
                 icon="plus"
               />
@@ -108,20 +107,15 @@ export const PassengerCountSelect: React.FC<{
             <div className="mt-2 flex items-center justify-between">
               <ControlButton
                 onClick={() =>
-                  updateCount(
-                    "children",
-                    Math.max(0, passengerCounts.children - 1),
-                  )
+                  updateCount("child", Math.max(0, passengerCounts.child - 1))
                 }
-                disabled={passengerCounts.children <= 0}
+                disabled={passengerCounts.child <= 0}
               />
               <span className="flex size-10 flex-none items-center justify-center">
-                {passengerCounts.children}
+                {passengerCounts.child}
               </span>
               <ControlButton
-                onClick={() =>
-                  updateCount("children", passengerCounts.children + 1)
-                }
+                onClick={() => updateCount("child", passengerCounts.child + 1)}
                 disabled={isAtLimit}
                 icon="plus"
               />

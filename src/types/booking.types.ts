@@ -64,14 +64,28 @@ export type DraftBookingPayload = {
   draft_booking_id: number | null;
 };
 
-export type BookingPricePayload = {
+export type BookingRecalculatePricePayload = {
   booking_id: number;
-  adults: number;
-  children: number;
+  adult_count: number;
+  child_count: number;
+};
+
+export type PaymentInput = {
+  method: "cash" | "card";
+  gateway?: string;
 };
 
 export type BookingPayload = {
   currency: Currency;
   passengers: PassengerCreateDto;
-  // payment: Payment;
+  payment: PaymentInput;
 };
+
+export interface BookingCompleteDto extends BookingPayload {
+  booking_id: number;
+}
+
+export interface BookingCompleteResponse {
+  booking_id: number;
+  redirect_url: string;
+}

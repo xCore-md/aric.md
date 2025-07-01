@@ -1,9 +1,11 @@
 import { apiInstance } from "@/utils/api";
 import {
   Booking,
+  BookingCompleteDto,
+  BookingCompleteResponse,
   BookingInitDto,
   BookingInitResponse,
-  BookingPricePayload,
+  BookingRecalculatePricePayload,
   PaginatedResponse,
   PaginationParams,
   Prices,
@@ -26,11 +28,13 @@ class BookingService {
       .json<PaginatedResponse<Booking>>();
   }
 
-  getPrice(data: BookingPricePayload) {
+  recalculate = ({ booking_id, ...params }: BookingRecalculatePricePayload) => {
     return this.clientApi
-      .post("customer/bookings/price", { json: data })
+      .get(`customer/bookings/${booking_id}/recalculate`, {
+        searchParams: { ...params },
+      })
       .json<Prices>();
-  }
+  };
 
   getById = (id: number) => {
     return this.clientApi.get(`customer/bookings/bulk/${id}`).json<Booking>();
@@ -42,27 +46,11 @@ class BookingService {
       .json<BookingInitResponse>();
   };
 
-  complete = ({ id, ...data }: PassengerUpdateDto) => {
+  complete = ({ booking_id, ...data }: BookingCompleteDto) => {
     return this.clientApi
-      .post(`customer/bookings/${id}/complete`, { json: data })
-      .json<BookingInitResponse>();
+      .post(`customer/bookings/${booking_id}/complete`, { json: data })
+      .json<BookingCompleteResponse>();
   };
-
-  // create = (data: PassengerCreateDto) => {
-  //   return this.clientApi
-  //     .post("customer/passengers", { json: data })
-  //     .json<Passenger>();
-  // };
-
-  // update = ({ id, ...data }: PassengerUpdateDto) => {
-  //   return this.clientApi
-  //     .put(`customer/passengers/${id}`, { json: data })
-  //     .json<Passenger>();
-  // };
-
-  // delete = (id: number) => {
-  //   return this.clientApi.delete(`customer/passengers/${id}`);
-  // };
 }
 
 export const bookingService = new BookingService();
