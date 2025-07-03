@@ -1,6 +1,6 @@
 import ro from "../../messages/ro.json";
 import { AVAILABLE_LANGUAGES } from "@/utils/constants";
-import type { Station, TripItem, TripSegment } from "@/types";
+import type { Station, TripItem } from "@/types";
 
 export type Messages = typeof ro;
 
@@ -114,6 +114,14 @@ export interface SearchWeklyTripsResponse {
     to_station: Station;
     from_station_image: string | null;
     to_station_image: string | null;
+  };
+}
+
+export interface TripRouteDetailsData {
+  data: TripItem[];
+  metadata: {
+    from_station: Station;
+    to_station: Station;
   };
 }
 

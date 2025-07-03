@@ -2,11 +2,11 @@
 import React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { getLocalizedField } from "@/utils/getLocalizedField";
-import type { SearchResponse, TripSegment } from "@/types";
+import type { TripRouteDetailsData, TripSegment } from "@/types";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 
 export const TripRouteDetails: React.FC<{
-  data: SearchResponse;
+  data: TripRouteDetailsData;
   route: TripSegment;
   duration: number;
 }> = ({ data, route: routeData, duration: durationMinutes }) => {

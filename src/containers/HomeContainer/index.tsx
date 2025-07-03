@@ -26,6 +26,7 @@ import { getLocalizedField } from "@/utils/getLocalizedField";
 import { BookingButton } from "@/components/shared/BookingButton";
 import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
 import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
+import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 
 type FeatureKeys = keyof Messages["planning"];
 type TitleDescription = {
@@ -51,6 +52,7 @@ export const planningData = [
 export const HomeContainer: React.FC = () => {
   const t = useTranslations();
   const locale = useLocale();
+  const { formatUTC } = useFormatUTCToLocal();
   const { updateTicketSearchParams } = useTicketForm();
 
   const { data: weeklyTrips, isLoading: isLoadingWeeklyTrips } = useQuery({
@@ -78,6 +80,9 @@ export const HomeContainer: React.FC = () => {
     locale,
   ]);
 
+  console.log(
+    Object.values(weeklyTrips?.data || {}).flatMap((dayTrips) => dayTrips),
+  );
   return (
     <>
       <div className="relative mx-auto w-full max-w-[1600px] overflow-hidden rounded-b-3xl">
@@ -256,7 +261,10 @@ export const HomeContainer: React.FC = () => {
                               key={date}
                               value={index === 0 ? "first" : date}
                             >
-                              {date}
+                              {
+                                formatUTC(date, { dateFormat: "E, dd MMMM" })
+                                  ?.date
+                              }
                             </TabsTrigger>
                           ),
                         )}
@@ -304,13 +312,18 @@ export const HomeContainer: React.FC = () => {
 
                                   <div className="my-4 w-full border-b border-dashed md:my-6" />
 
-                                  <TripRouteDetails
-                                    data={Object.values(
-                                      weeklyTrips?.data || {},
-                                    )}
-                                    route={trip?.route_departure}
-                                    duration={trip?.duration_minutes}
-                                  />
+                                  {weeklyTrips && (
+                                    <TripRouteDetails
+                                      data={{
+                                        ...weeklyTrips,
+                                        data: Object.values(
+                                          weeklyTrips?.data || {},
+                                        ).flatMap((dayTrips) => dayTrips),
+                                      }}
+                                      route={trip?.route_departure}
+                                      duration={trip?.duration_minutes}
+                                    />
+                                  )}
                                 </li>
                               ))}
                             </ul>
