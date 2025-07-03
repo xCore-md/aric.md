@@ -112,5 +112,7 @@
     "adults_hint": "12 ani și mai mare",
     "children_hint": "de la 2 până la 11",
     "max_seats_reached": "S-au atins cele {count} locuri disponibile"
-  }
+  },
+  "logout": "Deconectare",
+  "consentText": "Sunt de acord cu {terms} conform {privacyPolicy}"
 }

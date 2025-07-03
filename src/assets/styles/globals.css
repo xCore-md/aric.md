@@ -163,7 +163,7 @@
     background-color: var(--color-blue);
   }
 
-  @apply disabled:bg-text-gray disabled:bg-none disabled:text-[#DDE0E3];
+  @apply disabled:bg-text-gray disabled:bg-none disabled:text-[#DDE0E3] disabled:shadow-none;
 }
 
 .default-btn-gradient-reverse {
@@ -194,7 +194,7 @@
     box-shadow: inset 0 0 0 1px var(--color-text-gray);
   }
 
-  @apply disabled:text-text-gray disabled:bg-transparent disabled:bg-none;
+  @apply disabled:text-text-gray disabled:bg-transparent disabled:bg-none disabled:shadow-none;
 }
 
 body {

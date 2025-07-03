@@ -1,5 +1,10 @@
 import { apiInstance } from "@/utils/api";
-import type { PaginationParams, SearchResponse, SearchStation } from "@/types";
+import type {
+  PaginationParams,
+  SearchResponse,
+  SearchStation,
+  SearchWeklyTripsResponse,
+} from "@/types";
 
 class SearchService {
   private clientApi = apiInstance;
@@ -8,6 +13,12 @@ class SearchService {
     return this.clientApi
       .get("search", { searchParams: { ...params } })
       .json<SearchResponse>();
+  }
+
+  getWeeklyTrips(params?: PaginationParams) {
+    return this.clientApi
+      .get("search/weekly-trips", { searchParams: { ...params } })
+      .json<SearchWeklyTripsResponse>();
   }
 
   getStations(params?: PaginationParams) {

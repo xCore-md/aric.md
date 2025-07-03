@@ -8,30 +8,22 @@ import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
 import { useTicketForm } from "@/hooks/useTicketForm";
 
-import type {
-  DraftBookingPayload,
-  SearchResponse,
-  TicketFormValues,
-} from "@/types";
+import type { SearchResponse, TicketFormValues } from "@/types";
 import { searchService } from "@/services/search.service";
 import { TicketDetailsCollapsible } from "@/components/shared/TicketDetailsCollapsible";
 import { toApiDate } from "@/utils/format-date";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@radix-ui/react-label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getLocalizedField } from "@/utils/getLocalizedField";
-import { useLocale } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
-import { useSession } from "next-auth/react";
-import { useMutation } from "@tanstack/react-query";
-import { bookingService } from "@/services/booking.service";
+import { useLocale, useTranslations } from "next-intl";
 import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
 import { useCurrency } from "@/hooks/useCurrency";
-import { useBookingDraft } from "@/hooks/useBookingDraft";
-import { ArrowRight } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { BookingButton } from "@/components/shared/BookingButton";
 
 export const SearchContainer: React.FC = () => {
   const locale = useLocale();
+  const t = useTranslations();
   const { formatCurrency } = useCurrency();
   const { updateTicketSearchParams } = useTicketForm();
 
@@ -94,9 +86,9 @@ export const SearchContainer: React.FC = () => {
                   </h1>
 
                   <div className="flex items-center justify-between gap-4">
-                    <div className="text-text-gray">Au fost găsite</div>
+                    <div className="text-text-gray">{t("$Au fost găsite")}</div>
                     <div className="bg-green rounded-full px-2.5 py-0.5">
-                      <span>{searchData?.meta?.total}</span> bilete
+                      <span>{searchData?.meta?.total}</span> {t("$bilete")}
                     </div>
                   </div>
                 </div>
@@ -122,10 +114,12 @@ export const SearchContainer: React.FC = () => {
                             <div className="space-y-1">
                               <div className="text-text-gray bg-back flex max-w-max items-center gap-2 rounded-full px-3 py-1 text-sm">
                                 <div className="text-text-gray">
-                                  {route_departure?.seats_total} pasageri
+                                  {route_departure?.seats_total}{" "}
+                                  {t("$pasageri")}
                                 </div>
                                 <div className="text-green">
-                                  / {route_departure?.seats_available} rămase
+                                  / {route_departure?.seats_available}
+                                  {t("$rămase")}
                                 </div>
                               </div>
 
@@ -176,13 +170,15 @@ export const SearchContainer: React.FC = () => {
                   <div className="flex-none lg:w-1/3">
                     <Card>
                       <CardHeader className="border-platinum relative -mt-6 gap-0 rounded-t-xl border bg-[#F9F9F9] py-6">
-                        <CardTitle className="h4">Filtru bilete 🔎</CardTitle>
+                        <CardTitle className="h4">
+                          {t("$Filtru bilete")} 🔎
+                        </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="divide-card divide-y">
                           <div className="">
                             <div className="mb-4 font-semibold">
-                              Filtrează după:
+                              {t("$Filtrează după")}:
                             </div>
                             <div className="">
                               <RadioGroup defaultValue="option-one">
@@ -231,11 +227,13 @@ export const SearchContainer: React.FC = () => {
                         </svg>
 
                         <div className="h4">
-                          Nu a fost găsit nici un bilet pentru această rută!
+                          {t(
+                            "$Nu a fost găsit nici un bilet pentru această rută!",
+                          )}
                         </div>
                       </div>
 
-                      <Button>Modifică căutarea</Button>
+                      <Button>{t("$Modifică căutarea")}</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -248,54 +246,5 @@ export const SearchContainer: React.FC = () => {
       <DiscountSection />
       <FAQSection />
     </>
-  );
-};
-
-export const BookingButton: React.FC<DraftBookingPayload> = ({
-  trip_id,
-  from_station_id,
-  to_station_id,
-  return_trip_id,
-  draft_booking_id,
-}) => {
-  const { status } = useSession();
-  const { push } = useRouter();
-  const { saveBookingDraft } = useBookingDraft();
-
-  const bookingInit = useMutation({
-    mutationFn: bookingService.init,
-    onSuccess: (data) => {
-      push(`/booking/${data?.booking_id}`);
-    },
-  });
-
-  const handleClick = () => {
-    const payload = { trip_id, from_station_id, to_station_id, return_trip_id };
-
-    if (status !== "authenticated") {
-      saveBookingDraft(payload);
-      push(`/login?callbackUrl=${encodeURIComponent("/booking/init")}`);
-      return;
-    }
-
-    bookingInit.mutate(payload);
-  };
-
-  return draft_booking_id ? (
-    <Button className="col-span-full" asChild>
-      <Link href={"/booking/" + draft_booking_id}>
-        Termină rezervarea
-        <ArrowRight />
-      </Link>
-    </Button>
-  ) : (
-    <Button
-      variant="reverse"
-      className="col-span-full"
-      onClick={handleClick}
-      disabled={bookingInit.isPending}
-    >
-      {bookingInit.isPending ? "Se procesează..." : "Rezervează"}
-    </Button>
   );
 };

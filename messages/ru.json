@@ -88,19 +88,19 @@
     "description": "Планируйте свои поездки проще, быстрее и удобнее."
   },
   "duration": {
-    "hoursMinutes": "Durata {hours} ore {minutes} min",
-    "hours": "Durata {hours} ore",
-    "minutes": "Durata {minutes} min"
+    "hoursMinutes": "Длительность {hours} ч {minutes} мин",
+    "hours": "Длительность {hours} ч",
+    "minutes": "Длительность {minutes} мин"
   },
   "currency": {
     "MDL": "MDL",
     "UAH": "UAH"
   },
   "booking_status": {
-    "draft": "În așteptare",
-    "reserved": "Rezervat",
-    "paid": "Plătit",
-    "cancelled": "Anulat"
+    "draft": "В ожидании",
+    "reserved": "Зарезервировано",
+    "paid": "Оплачено",
+    "cancelled": "Отменено"
   },
   "passengers": {
     "label": "Количество пассажиров",
@@ -112,5 +112,7 @@
     "adults_hint": "от 12 лет и старше",
     "children_hint": "от 2 до 11 лет",
     "max_seats_reached": "Достигнут предел в {count} доступных мест"
-  }
+  },
+  "logout": "Выйти",
+  "consentText": "Я согласен с {terms} в соответствии с {privacyPolicy}"
 }

@@ -334,7 +334,7 @@ const AccountButton = () => {
                     className="text-destructive flex w-full justify-start p-2 font-normal transition"
                   >
                     <LogOut />
-                    Logout
+                    {t("logout")}
                   </Button>
                 </LogoutAlert>
               </PopoverContent>

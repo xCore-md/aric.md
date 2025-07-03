@@ -1,116 +1,118 @@
 {
   "nav": {
-    "home": "Главная",
-    "about": "О нас",
-    "faq": "Вопросы и ответы",
-    "contacts": "Контакты",
-    "booking": "Бронирование",
-    "passengers": "Пассажиры",
-    "payments": "Платежи",
-    "profile_settings": "Настройки профиля",
-    "my_tickets": "Мои билеты"
+    "home": "Home",
+    "about": "About us",
+    "faq": "FAQ",
+    "contacts": "Contacts",
+    "booking": "Booking",
+    "passengers": "Passengers",
+    "payments": "Payments",
+    "profile_settings": "Profile settings",
+    "my_tickets": "My tickets"
   },
   "booking": {
-    "buy_ticket_slogan": "Покупай билет на автобус онлайн легко!",
-    "additional_info": "Регулярные рейсы, комфортабельные микроавтобусы и гибкое расписание!",
-    "departure_city": "Город отправления",
-    "arrival_city": "Город прибытия",
-    "departure_date": "Дата отправления",
-    "return_date": "Дата возвращения",
-    "passengers": "Пассажиры"
+    "buy_ticket_slogan": "Buy a bus ticket online easily!",
+    "additional_info": "Regular trips, comfortable minibuses, and flexible schedules!",
+    "departure_city": "Departure city",
+    "arrival_city": "Arrival city",
+    "departure_date": "Departure date",
+    "return_date": "Return date",
+    "passengers": "Passengers"
   },
   "planning": {
-    "title": "Спланируйте свое идеальное путешествие!",
-    "subtitle": "Ищите и покупайте билеты на самые популярные направления",
+    "title": "Plan your perfect trip!",
+    "subtitle": "Search and buy tickets for the most popular routes",
     "feature1": {
-      "title": "Гибкость билетов",
-      "description": "Адаптивно • Удобно • Быстро"
+      "title": "Flexible tickets",
+      "description": "Adaptable • Convenient • Fast"
     },
     "feature2": {
-      "title": "Комфортное путешествие",
-      "description": "Просторно • Современно • Пунктуально"
+      "title": "Comfortable travel",
+      "description": "Spacious • Modern • On time"
     },
     "feature3": {
-      "title": "Надежность услуг",
-      "description": "Безопасно • Профессионально • Стабильно"
+      "title": "Reliable service",
+      "description": "Safe • Professional • Stable"
     }
   },
   "reservation": {
-    "title": "Забронируйте место!",
-    "subtitle": "Самый популярный маршрут сейчас",
-    "button": "Искать другие маршруты"
+    "title": "Reserve a seat!",
+    "subtitle": "The most popular route right now",
+    "button": "Search other routes"
   },
   "subscription": {
-    "title": "Будьте всегда в курсе новых рейсов, скидок и специальных предложений. Подпишитесь на новости ARIC и планируйте свои путешествия проще, быстрее и удобнее."
+    "title": "Stay updated on new routes, discounts, and special offers. Subscribe to ARIC news and plan your trips easier, faster, and more conveniently."
   },
   "input": {
-    "email_field_label": "Ваш адрес электронной почты",
-    "name_and_surname_label": "Имя / Фамилия"
+    "email_field_label": "Your email address",
+    "name_and_surname_label": "First name / Last name"
   },
   "action": {
-    "subscribe": "Подписаться",
-    "see_all_routes": " Посмотреть все маршруты",
-    "book_now": "Забронировать сейчас"
+    "subscribe": "Subscribe",
+    "see_all_routes": "See all routes",
+    "book_now": "Book now"
   },
   "customer_feedback": {
-    "title": "Что говорят клиенты о наших поездках?"
+    "title": "What do customers say about our trips?"
   },
   "discount_offer": {
-    "title": "Скидка!",
-    "description": "Купите билет туда-обратно и получите скидку на второй билет!"
+    "title": "Discount!",
+    "description": "Buy a round-trip ticket and get a discount on the second one!"
   },
   "faq": {
-    "questions": "Вопросы",
-    "and_answers": "и Ответы"
+    "questions": "Questions",
+    "and_answers": "and Answers"
   },
   "general": {
-    "always_available": "Всегда доступны 24/24",
-    "leaving_soon": "Скоро отправление",
-    "address": "Адрес",
-    "language_switch": "Сменить язык",
-    "view_all_label": "Посмотреть все"
+    "always_available": "Always available 24/24",
+    "leaving_soon": "Leaving soon",
+    "address": "Address",
+    "language_switch": "Change language",
+    "view_all_label": "View all"
   },
   "phone_request": {
-    "title": "Запросить <br></br>телефонный звонок",
-    "action": "Позвоните мне"
+    "title": "Request a <br></br>phone call",
+    "action": "Call me"
   },
   "legal_info": {
-    "terms": "Общие условия и положения",
-    "privacy": "Политика конфиденциальности",
-    "copyright": "Все права защищены"
+    "terms": "General Terms and Conditions",
+    "privacy": "Privacy Policy",
+    "copyright": "All rights reserved"
   },
   "footer": {
-    "title": "Забронируйте место легко и наслаждайтесь безопасным и комфортным путешествием. Современные микроавтобусы, гибкие расписания и быстрая онлайн-бронирование — все, что нужно для спокойной поездки.",
-    "address": "Республика Молдова, мун. Кишинёв, ул. Каля Басарабией 26"
+    "title": "Book your seat easily and enjoy a safe and comfortable journey. Modern minibuses, flexible schedules, and fast online booking – everything you need for a smooth trip.",
+    "address": "Republic of Moldova, mun. Chișinău, Calea Basarabiei 26"
   },
   "email_subscription": {
-    "title": "Получайте уведомления о скидках!",
-    "description": "Планируйте свои поездки проще, быстрее и удобнее."
+    "title": "Receive discount notifications!",
+    "description": "Plan your trips easier, faster, and more conveniently."
   },
   "duration": {
-    "hoursMinutes": "Durata {hours} ore {minutes} min",
-    "hours": "Durata {hours} ore",
-    "minutes": "Durata {minutes} min"
+    "hoursMinutes": "Duration {hours} hours {minutes} min",
+    "hours": "Duration {hours} hours",
+    "minutes": "Duration {minutes} min"
   },
   "currency": {
     "MDL": "MDL",
     "UAH": "UAH"
   },
   "booking_status": {
-    "draft": "În așteptare",
-    "reserved": "Rezervat",
-    "paid": "Plătit",
-    "cancelled": "Anulat"
+    "draft": "Pending",
+    "reserved": "Reserved",
+    "paid": "Paid",
+    "cancelled": "Cancelled"
   },
   "passengers": {
     "label": "Number of passengers",
     "none": "No passengers",
-    "adult": "{count, plural, one {# adult} other {# adults}}",
-    "child": "{count, plural, one {# child} other {# children}}",
+    "adult": "{count, plural, one {# adult} few {# adults} many {# adults} other {# adults}}",
+    "child": "{count, plural, one {# child} few {# children} many {# children} other {# children}}",
     "adults": "Adults",
     "children": "Children",
     "adults_hint": "12 years and older",
-    "children_hint": "from 2 to 11 years",
+    "children_hint": "From 2 to 11 years",
     "max_seats_reached": "The limit of {count} available seats has been reached"
-  }
+  },
+  "logout": "Log out",
+  "consentText": "I agree to the {terms} in accordance with the {privacyPolicy}"
 }

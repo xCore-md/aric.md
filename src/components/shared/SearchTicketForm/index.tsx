@@ -189,7 +189,7 @@ export const SearchTicketForm: React.FC<{
               disabled={!canSearch || isLoading}
               onClick={handleSubmit}
             >
-              <span className="lg:sr-only">Căutare</span>
+              <span className="lg:sr-only">{t("$Căutare")}</span>
               <Search />
             </Button>
           </div>

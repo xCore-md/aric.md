@@ -31,6 +31,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { CurrencyEnum, PaymentMethodEnum } from "@/types";
 import { toast } from "sonner";
+import { formatISO } from "date-fns";
 
 export const phoneNumberSchema = z.string().refine(
   (val) => {
@@ -125,7 +126,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
       passengers: {
         new: passengers?.new?.map((p) => ({
           ...p,
-          birth_date: String(p?.birth_date),
+          birth_date: formatISO(p?.birth_date),
         })),
         existing: { ...passengers?.existing },
       },
@@ -260,7 +261,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                           value={PaymentMethodEnum.Card}
                           id="payment-method-card"
                         />
-                        <span>Achitare online</span>
+                        <span>{t("$Achitare online")}</span>
                       </label>
 
                       <label
@@ -271,7 +272,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                           value={PaymentMethodEnum.Cash}
                           id="payment-method-cash"
                         />
-                        <span>Rezervare</span>
+                        <span>{t("$Rezervare")}</span>
                       </label>
                     </div>
                   </RadioGroup>

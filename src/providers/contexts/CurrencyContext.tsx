@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useCallback } from "react";
+import React, { createContext, useState, useCallback, useEffect } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import { CurrencyEnum } from "@/types";
 
@@ -21,10 +21,14 @@ export const CurrencyProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [currency, setCurrencyState] = useState<CurrencyEnum>(() => {
+  const [currency, setCurrencyState] = useState<CurrencyEnum>(DEFAULT_CURRENCY);
+
+  useEffect(() => {
     const raw = getCookie("currency")?.toString().toUpperCase();
-    return isValidCurrency(raw) ? raw : DEFAULT_CURRENCY;
-  });
+    if (isValidCurrency(raw)) {
+      setCurrencyState(raw);
+    }
+  }, []);
 
   const setCurrency = useCallback((value: CurrencyEnum) => {
     setCurrencyState(value);

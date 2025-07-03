@@ -53,6 +53,7 @@ export const QUERY_KEYS = {
   drafts: "drafts",
   tickets: "tickets",
   bookingPrice: "bookingPrice",
+  weeklyTrips: "weeklyTrips",
 } as const;
 
 export const PRIVATE_LINK = {

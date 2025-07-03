@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronRightIcon } from "lucide-react";
 import { Header } from "@/components/shared/Header";
 
@@ -19,6 +19,13 @@ import bgChairs from "@/assets/images/chairs.jpg";
 import heroBackground from "@/assets/images/hero.jpg";
 import { useTicketForm } from "@/hooks/useTicketForm";
 import { Messages } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/utils/constants";
+import { searchService } from "@/services/search.service";
+import { getLocalizedField } from "@/utils/getLocalizedField";
+import { BookingButton } from "@/components/shared/BookingButton";
+import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
+import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 
 type FeatureKeys = keyof Messages["planning"];
 type TitleDescription = {
@@ -43,7 +50,33 @@ export const planningData = [
 
 export const HomeContainer: React.FC = () => {
   const t = useTranslations();
+  const locale = useLocale();
   const { updateTicketSearchParams } = useTicketForm();
+
+  const { data: weeklyTrips, isLoading: isLoadingWeeklyTrips } = useQuery({
+    queryKey: [QUERY_KEYS.weeklyTrips],
+    queryFn: () => searchService.getWeeklyTrips(),
+  });
+
+  const stationLabel = useMemo(() => {
+    const fromName = getLocalizedField(
+      weeklyTrips?.metadata?.from_station!,
+      "name",
+      locale,
+    );
+
+    const toName = getLocalizedField(
+      weeklyTrips?.metadata?.to_station!,
+      "name",
+      locale,
+    );
+
+    return `${fromName || "?"} - ${toName || "?"}`;
+  }, [
+    weeklyTrips?.metadata?.from_station,
+    weeklyTrips?.metadata?.to_station,
+    locale,
+  ]);
 
   return (
     <>
@@ -129,7 +162,7 @@ export const HomeContainer: React.FC = () => {
               <div className="max-w-xs">
                 <h2 className="h1 text-white">{t("reservation.title")}</h2>
                 <p className="text-2xl text-white/90">
-                  {t("reservation.subtitle")}: <br /> Chișinău – Ismail!
+                  {t("reservation.subtitle")}: <br /> {stationLabel}
                 </p>
 
                 <Button className="mt-8 mb-12" variant="white" asChild>
@@ -147,11 +180,14 @@ export const HomeContainer: React.FC = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>Chișinău</span>
+                    <span>{stationLabel.split("-")[0]}</span>
                   </div>
                   <div className="relative aspect-[5/4] h-[208px] flex-none overflow-hidden rounded-lg border-2 border-white">
                     <Image
-                      src="https://placehold.co/352x200/png"
+                      src={
+                        weeklyTrips?.metadata?.from_station_image ||
+                        "https://placehold.co/352x200/png"
+                      }
                       alt="Image"
                       fill
                       className="object-cover"
@@ -168,11 +204,14 @@ export const HomeContainer: React.FC = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>Ismail</span>
+                    <span>{stationLabel.split("-")[1]}</span>
                   </div>
                   <div className="relative aspect-[5/4] h-[208px] flex-none overflow-hidden rounded-lg border-2 border-white">
                     <Image
-                      src="https://placehold.co/352x200/png"
+                      src={
+                        weeklyTrips?.metadata?.to_station_image ||
+                        "https://placehold.co/352x200/png"
+                      }
                       alt="Image"
                       fill
                       className="object-cover"
@@ -190,70 +229,105 @@ export const HomeContainer: React.FC = () => {
             </div>
 
             <div className="relative z-10 mx-auto w-full lg:max-w-3xl">
-              <Card className="gap-4 pb-4 sm:gap-6 sm:pb-6">
-                <CardHeader
-                  className="relative rounded-t-xl border bg-[#F9F9F9] p-3 sm:py-6"
-                  platinum
-                >
-                  <CardTitle className="text-center text-xl font-normal sm:text-left md:text-2xl">
-                    Chișinău - Ismail
-                  </CardTitle>
-                  <div className="bg-mentol mx-auto mt-3 max-w-max space-x-2 rounded-full px-4 py-2 sm:absolute sm:top-1/2 sm:right-0 sm:mt-0 sm:-translate-y-1/2 sm:rounded-l-full sm:rounded-r-none">
-                    <span className="text-xl">🔥</span>
-                    <span className="font-semibold md:text-lg">
-                      Cele mai apropiate rute{" "}
-                    </span>
-                  </div>
-                </CardHeader>
-                <CardContent className="px-2 sm:px-6">
-                  <Tabs defaultValue="first" className="items-center">
-                    <TabsList>
-                      <TabsTrigger value="first">Vi, 02 Mai</TabsTrigger>
-                      <TabsTrigger value="second">Sâ, 03 Mai</TabsTrigger>
-                      <TabsTrigger value="first">Du, 04 Mai</TabsTrigger>
-                      <TabsTrigger value="second">Lu, 05 Mai</TabsTrigger>
-                    </TabsList>
+              {isLoadingWeeklyTrips ? (
+                <div className="skeleton" />
+              ) : (
+                <Card className="gap-4 pb-4 sm:gap-6 sm:pb-6">
+                  <CardHeader
+                    className="relative rounded-t-xl border bg-[#F9F9F9] p-3 sm:py-6"
+                    platinum
+                  >
+                    <CardTitle className="!w-1/2 text-center text-xl font-normal sm:text-left md:text-2xl">
+                      {stationLabel}
+                    </CardTitle>
+                    <div className="bg-mentol mx-auto mt-3 max-w-max space-x-2 rounded-full px-4 py-2 sm:absolute sm:top-1/2 sm:right-0 sm:mt-0 sm:-translate-y-1/2 sm:rounded-l-full sm:rounded-r-none">
+                      <span className="text-xl">🔥</span>
+                      <span className="font-semibold md:text-lg">
+                        {t("$Cele mai apropiate rute")}
+                      </span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-2 sm:px-6">
+                    <Tabs defaultValue="first" className="items-center">
+                      <TabsList>
+                        {Object.entries(weeklyTrips?.data || {})?.map(
+                          ([date], index) => (
+                            <TabsTrigger
+                              key={date}
+                              value={index === 0 ? "first" : date}
+                            >
+                              {date}
+                            </TabsTrigger>
+                          ),
+                        )}
+                      </TabsList>
 
-                    <TabsContent value="first" className="w-full">
-                      <ul className="space-y-4">
-                        {[1, 2, 3].map((_, index) => (
-                          <li
-                            key={index}
-                            className="border-platinum relative rounded-xl border p-3 pb-16 md:px-10 md:py-6"
+                      {Object.entries(weeklyTrips?.data || {})?.map(
+                        ([date, trips], index) => (
+                          <TabsContent
+                            key={date}
+                            value={index === 0 ? "first" : date}
+                            className="w-full"
                           >
-                            <div className="flex items-center justify-between gap-8">
-                              <Link
-                                href="/"
-                                className="xs:static hover:text-blue absolute bottom-4 flex items-center gap-1 font-semibold transition"
-                              >
-                                <span>Detalii bilet</span>
-                                <ChevronRightIcon className="size-5" />
-                              </Link>
+                            <ul className="space-y-4">
+                              {trips?.map((trip, index) => (
+                                <li
+                                  key={index}
+                                  className="border-platinum relative rounded-xl border p-3 pb-16 md:px-10 md:py-6"
+                                >
+                                  <div className="flex items-center justify-between gap-8">
+                                    <Link
+                                      href="/"
+                                      className="xs:static hover:text-blue absolute bottom-4 flex items-center gap-1 font-semibold transition"
+                                    >
+                                      <span>Detalii bilet</span>
+                                      <ChevronRightIcon className="size-5" />
+                                    </Link>
+                                    <div className="xs:ml-auto text-2xl font-medium">
+                                      {getAmountByCurrency(trip?.prices)}
+                                    </div>
 
-                              <div className="xs:ml-auto text-2xl font-medium">
-                                120MDL
-                              </div>
+                                    <BookingButton
+                                      trip_id={trip?.route_departure?.id}
+                                      from_station_id={
+                                        weeklyTrips?.metadata?.from_station?.id!
+                                      }
+                                      to_station_id={
+                                        weeklyTrips?.metadata?.to_station?.id!
+                                      }
+                                      return_trip_id={null}
+                                      draft_booking_id={
+                                        trip?.route_departure?.draft_booking_id
+                                      }
+                                    />
+                                  </div>
 
-                              <Button variant="reverse">Rezervează</Button>
-                            </div>
+                                  <div className="my-4 w-full border-b border-dashed md:my-6" />
 
-                            <div className="my-4 w-full border-b border-dashed md:my-6" />
+                                  <TripRouteDetails
+                                    data={Object.values(
+                                      weeklyTrips?.data || {},
+                                    )}
+                                    route={trip?.route_departure}
+                                    duration={trip?.duration_minutes}
+                                  />
+                                </li>
+                              ))}
+                            </ul>
+                          </TabsContent>
+                        ),
+                      )}
+                    </Tabs>
 
-                            {/* <TripRouteDetails data={undefined} route={undefined} duration={0} /> */}
-                          </li>
-                        ))}
-                      </ul>
-                    </TabsContent>
-                  </Tabs>
-
-                  <Button asChild className="mt-4">
-                    <Link href="/search">
-                      {t("action.see_all_routes")}
-                      <ChevronRightIcon />
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
+                    <Button asChild className="mt-4">
+                      <Link href="/search">
+                        {t("action.see_all_routes")}
+                        <ChevronRightIcon />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         </div>

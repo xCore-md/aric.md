@@ -7,20 +7,22 @@ import {
 } from "@/components/ui/collapsible";
 import { TripItem, TripSegment } from "@/types";
 import { Check, ChevronRightIcon } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { getLocalizedField } from "@/utils/getLocalizedField";
 import { cn } from "@/lib/utils";
 import { QUERY_KEYS } from "@/utils/constants";
 import { refundPolicyService } from "@/services/refund-policy.service";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-
+import { useCurrency } from "@/hooks/useCurrency";
 
 export const TicketDetailsCollapsible: React.FC<{
   data: TripItem;
   route: TripSegment;
 }> = ({ data, route: routeData }) => {
   const locale = useLocale();
+  const t = useTranslations();
+  const { currency } = useCurrency();
   const [open, setOpen] = React.useState(false);
 
   const {
@@ -29,7 +31,12 @@ export const TicketDetailsCollapsible: React.FC<{
     refetch,
     isFetched,
   } = useQuery({
-    queryKey: [QUERY_KEYS.refundPolicy, data?.prices?.price_mdl],
+    queryKey: [
+      QUERY_KEYS.refundPolicy,
+      data?.prices?.price_mdl,
+      currency,
+      locale,
+    ],
     queryFn: () =>
       refundPolicyService.getAll({
         price: String(data?.prices?.price_mdl),
@@ -47,13 +54,13 @@ export const TicketDetailsCollapsible: React.FC<{
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <CollapsibleTrigger className="hover:text-blue data-[state=open]:text-blue bg-back mt-6 flex w-full cursor-pointer items-center justify-between gap-1 rounded-full px-6 py-4 font-semibold transition data-[state=open]:rounded-t-2xl data-[state=open]:rounded-b-none [&[data-state=open]>svg]:rotate-90">
-        <span>Informații despre bilet</span>
+        <span>{t("$Informații despre bilet")}</span>
         <ChevronRightIcon className="size-5" />
       </CollapsibleTrigger>
       <CollapsibleContent className="bg-back rounded-b-2xl px-6 pb-4">
         <div className="space-y-6">
           <div className="space-y-4">
-            <div>1. Traseu</div>
+            <div>1. {t("$Traseu")}</div>
             <div className="border-platinum ml-4 space-y-4 border-l pl-4 md:ml-8 md:pl-8">
               {routeData?.route?.stations?.map((station, index) => (
                 <div
@@ -102,7 +109,7 @@ export const TicketDetailsCollapsible: React.FC<{
                         rel="noopener noreferrer nofollow"
                         href={`https://www.google.com/maps?q=${station?.latitude},${station?.longitude}`}
                       >
-                        Vezi pe hartă
+                        {t("$Vezi pe hartă")}
                       </a>
                     </Button>
                   </div>
@@ -112,7 +119,7 @@ export const TicketDetailsCollapsible: React.FC<{
           </div>
 
           <div className="space-y-4">
-            <div>2. Servicii disponibile:</div>
+            <div>2. {t("$Servicii disponibile")}:</div>
             <ul className="flex flex-wrap gap-2 gap-x-6">
               {routeData?.bus?.facilities?.map((item, index) => (
                 <li key={index} className="flex items-center gap-2">
@@ -128,7 +135,7 @@ export const TicketDetailsCollapsible: React.FC<{
           </div>
 
           <div className="space-y-4">
-            <div>3. Condiții de returnare:</div>
+            <div>3. {t("$Condiții de returnare")}:</div>
             <div className="">
               {isLoading ? (
                 <div className="space-y-2">
