@@ -1,6 +1,14 @@
 "use client";
 import React from "react";
-import { ChevronRightIcon, MoveRight, User, Wallet } from "lucide-react";
+import {
+  Ban,
+  ChevronRightIcon,
+  CreditCard,
+  Download,
+  MoveRight,
+  User,
+  Wallet,
+} from "lucide-react";
 import { useLocale, useTranslations } from "use-intl";
 import { PRIVATE_LINK, QUERY_KEYS } from "@/utils/constants";
 import {
@@ -33,6 +41,7 @@ import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
 import { bookingService } from "@/services/booking.service";
 import { getLocalizedField } from "@/utils/getLocalizedField";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
+import { DownloadTicketButton } from "@/components/shared/DownloadTicketButton";
 
 export const TicketsContainer: React.FC = () => {
   const t = useTranslations();
@@ -57,9 +66,9 @@ export const TicketsContainer: React.FC = () => {
             <div key={index} className="skeleton h-40" />
           ))
         : bookings?.data?.map((booking) => (
-            <div key={booking.id}>
-              <div className="flex items-center justify-between">
-                <div className="ring-platinum bg-card -mb-px flex h-full max-w-max items-center gap-4 rounded-t-xl p-4 text-lg ring ring-inset">
+            <div key={booking.id} className="mb-16">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                <div className="border-platinum bg-card -mb-px flex h-full items-center gap-4 rounded-t-xl border-x border-t p-4 text-lg lg:max-w-max">
                   <div className="font-semibold">
                     <div>
                       {getLocalizedField(
@@ -95,91 +104,74 @@ export const TicketsContainer: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="xs:flex-row flex flex-col gap-2 sm:gap-8">
-                  <div className="flex flex-none gap-4">
-                    <div className="flex size-9 items-center justify-center rounded-md border bg-white">
-                      <User />
-                    </div>
-                    <div>
-                      <div className="text-text-gray text-xs">Pasageri</div>
-                      <div className="-mt-1 text-lg font-semibold">1</div>
-                    </div>
-                  </div>
+                {booking?.tickets?.length > 1 && (
+                  <div className="border-platinum bg-card flex flex-wrap gap-4 border-x border-t p-4 lg:flex-row-reverse lg:border-none lg:bg-transparent lg:p-0">
+                    <Button>
+                      Achită toate
+                      <ChevronRightIcon />
+                    </Button>
 
-                  <div className="flex flex-none gap-4">
-                    <div className="flex size-9 items-center justify-center rounded-md border bg-white">
-                      <Wallet />
-                    </div>
-                    <div>
-                      <div className="text-text-gray text-xs">Preț</div>
-                      <div className="-mt-1 text-lg font-semibold">
-                        {formatCurrency(
-                          getAmountByCurrency(booking, "total_amount"),
-                        )}
-                        123456789
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                    <Button variant="reverse">
+                      <Download />
+                      Descarcă biletele
+                    </Button>
 
-                <div className="flex flex-wrap gap-4 sm:flex-nowrap lg:flex-col xl:flex-row">
-                  <Button variant="reverse">Descarcă bilet</Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="link">Anulează biletele</Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader className="sr-only">
+                          <DialogTitle />
+                          <DialogDescription />
+                        </DialogHeader>
 
-                  <Button>
-                    Achită
-                    <ChevronRightIcon />
-                  </Button>
+                        <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
+                          <Image
+                            src={logo.src}
+                            alt="Aric.md"
+                            width={logo.width}
+                            height={logo.height}
+                            className="mb-12 w-24"
+                          />
 
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="link">Anulează</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader className="sr-only">
-                        <DialogTitle />
-                        <DialogDescription />
-                      </DialogHeader>
+                          <div className="h2">Doriți să anulați biletul?</div>
 
-                      <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
-                        <Image
-                          src={logo.src}
-                          alt="Aric.md"
-                          width={logo.width}
-                          height={logo.height}
-                          className="mb-12 w-24"
-                        />
-
-                        <div className="h2">Doriți să anulați biletul?</div>
-
-                        <div className="text-text-gray mb-12 text-lg">
-                          În funcție de timpul rămas până la plecare, există o
-                          taxă de reținere pentru bilet – o sumă care este
-                          reținută de la pasager în cazul returnării biletului.
-                        </div>
-
-                        <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
-                          <div className="text-left">
-                            <div className="font-semibold">Nr. Invoice</div>
-                            <div className="text-text-gray">INV567489240UI</div>
+                          <div className="text-text-gray mb-12 text-lg">
+                            În funcție de timpul rămas până la plecare, există o
+                            taxă de reținere pentru bilet – o sumă care este
+                            reținută de la pasager în cazul returnării
+                            biletului.
                           </div>
 
-                          <div className="text-right">
-                            <div className="font-semibold">Metoda de plată</div>
-                            <div className="text-text-gray">MAIB</div>
-                          </div>
-                        </div>
+                          <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
+                            <div className="text-left">
+                              <div className="font-semibold">Nr. Invoice</div>
+                              <div className="text-text-gray">
+                                INV567489240UI
+                              </div>
+                            </div>
 
-                        <Button size="lg" className="w-full">
-                          Anulează biletul
-                          <ChevronRightIcon />
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
+                            <div className="text-right">
+                              <div className="font-semibold">
+                                Metoda de plată
+                              </div>
+                              <div className="text-text-gray">MAIB</div>
+                            </div>
+                          </div>
+
+                          <Button size="lg" className="w-full">
+                            Anulează biletul
+                            <ChevronRightIcon />
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                )}
               </div>
 
-              <Card className="ring-platinum mb-6 rounded-tl-none ring ring-inset">
+              <Card className="ring-platinum rounded-tl-none rounded-tr-none ring ring-inset lg:rounded-tr-xl">
                 <CardContent className="space-y-4">
                   {booking?.tickets?.map((ticket) => (
                     <div key={ticket.id} className="space-y-4">
@@ -225,18 +217,10 @@ export const TicketsContainer: React.FC = () => {
                         </div>
 
                         <div className="ml-auto flex flex-wrap gap-4 sm:flex-nowrap lg:flex-col xl:flex-row">
-                          <Button variant="reverse" size="sm">
-                            Descarcă bilet
-                          </Button>
-
-                          <Button size="sm">
-                            Achită
-                            <ChevronRightIcon />
-                          </Button>
-
                           <Dialog>
                             <DialogTrigger asChild>
-                              <Button variant="link" size="sm">
+                              <Button variant="ghost" size="sm">
+                                <Ban />
                                 Anulează
                               </Button>
                             </DialogTrigger>
@@ -291,6 +275,13 @@ export const TicketsContainer: React.FC = () => {
                               </div>
                             </DialogContent>
                           </Dialog>
+
+                          <DownloadTicketButton ticketId={ticket.id} />
+
+                          <Button size="sm" variant="reverse">
+                            Achită
+                            <ChevronRightIcon />
+                          </Button>
                         </div>
                       </div>
                     </div>

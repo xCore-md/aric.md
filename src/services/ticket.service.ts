@@ -15,11 +15,9 @@ class TicketService {
       .json<PaginatedResponse<Ticket>>();
   }
 
-  async download(id: number, language: string = LanguageEnum.RO) {
+  async download(id: number) {
     const blob = await this.clientApi
-      .get(`customer/tickets/${id}/download`, {
-        searchParams: { language },
-      })
+      .get(`customer/tickets/${id}/download`)
       .blob();
 
     return blob;
