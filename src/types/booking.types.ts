@@ -12,8 +12,9 @@ import type {
   PassengerCreateDto,
   CurrencyEnum,
 } from "@/types";
+import { PaymentInput } from "./payment.types";
 
-export enum BookingStatus {
+export enum BookingStatusEnum {
   Draft = "draft",
   Reserved = "reserved",
   Paid = "paid",
@@ -34,7 +35,7 @@ export interface Booking
   child_count: number;
   passenger_count: number;
   currency: Currency;
-  status: BookingStatus;
+  status: BookingStatusEnum;
 
   customer: User;
   trip: TripItem;
@@ -69,16 +70,6 @@ export type BookingRecalculatePricePayload = {
   booking_id: number;
   adult_count: number;
   child_count: number;
-};
-
-export enum PaymentMethodEnum {
-  Cash = "cash",
-  Card = "card",
-}
-
-export type PaymentInput = {
-  method: "cash" | "card";
-  gateway?: string;
 };
 
 export type BookingPayload = {

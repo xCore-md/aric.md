@@ -6,3 +6,4 @@ export * from "./trip.types";
 export * from "./ticket.types";
 export * from "./booking.types";
 export * from "./passenger.types";
+export * from "./payment.types";

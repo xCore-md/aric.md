@@ -1,33 +1,34 @@
 "use client";
 
-import { BookingStatus } from "@/types";
+import { BookingStatusEnum } from "@/types";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 type TicketStatusBadgeProps = {
-  status: BookingStatus;
+  status: BookingStatusEnum;
 };
 
 const text = "text-black";
 
-const statusStyleMap: Record<BookingStatus, { bg: string; text: string }> = {
-  [BookingStatus.Draft]: {
-    bg: "bg-gray-100",
-    text,
-  },
-  [BookingStatus.Reserved]: {
-    bg: "bg-blue",
-    text,
-  },
-  [BookingStatus.Paid]: {
-    bg: "bg-green",
-    text,
-  },
-  [BookingStatus.Cancelled]: {
-    bg: "bg-red",
-    text,
-  },
-};
+const statusStyleMap: Record<BookingStatusEnum, { bg: string; text: string }> =
+  {
+    [BookingStatusEnum.Draft]: {
+      bg: "bg-gray-100",
+      text,
+    },
+    [BookingStatusEnum.Reserved]: {
+      bg: "bg-blue",
+      text,
+    },
+    [BookingStatusEnum.Paid]: {
+      bg: "bg-green",
+      text,
+    },
+    [BookingStatusEnum.Cancelled]: {
+      bg: "bg-red",
+      text,
+    },
+  };
 
 export const TicketStatusBadge = ({ status }: TicketStatusBadgeProps) => {
   const t = useTranslations("booking_status");

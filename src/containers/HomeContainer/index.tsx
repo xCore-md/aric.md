@@ -27,6 +27,7 @@ import { BookingButton } from "@/components/shared/BookingButton";
 import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
 import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
+import { useCurrency } from "@/hooks/useCurrency";
 
 type FeatureKeys = keyof Messages["planning"];
 type TitleDescription = {
@@ -52,6 +53,7 @@ export const planningData = [
 export const HomeContainer: React.FC = () => {
   const t = useTranslations();
   const locale = useLocale();
+  const { formatCurrency } = useCurrency();
   const { formatUTC } = useFormatUTCToLocal();
   const { updateTicketSearchParams } = useTicketForm();
 
@@ -292,7 +294,9 @@ export const HomeContainer: React.FC = () => {
                                       <ChevronRightIcon className="size-5" />
                                     </Link>
                                     <div className="xs:ml-auto text-2xl font-medium">
-                                      {getAmountByCurrency(trip?.prices)}
+                                      {formatCurrency(
+                                        getAmountByCurrency(trip?.prices),
+                                      )}
                                     </div>
 
                                     <BookingButton

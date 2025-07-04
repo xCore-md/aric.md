@@ -118,12 +118,16 @@ export const SearchTicketForm: React.FC<{
   });
 
   React.useEffect(() => {
-    refetchStationsDestinations();
+    if (fromStationId) {
+      refetchStationsDestinations();
+    }
   }, [fromStationId]);
 
   React.useEffect(() => {
-    setDepartureDate("");
-    refetchTripDates();
+    if (toStationId) {
+      setDepartureDate("");
+      refetchTripDates();
+    }
   }, [toStationId]);
 
   React.useEffect(() => {
