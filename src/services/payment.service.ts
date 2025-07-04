@@ -1,6 +1,5 @@
 import { apiInstance } from "@/utils/api";
 import {
-  Booking,
   PaginatedResponse,
   PaginationParams,
   BookingCompleteDto,

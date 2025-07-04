@@ -1,25 +1,9 @@
 "use client";
 import React from "react";
-import {
-  Ban,
-  ChevronRightIcon,
-  CreditCard,
-  Download,
-  MoveRight,
-  User,
-  Wallet,
-} from "lucide-react";
+import { Ban, ChevronRightIcon, MoveRight, User, Wallet } from "lucide-react";
 import { useLocale, useTranslations } from "use-intl";
 import { PRIVATE_LINK, QUERY_KEYS } from "@/utils/constants";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
