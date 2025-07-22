@@ -63,8 +63,16 @@ export const SearchContainer: React.FC = () => {
           </div>
 
           {isLoading ? (
-            <div className="flex justify-center">
-              <div className="loader" />
+            <div className="mt-8 flex flex-col-reverse gap-8 lg:flex-row">
+              <ul className="space-y-4 lg:w-2/3">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <li key={index} className="skeleton h-40 rounded-xl" />
+                ))}
+              </ul>
+
+              <div className="flex-none lg:w-1/3">
+                <div className="skeleton h-80 rounded-xl" />
+              </div>
             </div>
           ) : (
             <>
