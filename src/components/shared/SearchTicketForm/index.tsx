@@ -20,6 +20,7 @@ import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/utils/constants";
 import { searchService } from "@/services/search.service";
+import { LoadingSpinner } from "../LoadingSpinner";
 
 const options = maskitoDateOptionsGenerator({
   mode: "dd/mm/yyyy",
@@ -31,6 +32,7 @@ interface IProps {
   setValue: React.Dispatch<React.SetStateAction<string>>;
   placeholder?: string;
   disabled?: boolean;
+  loading?: boolean;
   messages?: {
     noData?: string;
   };
@@ -73,22 +75,29 @@ export const SearchTicketForm: React.FC<{
     });
   };
 
-  const { data: stations } = useQuery({
+  const { data: stations, isFetching: isStationsLoading } = useQuery({
     queryKey: [QUERY_KEYS.searchStations],
     queryFn: () => searchService.getStations(),
   });
 
-  const { data: stationsDestinations, refetch: refetchStationsDestinations } =
-    useQuery({
-      queryKey: [QUERY_KEYS.searchStationsDestinations, fromStationId],
-      queryFn: () =>
-        searchService.getStationsDestinations({
-          from_station_id: Number(fromStationId),
-        }),
-      enabled: !!fromStationId,
-    });
+  const {
+    data: stationsDestinations,
+    refetch: refetchStationsDestinations,
+    isFetching: isStationsDestinationsLoading,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.searchStationsDestinations, fromStationId],
+    queryFn: () =>
+      searchService.getStationsDestinations({
+        from_station_id: Number(fromStationId),
+      }),
+    enabled: !!fromStationId,
+  });
 
-  const { data: tripDates, refetch: refetchTripDates } = useQuery({
+  const {
+    data: tripDates,
+    refetch: refetchTripDates,
+    isFetching: isTripDatesLoading,
+  } = useQuery({
     queryKey: [QUERY_KEYS.searchTripDates, fromStationId, toStationId],
     queryFn: () =>
       searchService.getTripDates({
@@ -98,7 +107,7 @@ export const SearchTicketForm: React.FC<{
     enabled: !!toStationId,
   });
 
-  const { data: returnTripDates } = useQuery({
+  const { data: returnTripDates, isFetching: isReturnTripDatesLoading } = useQuery({
     queryKey: [
       QUERY_KEYS.searchReturnTripDates,
       fromStationId,
@@ -150,6 +159,7 @@ export const SearchTicketForm: React.FC<{
                 label: s.name_ru,
               })) || []
             }
+            loading={isStationsLoading}
           />
 
           <SelectCity
@@ -163,6 +173,7 @@ export const SearchTicketForm: React.FC<{
               })) || []
             }
             disabled={!fromStationId}
+            loading={isStationsDestinationsLoading}
           />
 
           <SelectDate
@@ -171,6 +182,7 @@ export const SearchTicketForm: React.FC<{
             setValue={setDepartureDate}
             disabled={!toStationId}
             allowedDates={tripDates?.dates}
+            loading={isTripDatesLoading}
           />
 
           <SelectDate
@@ -179,6 +191,7 @@ export const SearchTicketForm: React.FC<{
             setValue={setReturnDate}
             disabled={!departureDate}
             allowedDates={returnTripDates?.dates}
+            loading={isReturnTripDatesLoading}
           />
 
           <div className="col-span-full flex w-full flex-col gap-4 sm:flex-row lg:col-span-1">
@@ -209,8 +222,15 @@ const SelectCity: React.FC<SelectCityProps> = ({
   placeholder = "",
   data,
   disabled,
+  loading,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (loading || disabled) {
+      setIsOpen(false);
+    }
+  }, [loading, disabled]);
   const [inputValue, setInputValue] = React.useState(
     data?.find((item) => item.value === value)?.label || "",
   );
@@ -223,7 +243,14 @@ const SelectCity: React.FC<SelectCityProps> = ({
   }, [value, data]);
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!loading && !disabled) {
+          setIsOpen(open);
+        }
+      }}
+    >
       <div className="relative">
         <PopoverTrigger asChild>
           <div
@@ -244,6 +271,7 @@ const SelectCity: React.FC<SelectCityProps> = ({
               className="focus:placeholder:text-platinum placeholder:text-text-gray h-full w-full text-black focus:outline-none"
             />
             <ChevronRightIcon className="size-5 flex-none" />
+            {loading && <LoadingSpinner className="ml-2" />}
           </div>
         </PopoverTrigger>
       </div>
@@ -256,16 +284,22 @@ const SelectCity: React.FC<SelectCityProps> = ({
           inputRef.current?.focus();
         }}
       >
-        {data?.map((item, index) => (
-          <button
-            key={index}
-            onClick={() => setValue(String(item?.value))}
-            type="button"
-            className="hover:text-blue flex w-full p-2 text-left transition"
-          >
-            {item?.label}
-          </button>
-        ))}
+        {loading ? (
+          <div className="flex justify-center p-2">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          data?.map((item, index) => (
+            <button
+              key={index}
+              onClick={() => setValue(String(item?.value))}
+              type="button"
+              className="hover:text-blue flex w-full p-2 text-left transition"
+            >
+              {item?.label}
+            </button>
+          ))
+        )}
       </PopoverContent>
     </Popover>
   );
@@ -278,6 +312,7 @@ export const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
   disabled,
   allowedDates,
   messages,
+  loading,
 }) => {
   const noDataMessage =
     messages?.noData ?? "Momentan nu sunt date disponibile.";
@@ -314,9 +349,23 @@ export const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
       setValue(format(date, "dd.MM.yyyy"));
     }
   };
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (loading || disabled) {
+      setIsOpen(false);
+    }
+  }, [loading, disabled]);
 
   return (
-    <Popover>
+    <Popover
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!loading && !disabled) {
+          setIsOpen(open);
+        }
+      }}
+    >
       <div className="relative w-full">
         <PopoverTrigger asChild>
           <div
@@ -346,14 +395,22 @@ export const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
                 className="focus:placeholder:text-platinum placeholder:text-text-gray h-full w-full text-black focus:outline-none"
               />
             </div>
+            {loading && <LoadingSpinner className="ml-2" />}
           </div>
         </PopoverTrigger>
       </div>
       <PopoverContent
-        className={cn("w-auto p-0", !allowedDates?.length && "w-56 p-4")}
+        className={cn(
+          "w-auto p-0",
+          !loading && allowedDates !== undefined && !allowedDates.length && "w-56 p-4",
+        )}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        {!allowedDates?.length ? (
+        {loading ? (
+          <div className="flex justify-center p-4">
+            <LoadingSpinner />
+          </div>
+        ) : !allowedDates?.length && allowedDates !== undefined ? (
           <div className="text-muted-foreground flex flex-col items-center gap-1 text-center text-sm">
             <CalendarSearch className="size-6 flex-none" />
             <span>{noDataMessage}</span>
