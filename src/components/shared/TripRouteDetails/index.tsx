@@ -4,12 +4,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { getLocalizedField } from "@/utils/getLocalizedField";
 import type { TripRouteDetailsData, TripSegment } from "@/types";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
+import { cn } from "@/lib/utils";
 
 export const TripRouteDetails: React.FC<{
   data: TripRouteDetailsData;
   route: TripSegment;
   duration: number;
-}> = ({ data, route: routeData, duration: durationMinutes }) => {
+  className?: string;
+}> = ({ data, route: routeData, duration: durationMinutes, className }) => {
   const locale = useLocale();
   const t = useTranslations();
   const { formatUTC } = useFormatUTCToLocal();
@@ -28,7 +30,7 @@ export const TripRouteDetails: React.FC<{
   }, [durationMinutes, t]);
 
   return (
-    <div className="flex gap-4">
+    <div className={cn("flex gap-4", className)}>
       <div className="w-full grid-cols-5 items-center gap-4 space-y-3 md:grid md:space-y-0">
         <div className="col-span-2 flex flex-row-reverse items-center justify-between md:block">
           <div className="flex flex-col items-end md:mb-6 md:flex-row md:items-center md:gap-5">

@@ -204,7 +204,7 @@ export const HomeContainer: React.FC = () => {
                   </div>
                 <div className="relative aspect-[5/4] h-[208px] flex-none overflow-hidden rounded-lg border-2 border-white">
                   {isLoadingWeeklyTrips && (
-                    <div className="skeleton absolute inset-0" />
+                    <div className="skeleton absolute inset-0 rounded-lg" />
                   )}
                   <Image
                     src={
@@ -231,7 +231,7 @@ export const HomeContainer: React.FC = () => {
                   </div>
                   <div className="relative aspect-[5/4] h-[208px] flex-none overflow-hidden rounded-lg border-2 border-white">
                     {isLoadingWeeklyTrips && (
-                      <div className="skeleton absolute inset-0" />
+                      <div className="skeleton absolute inset-0 rounded-lg" />
                     )}
                     <Image
                       src={
@@ -378,6 +378,7 @@ export const HomeContainer: React.FC = () => {
                                       }}
                                       route={trip?.route_departure}
                                       duration={trip?.duration_minutes}
+                                      className="text-[0.75rem]"
                                     />
                                   )}
                                 </li>
