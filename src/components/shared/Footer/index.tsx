@@ -7,12 +7,21 @@ import { usePathname } from "@/i18n/navigation";
 import logo from "@/assets/images/logo.svg";
 import { Button } from "@/components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
-import { CONTACTS, NAV_LINK, NAV_LINKS, QUERY_KEYS } from "@/utils/constants";
+
+import {
+  CONTACTS,
+  NAV_LINK,
+  NAV_LINKS,
+  QUERY_KEYS,
+  API_URL,
+} from "@/utils/constants";
+
 import { useTranslations, useLocale } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { searchService } from "@/services/search.service";
 import { getLocalizedField } from "@/utils/getLocalizedField";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
+import { format, parseISO } from "date-fns";
 
 export const Footer: React.FC = () => {
   const t = useTranslations();
@@ -88,19 +97,47 @@ export const Footer: React.FC = () => {
                         </li>
                       ))
                     : nearestTrips?.data && nearestTrips.data.length > 0 && !isNearestTripsError
-                      ? nearestTrips.data.map((trip, index) => (
-                          <li key={index} className="pb-6">
-                            <div className="flex items-center justify-between gap-4 text-white">
-                              <div className="">
-                                {getLocalizedField(trip.route_departure.route, "name", locale)}
-                              </div>
-                              <div className="text-mentol">
-                                {formatUTC(trip.route_departure.departure_datetime)?.time}
-                              </div>
-                              <ChevronRightIcon className="6" />
-                            </div>
-                          </li>
-                        ))
+                      ? nearestTrips.data.map((trip, index) => {
+                          const stations = trip.route_departure.route.stations;
+                          const fromId = stations[0]?.id;
+                          const toId = stations[stations.length - 1]?.id;
+                          const departureDate = format(
+                            parseISO(trip.route_departure.departure_datetime),
+                            "yyyy-MM-dd",
+                          );
+                          const params = new URLSearchParams({
+                            from_station_id: String(fromId),
+                            to_station_id: String(toId),
+                            departure_date: departureDate,
+                            passengers: "1",
+                          });
+                          const href = `${API_URL}/search?${params.toString()}`;
+
+                          return (
+                            <li key={index} className="pb-6">
+                              <Link
+                                href={href}
+                                className="flex items-center justify-between gap-4 text-white"
+                              >
+                                <div>
+                                  {getLocalizedField(
+                                    trip.route_departure.route,
+                                    "name",
+                                    locale,
+                                  )}
+                                </div>
+                                <div className="text-mentol">
+                                  {
+                                    formatUTC(trip.route_departure.departure_datetime, {
+                                      dateFormat: "dd.MM.yyyy, HH:mm",
+                                    })?.date
+                                  }
+                                </div>
+                                <ChevronRightIcon className="6" />
+                              </Link>
+                            </li>
+                          );
+                        })
                       : (
                         <li className="pb-6 text-center text-white">
                           {t("general.no_nearest_trips")}
