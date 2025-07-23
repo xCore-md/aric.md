@@ -59,7 +59,9 @@ export const HomeContainer: React.FC = () => {
   const { updateTicketSearchParams } = useTicketForm();
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useOnScreen(containerRef);
+  const isInView = useOnScreen<HTMLDivElement>(
+    containerRef as React.RefObject<HTMLDivElement>,
+  );
 
   const { data: weeklyTrips, isLoading: isLoadingWeeklyTrips } = useQuery({
     queryKey: [QUERY_KEYS.weeklyTrips],
@@ -180,7 +182,7 @@ export const HomeContainer: React.FC = () => {
               <div className="max-w-xs">
                 <h2 className="h1 text-white">{t("reservation.title")}</h2>
                 <p className="text-2xl text-white/90">
-                  {t("reservation.subtitle")}: <br /> {stationLabel}
+                {t("reservation.subtitle")}: <br /> {isLoadingWeeklyTrips ? <span className="skeleton inline-block h-6 w-32" /> : stationLabel}
                 </p>
 
                 <Button className="mt-8 mb-12" variant="white" asChild>
@@ -198,19 +200,22 @@ export const HomeContainer: React.FC = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>{stationLabel.split("-")[0]}</span>
+                    <span>{isLoadingWeeklyTrips ? <span className="skeleton inline-block h-6 w-20" /> : stationLabel.split("-")[0]}</span>
                   </div>
-                  <div className="relative aspect-[5/4] h-[208px] flex-none overflow-hidden rounded-lg border-2 border-white">
-                    <Image
-                      src={
-                        weeklyTrips?.metadata?.from_station_image ||
-                        "https://placehold.co/352x200/png"
-                      }
-                      alt="Image"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
+                <div className="relative aspect-[5/4] h-[208px] flex-none overflow-hidden rounded-lg border-2 border-white">
+                  {isLoadingWeeklyTrips && (
+                    <div className="skeleton absolute inset-0" />
+                  )}
+                  <Image
+                    src={
+                      weeklyTrips?.metadata?.from_station_image ||
+                      "https://placehold.co/352x200/png"
+                    }
+                    alt="Image"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 </div>
 
                 <div className="flex flex-col items-center gap-4">
@@ -222,9 +227,12 @@ export const HomeContainer: React.FC = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>{stationLabel.split("-")[1]}</span>
+                    <span>{isLoadingWeeklyTrips ? <span className="skeleton inline-block h-6 w-20" /> : stationLabel.split("-")[1]}</span>
                   </div>
                   <div className="relative aspect-[5/4] h-[208px] flex-none overflow-hidden rounded-lg border-2 border-white">
+                    {isLoadingWeeklyTrips && (
+                      <div className="skeleton absolute inset-0" />
+                    )}
                     <Image
                       src={
                         weeklyTrips?.metadata?.to_station_image ||
@@ -251,15 +259,47 @@ export const HomeContainer: React.FC = () => {
               ref={containerRef}
             >
               {isLoadingWeeklyTrips ? (
-                <div className="skeleton h-40 rounded-xl" />
-              ) : hasTrips ? (
                 <Card className="gap-4 pb-4 sm:gap-6 sm:pb-6">
                   <CardHeader
                     className="relative rounded-t-xl border bg-[#F9F9F9] p-3 sm:py-6"
                     platinum
                   >
                     <CardTitle className="!w-1/2 text-center text-xl font-normal sm:text-left md:text-2xl">
-                      {stationLabel}
+                      <div className="skeleton mx-auto h-6 w-1/2 sm:mx-0" />
+                    </CardTitle>
+                    <div className="bg-mentol mx-auto mt-3 max-w-max space-x-2 rounded-full px-4 py-2 sm:absolute sm:top-1/2 sm:right-0 sm:mt-0 sm:-translate-y-1/2 sm:rounded-l-full sm:rounded-r-none">
+                      <span className="text-xl">🔥</span>
+                      <span className="font-semibold md:text-lg">
+                        {t("general.nearest_routes")}
+                      </span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-2 sm:px-6">
+                    <Tabs defaultValue="first" className="items-center">
+                      <TabsList>
+                        <TabsTrigger value="first">
+                          {formatUTC(new Date().toISOString(), { dateFormat: "E, dd MMMM" })?.date}
+                        </TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="first" className="w-full">
+                        <ul className="space-y-4">
+                          {Array.from({ length: 3 }).map((_, index) => (
+                            <li key={index} className="skeleton h-40 rounded-xl" />
+                          ))}
+                        </ul>
+                      </TabsContent>
+                    </Tabs>
+                  </CardContent>
+                </Card>
+              ) : hasTrips ? (
+                  <Card className="gap-4 pb-4 sm:gap-6 sm:pb-6">
+                    <CardHeader
+                      className="relative rounded-t-xl border bg-[#F9F9F9] p-3 sm:py-6"
+                      platinum
+                    >
+                    <CardTitle className="!w-1/2 text-center text-xl font-normal sm:text-left md:text-2xl">
+                      {isLoadingWeeklyTrips ? <span className="skeleton inline-block h-6 w-32" /> : stationLabel}
                     </CardTitle>
                     <div className="bg-mentol mx-auto mt-3 max-w-max space-x-2 rounded-full px-4 py-2 sm:absolute sm:top-1/2 sm:right-0 sm:mt-0 sm:-translate-y-1/2 sm:rounded-l-full sm:rounded-r-none">
                       <span className="text-xl">🔥</span>
@@ -362,7 +402,7 @@ export const HomeContainer: React.FC = () => {
                       platinum
                     >
                       <CardTitle className="!w-1/2 text-center text-xl font-normal sm:text-left md:text-2xl">
-                        {stationLabel}
+                      {isLoadingWeeklyTrips ? <span className="skeleton inline-block h-6 w-32" /> : stationLabel}
                       </CardTitle>
                       <div className="bg-mentol mx-auto mt-3 max-w-max space-x-2 rounded-full px-4 py-2 sm:absolute sm:top-1/2 sm:right-0 sm:mt-0 sm:-translate-y-1/2 sm:rounded-l-full sm:rounded-r-none">
                         <span className="text-xl">🔥</span>

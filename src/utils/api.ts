@@ -10,6 +10,7 @@ import { getCookie } from "cookies-next";
 
 export const apiInstance = ky.create({
   prefixUrl: API_URL,
+  timeout: 60000,
   hooks: {
     beforeRequest: [
       async (request) => {
