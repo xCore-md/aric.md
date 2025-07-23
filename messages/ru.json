@@ -71,7 +71,8 @@
     "language_switch": "Сменить язык",
     "view_all_label": "Посмотреть все",
     "nearest_routes": "Ближайшие маршруты",
-    "no_weekly_trips": "Маршрутов на этой неделе нет"
+    "no_weekly_trips": "Маршрутов на этой неделе нет",
+    "no_nearest_trips": "В ближайшее время рейсов по маршрутам нет"
   },
   "phone_request": {
     "title": "Запросить <br></br>телефонный звонок",

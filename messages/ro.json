@@ -71,7 +71,8 @@
     "language_switch": "Schimbă limba",
     "view_all_label": "Vezi toate",
     "nearest_routes": "Cele mai apropiate rute",
-    "no_weekly_trips": "Nu sunt rute săptămânale disponibile"
+    "no_weekly_trips": "Nu sunt rute săptămânale disponibile",
+    "no_nearest_trips": "În viitorul apropiat nu sunt curse pe rute"
   },
   "phone_request": {
     "title": "Cere un <br></br>apel telefonic",

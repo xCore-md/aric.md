@@ -71,7 +71,8 @@
     "language_switch": "Change language",
     "view_all_label": "View all",
     "nearest_routes": "Nearest routes",
-    "no_weekly_trips": "No weekly trips available"
+    "no_weekly_trips": "No weekly trips available",
+    "no_nearest_trips": "No nearest trips available"
   },
   "phone_request": {
     "title": "Request a <br></br>phone call",

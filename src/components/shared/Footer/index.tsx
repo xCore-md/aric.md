@@ -7,12 +7,27 @@ import { usePathname } from "@/i18n/navigation";
 import logo from "@/assets/images/logo.svg";
 import { Button } from "@/components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
-import { CONTACTS, NAV_LINK, NAV_LINKS } from "@/utils/constants";
-import { useTranslations } from "use-intl";
+import { CONTACTS, NAV_LINK, NAV_LINKS, QUERY_KEYS } from "@/utils/constants";
+import { useTranslations, useLocale } from "next-intl";
+import { useQuery } from "@tanstack/react-query";
+import { searchService } from "@/services/search.service";
+import { getLocalizedField } from "@/utils/getLocalizedField";
+import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 
 export const Footer: React.FC = () => {
   const t = useTranslations();
+  const locale = useLocale();
+  const { formatUTC } = useFormatUTCToLocal();
   const pathname = usePathname();
+
+  const {
+    data: nearestTrips,
+    isLoading: isNearestTripsLoading,
+    isError: isNearestTripsError,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.nearestTrips],
+    queryFn: () => searchService.getNearestTrips({ limit: 3 }),
+  });
   return (
     <div className="mt-auto">
       <footer className="bg-black px-0 py-10 md:p-14">
@@ -62,20 +77,35 @@ export const Footer: React.FC = () => {
                 </div>
 
                 <ul className="divide-text-gray -mb-6 space-y-6 divide-y">
-                  <li className="pb-6">
-                    <div className="flex items-center justify-between gap-4 text-white">
-                      <div className="">Chișinău - Ismail</div>
-                      <div className="text-mentol">12:20</div>
-                      <ChevronRightIcon className="6" />
-                    </div>
-                  </li>
-                  <li className="pb-6">
-                    <div className="flex items-center justify-between gap-4 text-white">
-                      <div className="">Chișinău - Ismail</div>
-                      <div className="text-mentol">12:20</div>
-                      <ChevronRightIcon className="6" />
-                    </div>
-                  </li>
+                  {isNearestTripsLoading
+                    ? Array.from({ length: 3 }).map((_, index) => (
+                        <li key={index} className="pb-6">
+                          <div className="flex items-center justify-between gap-4 text-white">
+                            <div className="skeleton h-6 w-1/2 rounded-full" />
+                            <div className="skeleton h-6 w-12 rounded-full" />
+                            <ChevronRightIcon className="6" />
+                          </div>
+                        </li>
+                      ))
+                    : nearestTrips?.data && nearestTrips.data.length > 0 && !isNearestTripsError
+                      ? nearestTrips.data.map((trip, index) => (
+                          <li key={index} className="pb-6">
+                            <div className="flex items-center justify-between gap-4 text-white">
+                              <div className="">
+                                {getLocalizedField(trip.route_departure.route, "name", locale)}
+                              </div>
+                              <div className="text-mentol">
+                                {formatUTC(trip.route_departure.departure_datetime)?.time}
+                              </div>
+                              <ChevronRightIcon className="6" />
+                            </div>
+                          </li>
+                        ))
+                      : (
+                        <li className="pb-6 text-center text-white">
+                          {t("general.no_nearest_trips")}
+                        </li>
+                      )}
                 </ul>
               </div>
 

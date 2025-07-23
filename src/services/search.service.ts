@@ -4,6 +4,7 @@ import type {
   SearchResponse,
   SearchStation,
   SearchWeklyTripsResponse,
+  TripItem,
 } from "@/types";
 
 class SearchService {
@@ -19,6 +20,12 @@ class SearchService {
     return this.clientApi
       .get("search/weekly-trips", { searchParams: { ...params } })
       .json<SearchWeklyTripsResponse>();
+  }
+
+  getNearestTrips(params?: PaginationParams) {
+    return this.clientApi
+      .get("search/nearest-trips", { searchParams: { ...params } })
+      .json<{ data: TripItem[] }>();
   }
 
   getStations(params?: PaginationParams) {
