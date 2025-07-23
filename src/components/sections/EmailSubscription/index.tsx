@@ -17,6 +17,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useTranslations } from "next-intl";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { HTTPError } from "ky";
+import { newsletterService } from "@/services/newsletter.service";
 
 const schema = z.object({
   email: z.string().email(),
@@ -33,10 +37,28 @@ export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
     },
   });
 
-  const { control, handleSubmit } = form;
+  const { control, handleSubmit, setError, reset } = form;
+
+  const subscribeMutation = useMutation({
+    mutationFn: (email: string) => newsletterService.subscribe(email),
+    onSuccess: (response) => {
+      toast.success(response.message);
+      reset();
+    },
+    onError: async (error) => {
+      if (error instanceof HTTPError) {
+        const res = await error.response.json();
+        let message = res?.errors?.email?.[0] || res?.message || "Unknown error";
+        if (message === "Too Many Attempts.") {
+          message = t("too_many_attempts");
+        }
+        setError("email", { message });
+      }
+    },
+  });
 
   function onSubmit(data: z.infer<typeof schema>) {
-    console.log(data);
+    subscribeMutation.mutate(data.email);
   }
 
   if (!withBg) {
@@ -69,7 +91,11 @@ export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
                       </FormItem>
                     )}
                   />
-                  <Button>{t("action.subscribe")}</Button>
+                  <Button disabled={subscribeMutation.isPending}>
+                    {subscribeMutation.isPending
+                      ? t("action.subscribe") + "..."
+                      : t("action.subscribe")}
+                  </Button>
                 </div>
               </form>
             </Form>
@@ -120,7 +146,11 @@ export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
                       </FormItem>
                     )}
                   />
-                  <Button>Abonează-te</Button>
+                  <Button disabled={subscribeMutation.isPending}>
+                    {subscribeMutation.isPending
+                      ? t("action.subscribe") + "..."
+                      : t("action.subscribe")}
+                  </Button>
                 </div>
               </form>
             </Form>

@@ -120,5 +120,6 @@
     "max_seats_reached": "The limit of {count} available seats has been reached"
   },
   "logout": "Log out",
-  "consentText": "I agree to the {terms} in accordance with the {privacyPolicy}"
+  "consentText": "I agree to the {terms} in accordance with the {privacyPolicy}",
+  "too_many_attempts": "Too Many Attempts."
 }

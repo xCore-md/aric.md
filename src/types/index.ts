@@ -7,3 +7,4 @@ export * from "./ticket.types";
 export * from "./booking.types";
 export * from "./passenger.types";
 export * from "./payment.types";
+export * from "./newsletter.types";

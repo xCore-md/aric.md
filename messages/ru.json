@@ -120,5 +120,6 @@
     "max_seats_reached": "Достигнут предел в {count} доступных мест"
   },
   "logout": "Выйти",
-  "consentText": "Я согласен с {terms} в соответствии с {privacyPolicy}"
+  "consentText": "Я согласен с {terms} в соответствии с {privacyPolicy}",
+  "too_many_attempts": "Слишком много попыток."
 }

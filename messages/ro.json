@@ -120,5 +120,6 @@
     "max_seats_reached": "S-au atins cele {count} locuri disponibile"
   },
   "logout": "Deconectare",
-  "consentText": "Sunt de acord cu {terms} conform {privacyPolicy}"
+  "consentText": "Sunt de acord cu {terms} conform {privacyPolicy}",
+  "too_many_attempts": "Prea multe încercări."
 }
