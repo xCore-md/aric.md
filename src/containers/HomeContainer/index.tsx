@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronRightIcon } from "lucide-react";
@@ -28,6 +28,7 @@ import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
 import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useOnScreen } from "@/hooks/useOnScreen";
 
 type FeatureKeys = keyof Messages["planning"];
 type TitleDescription = {
@@ -57,9 +58,13 @@ export const HomeContainer: React.FC = () => {
   const { formatUTC } = useFormatUTCToLocal();
   const { updateTicketSearchParams } = useTicketForm();
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useOnScreen(containerRef);
+
   const { data: weeklyTrips, isLoading: isLoadingWeeklyTrips } = useQuery({
     queryKey: [QUERY_KEYS.weeklyTrips],
     queryFn: () => searchService.getWeeklyTrips(),
+    enabled: isInView,
   });
 
   const stationLabel = useMemo(() => {
@@ -82,9 +87,15 @@ export const HomeContainer: React.FC = () => {
     locale,
   ]);
 
-  console.log(
-    Object.values(weeklyTrips?.data || {}).flatMap((dayTrips) => dayTrips),
+  const weeklyTripsEntries = useMemo(
+    () =>
+      Object.entries(weeklyTrips?.data || {}).filter(
+        ([, trips]) => trips.length > 0,
+      ),
+    [weeklyTrips],
   );
+
+  const hasTrips = weeklyTripsEntries.length > 0;
   return (
     <>
       <div className="relative mx-auto w-full max-w-[1600px] overflow-hidden rounded-b-3xl">
@@ -235,10 +246,13 @@ export const HomeContainer: React.FC = () => {
               </div>
             </div>
 
-            <div className="relative z-10 mx-auto w-full lg:max-w-3xl">
+            <div
+              className="relative z-10 mx-auto w-full lg:max-w-3xl"
+              ref={containerRef}
+            >
               {isLoadingWeeklyTrips ? (
-                <div className="skeleton" />
-              ) : (
+                <div className="skeleton h-40 rounded-xl" />
+              ) : hasTrips ? (
                 <Card className="gap-4 pb-4 sm:gap-6 sm:pb-6">
                   <CardHeader
                     className="relative rounded-t-xl border bg-[#F9F9F9] p-3 sm:py-6"
@@ -257,28 +271,26 @@ export const HomeContainer: React.FC = () => {
                   <CardContent className="px-2 sm:px-6">
                     <Tabs defaultValue="first" className="items-center">
                       <TabsList>
-                        {Object.entries(weeklyTrips?.data || {})?.map(
-                          ([date], index) => (
-                            <TabsTrigger
-                              key={date}
-                              value={index === 0 ? "first" : date}
-                            >
-                              {
-                                formatUTC(date, { dateFormat: "E, dd MMMM" })
-                                  ?.date
-                              }
-                            </TabsTrigger>
-                          ),
-                        )}
+                        {weeklyTripsEntries.map(([date]) => (
+                          <TabsTrigger
+                            key={date}
+                            value={
+                              weeklyTripsEntries[0][0] === date ? "first" : date
+                            }
+                          >
+                            {formatUTC(date, { dateFormat: "E, dd MMMM" })?.date}
+                          </TabsTrigger>
+                        ))}
                       </TabsList>
 
-                      {Object.entries(weeklyTrips?.data || {})?.map(
-                        ([date, trips], index) => (
-                          <TabsContent
-                            key={date}
-                            value={index === 0 ? "first" : date}
-                            className="w-full"
-                          >
+                      {weeklyTripsEntries.map(([date, trips]) => (
+                        <TabsContent
+                          key={date}
+                          value={
+                            weeklyTripsEntries[0][0] === date ? "first" : date
+                          }
+                          className="w-full"
+                        >
                             <ul className="space-y-4">
                               {trips?.map((trip, index) => (
                                 <li
@@ -332,19 +344,38 @@ export const HomeContainer: React.FC = () => {
                               ))}
                             </ul>
                           </TabsContent>
-                        ),
-                      )}
+                        ))}
                     </Tabs>
 
-                    <Button asChild className="mt-4">
-                      <Link href="/search">
-                        {t("action.see_all_routes")}
-                        <ChevronRightIcon />
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              )}
+                      <Button asChild className="mt-4">
+                        <Link href="/search">
+                          {t("action.see_all_routes")}
+                          <ChevronRightIcon />
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Card className="gap-4 pb-4 sm:gap-6 sm:pb-6">
+                    <CardHeader
+                      className="relative rounded-t-xl border bg-[#F9F9F9] p-3 sm:py-6"
+                      platinum
+                    >
+                      <CardTitle className="!w-1/2 text-center text-xl font-normal sm:text-left md:text-2xl">
+                        {stationLabel}
+                      </CardTitle>
+                      <div className="bg-mentol mx-auto mt-3 max-w-max space-x-2 rounded-full px-4 py-2 sm:absolute sm:top-1/2 sm:right-0 sm:mt-0 sm:-translate-y-1/2 sm:rounded-l-full sm:rounded-r-none">
+                        <span className="text-xl">🔥</span>
+                        <span className="font-semibold md:text-lg">
+                          {t("general.nearest_routes")}
+                        </span>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="px-2 py-10 text-center sm:px-6">
+                      {t("general.no_weekly_trips")}
+                    </CardContent>
+                  </Card>
+                )}
             </div>
           </div>
         </div>
