@@ -8,6 +8,7 @@ import chargerImage from "@/assets/images/usb-charger.png";
 import chairImage from "@/assets/images/chair.png";
 import bgBus from "@/assets/images/bg-bus.jpg";
 import busImage from "@/assets/images/bus.png";
+import verticalLine from "@/assets/icons/vertical-line.svg";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
@@ -41,16 +42,12 @@ export const DiscountSection: React.FC = () => {
               className="h-8 w-auto lg:h-14"
             />
 
-            <svg width="1" height="33" viewBox="0 0 1 33">
-              <line
-                x1="0.5"
-                y1="1"
-                x2="0.5"
-                y2="32"
-                stroke="#DDE0E3"
-                strokeLinecap="round"
-              />
-            </svg>
+            <Image
+              src={verticalLine.src}
+              width={verticalLine.width}
+              height={verticalLine.height}
+              alt=""
+            />
 
             <div className="flex items-center gap-2">
               <Image
@@ -65,16 +62,12 @@ export const DiscountSection: React.FC = () => {
               </div>
             </div>
 
-            <svg width="1" height="33" viewBox="0 0 1 33">
-              <line
-                x1="0.5"
-                y1="1"
-                x2="0.5"
-                y2="32"
-                stroke="#DDE0E3"
-                strokeLinecap="round"
-              />
-            </svg>
+            <Image
+              src={verticalLine.src}
+              width={verticalLine.width}
+              height={verticalLine.height}
+              alt=""
+            />
 
             <div className="flex items-center gap-2">
               <Image

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/accordion";
 
 import faqAvatar from "@/assets/images/faq.png";
+import faqIcon from "@/assets/icons/faq-question.svg";
 import {
   Form,
   FormControl,
@@ -58,16 +59,13 @@ export const FAQSection: React.FC = () => {
             <h2 className="h2 !mb-8 flex flex-wrap gap-x-4 md:!mb-14 md:flex-col">
               <span className="flex items-center gap-4">
                 <span>{t("faq.questions")}</span>
-                <svg viewBox="0 0 39 40" className="size-10">
-                  <path
-                    fill="#FFC60E"
-                    d="M0 20a19.5 19.5 0 1 1 39 0 19.5 19.5 0 1 1-39 0Z"
-                  />
-                  <path
-                    fill="#fff"
-                    d="M17 24.9v3.8h3.9V25h-4Zm3.9-3.2a6.8 6.8 0 1 0-8.6-8l3.8.9A3 3 0 1 1 19 18a2 2 0 0 0-2 1.9v3h3.9v-1.3Z"
-                  />
-                </svg>
+                <Image
+                  src={faqIcon.src}
+                  width={faqIcon.width}
+                  height={faqIcon.height}
+                  alt=""
+                  className="size-10"
+                />
               </span>
               <span>{t("faq.and_answers")}</span>
             </h2>

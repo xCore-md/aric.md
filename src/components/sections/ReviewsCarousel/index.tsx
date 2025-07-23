@@ -10,6 +10,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import googleIcon from "@/assets/images/google.svg";
+import starIcon from "@/assets/icons/star.svg";
 import { useTranslations } from "next-intl";
 
 export const ReviewsCarouselSection: React.FC = () => {
@@ -47,13 +48,14 @@ export const ReviewsCarouselSection: React.FC = () => {
 
                   <div className="mt-4 mb-5 flex items-center gap-2">
                     {[1, 2, 3, 4, 5].map((_, index) => (
-                      <svg
+                      <Image
                         key={index}
-                        viewBox="0 0 24 22"
+                        src={starIcon.src}
+                        width={starIcon.width}
+                        height={starIcon.height}
+                        alt=""
                         className="fill-yellow size-6"
-                      >
-                        <path d="m18.5 21.5-.5-.1-6-4.4-6 4.4a.7.7 0 0 1-1.2-.9l2.4-7L1 9.4A.7.7 0 0 1 1.5 8H9l2.3-7a.8.8 0 0 1 1.4 0L15 8h7.5a.8.8 0 0 1 .4 1.4l-6 4.1 2.3 7a.8.8 0 0 1-.7 1Z" />
-                      </svg>
+                      />
                     ))}
                   </div>
 
