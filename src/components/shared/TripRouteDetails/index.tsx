@@ -11,7 +11,8 @@ export const TripRouteDetails: React.FC<{
   route: TripSegment;
   duration: number;
   className?: string;
-}> = ({ data, route: routeData, duration: durationMinutes, className }) => {
+  showShort?: boolean;
+}> = ({ data, route: routeData, duration: durationMinutes, className, showShort = false }) => {
   const locale = useLocale();
   const t = useTranslations();
   const { formatUTC } = useFormatUTCToLocal();
@@ -19,15 +20,16 @@ export const TripRouteDetails: React.FC<{
   const durationLabel = React.useMemo(() => {
     const hours = Math.floor(durationMinutes / 60);
     const minutes = durationMinutes % 60;
+    const keyPrefix = "duration." + (hours && minutes
+      ? "hoursMinutes"
+      : hours
+        ? "hours"
+        : "minutes");
 
-    if (hours && minutes) {
-      return t("duration.hoursMinutes", { hours, minutes });
-    }
-    if (hours) {
-      return t("duration.hours", { hours });
-    }
-    return t("duration.minutes", { minutes });
-  }, [durationMinutes, t]);
+    const key = showShort ? `${keyPrefix}_short` : keyPrefix;
+
+    return t(key, { hours, minutes });
+  }, [durationMinutes, t, showShort]);
 
   return (
     <div className={cn("flex gap-4", className)}>

@@ -9,5 +9,8 @@
   "editor.multiCursor.paste": "spread",
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   } // set as "true" to run 'prettier' last not first
 }

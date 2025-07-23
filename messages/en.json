@@ -93,7 +93,10 @@
   "duration": {
     "hoursMinutes": "Duration {hours} hours {minutes} min",
     "hours": "Duration {hours} hours",
-    "minutes": "Duration {minutes} min"
+    "minutes": "Duration {minutes} min",
+    "hoursMinutes_short": "{hours} h {minutes} min",
+    "hours_short": "{hours} h",
+    "minutes_short": "{minutes} min"
   },
   "currency": {
     "MDL": "MDL",
