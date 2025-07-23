@@ -249,9 +249,9 @@ export const HomeContainer: React.FC = () => {
                     </CardTitle>
                     <div className="bg-mentol mx-auto mt-3 max-w-max space-x-2 rounded-full px-4 py-2 sm:absolute sm:top-1/2 sm:right-0 sm:mt-0 sm:-translate-y-1/2 sm:rounded-l-full sm:rounded-r-none">
                       <span className="text-xl">🔥</span>
-                      <span className="font-semibold md:text-lg">
-                        {t("$Cele mai apropiate rute")}
-                      </span>
+                        <span className="font-semibold md:text-lg">
+                          {t("general.nearest_routes")}
+                        </span>
                     </div>
                   </CardHeader>
                   <CardContent className="px-2 sm:px-6">

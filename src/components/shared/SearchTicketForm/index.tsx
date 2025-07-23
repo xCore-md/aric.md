@@ -78,6 +78,7 @@ export const SearchTicketForm: React.FC<{
   const { data: stations, isFetching: isStationsLoading } = useQuery({
     queryKey: [QUERY_KEYS.searchStations],
     queryFn: () => searchService.getStations(),
+    refetchOnWindowFocus: false,
   });
 
   const {
@@ -91,6 +92,7 @@ export const SearchTicketForm: React.FC<{
         from_station_id: Number(fromStationId),
       }),
     enabled: !!fromStationId,
+    refetchOnWindowFocus: false,
   });
 
   const {
@@ -105,6 +107,7 @@ export const SearchTicketForm: React.FC<{
         to_station_id: Number(toStationId),
       }),
     enabled: !!toStationId,
+    refetchOnWindowFocus: false,
   });
 
   const { data: returnTripDates, isFetching: isReturnTripDatesLoading } = useQuery({
@@ -124,6 +127,7 @@ export const SearchTicketForm: React.FC<{
         ),
       }),
     enabled: !!departureDate,
+    refetchOnWindowFocus: false,
   });
 
   React.useEffect(() => {
@@ -206,7 +210,7 @@ export const SearchTicketForm: React.FC<{
               disabled={!canSearch || isLoading}
               onClick={handleSubmit}
             >
-              <span className="lg:sr-only">{t("$Căutare")}</span>
+              <span className="lg:sr-only">{t("action.search")}</span>
               <Search />
             </Button>
           </div>

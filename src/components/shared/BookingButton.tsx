@@ -42,11 +42,11 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
   };
 
   return draft_booking_id ? (
-    <Button className="col-span-full" asChild>
-      <Link href={"/booking/" + draft_booking_id}>
-        {t("$Termină rezervarea")}
-        <ArrowRight />
-      </Link>
+      <Button className="col-span-full" asChild>
+        <Link href={"/booking/" + draft_booking_id}>
+          {t("action.complete_booking")}
+          <ArrowRight />
+        </Link>
     </Button>
   ) : (
     <Button
@@ -55,7 +55,9 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
       onClick={handleClick}
       disabled={bookingInit.isPending}
     >
-      {bookingInit.isPending ? t("$Se procesează") + "..." : t("$Rezervează")}
+      {bookingInit.isPending
+        ? t("action.processing") + "..."
+        : t("action.book")}
     </Button>
   );
 };
