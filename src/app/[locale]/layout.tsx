@@ -44,11 +44,14 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+  const messages = (
+    await import(`../../../messages/${locale}.json`)
+  ).default;
 
   return (
     <html lang={locale}>
       <body className={`${fontInter.variable} antialiased`}>
-        <NextIntlClientProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>
             <div className="flex min-h-screen flex-col">
               <Header />

@@ -50,7 +50,8 @@
   "action": {
     "subscribe": "Abonează-te",
     "see_all_routes": "Vezi toate rutele",
-    "book_now": "Rezervează acum"
+    "book_now": "Rezervează acum",
+    "search": "Caută"
   },
   "customer_feedback": {
     "title": "Ce spun clienții despre călătoriile noastre?"
@@ -68,7 +69,9 @@
     "leaving_soon": "Pleacă în curând",
     "address": "Adresa",
     "language_switch": "Schimbă limba",
-    "view_all_label": "Vezi toate"
+    "view_all_label": "Vezi toate",
+    "nearest_routes": "Cele mai apropiate rute",
+    "no_weekly_trips": "Nu sunt rute săptămânale disponibile"
   },
   "phone_request": {
     "title": "Cere un <br></br>apel telefonic",

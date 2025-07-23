@@ -50,7 +50,8 @@
   "action": {
     "subscribe": "Subscribe",
     "see_all_routes": "See all routes",
-    "book_now": "Book now"
+    "book_now": "Book now",
+    "search": "Search"
   },
   "customer_feedback": {
     "title": "What do customers say about our trips?"
@@ -68,7 +69,9 @@
     "leaving_soon": "Leaving soon",
     "address": "Address",
     "language_switch": "Change language",
-    "view_all_label": "View all"
+    "view_all_label": "View all",
+    "nearest_routes": "Nearest routes",
+    "no_weekly_trips": "No weekly trips available"
   },
   "phone_request": {
     "title": "Request a <br></br>phone call",

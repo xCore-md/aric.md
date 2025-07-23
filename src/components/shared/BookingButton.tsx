@@ -57,7 +57,7 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
     >
       {bookingInit.isPending
         ? t("action.processing") + "..."
-        : t("action.book")}
+        : t("action.book_now")}
     </Button>
   );
 };

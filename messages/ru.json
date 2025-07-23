@@ -49,8 +49,9 @@
   },
   "action": {
     "subscribe": "Подписаться",
-    "see_all_routes": " Посмотреть все маршруты",
-    "book_now": "Забронировать сейчас"
+    "see_all_routes": "Посмотреть все маршруты",
+    "book_now": "Забронировать сейчас",
+    "search": "Поиск"
   },
   "customer_feedback": {
     "title": "Что говорят клиенты о наших поездках?"
@@ -68,7 +69,9 @@
     "leaving_soon": "Скоро отправление",
     "address": "Адрес",
     "language_switch": "Сменить язык",
-    "view_all_label": "Посмотреть все"
+    "view_all_label": "Посмотреть все",
+    "nearest_routes": "Ближайшие маршруты",
+    "no_weekly_trips": "Маршрутов на этой неделе нет"
   },
   "phone_request": {
     "title": "Запросить <br></br>телефонный звонок",
