@@ -8,23 +8,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: 🔄 Checkout codul sursă
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 🔧 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 📦 Instalare dependențe
         run: npm ci
 
-      - name: Build Next.js app
+      - name: 🏗️ Build Next.js app
         run: npm run build
 
-      - name: Upload build artifact
+      - name: 📤 Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: next-build
@@ -38,36 +39,37 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
     steps:
-      - name: Download build artifact
+      - name: 📥 Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: next-build
-          path: .
+          path: ./deploy
 
-      - name: List files after download (debug)
-        run: ls -la
+      - name: 🧪 Debug: Afișare fișiere descărcate
+        run: ls -laR ./deploy
 
-      - name: Copy files to CloudPanel server
+      - name: 📂 Copiere fișiere pe CloudPanel server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: |
-            .next
-            public
-            package.json
-            package-lock.json
-            next.config.js
-          target: "/home/aric/htdocs/aric.md"
+            ./deploy/.next
+            ./deploy/public
+            ./deploy/package.json
+            ./deploy/package-lock.json
+            ./deploy/next.config.js
+          target: "/home/aric/htdocs/aric.md/deploy"
 
-      - name: Run deploy script on server
+      - name: 🚀 Executare script deploy pe server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /home/aric/htdocs/
+            cd /home/aric/htdocs
             ./deploy.sh
