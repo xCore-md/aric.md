@@ -26,7 +26,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { signIn } from "next-auth/react";
 import { profileService } from "@/services/profile.service";
 import { useRouter } from "@/i18n/navigation";
@@ -48,6 +48,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
 }) => {
   const { push } = useRouter();
   const locale = useLocale();
+  const t = useTranslations();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
 
@@ -175,7 +176,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
           alt="Aric.md"
         />
         <h1 className="h2 mt-12">
-          {step === "email" ? "Adaugă adresa de e-mail" : "Conectează-te"}
+          {step === "email" ? t("auth.title_add_email") : t("auth.title_sign_in")}
         </h1>
 
         <Form {...form}>
@@ -186,8 +187,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
             {step === "phone" && (
               <>
                 <p className="text-text-gray mb-10">
-                  Pentru autentificare îți vom trimite o parolă de unică
-                  folosință pe numărul tău de telefon mobil
+                  {t("auth.phone_prompt")}
                 </p>
 
                 {mutationSendVerificationCode.isPending ? (
@@ -221,7 +221,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
                     />
 
                     <Button type="submit" size="lg" className="w-full">
-                      Trimite OTP
+                      {t("auth.send_otp")}
                       <ChevronRightIcon />
                     </Button>
                   </>
@@ -272,11 +272,11 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
                     />
 
                     <Button type="submit" size="lg">
-                      Verifică
+                      {t("auth.verify")}
                       <ChevronRightIcon />
                     </Button>
                     <div className="mt-auto space-y-4">
-                      <div className="text-2xl">📩 Nu ai primit codul OTP?</div>
+                      <div className="text-2xl">{t("auth.otp_not_received")}</div>
                       <Button
                         variant="reverse"
                         className={cn(
@@ -290,7 +290,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
                             {formatTime(timer)}
                           </span>
                         )}
-                        <span>Retrimite codul</span>
+                        <span>{t("auth.resend_code")}</span>
                       </Button>
                     </div>
                   </>
@@ -300,10 +300,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
 
             {step === "email" && (
               <>
-                <p className="text-text-gray mb-10">
-                  Te rugăm să introduci adresa de email unde vom trimite
-                  biletele tale.
-                </p>
+                <p className="text-text-gray mb-10">{t("auth.email_prompt")}</p>
 
                 {mutationUpdateEmail.isPending ? (
                   <div className="flex h-32">
@@ -330,7 +327,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
                     />
 
                     <Button type="submit" size="lg" className="w-full">
-                      Adaugă
+                      {t("auth.add")}
                       <ChevronRightIcon />
                     </Button>
                   </>

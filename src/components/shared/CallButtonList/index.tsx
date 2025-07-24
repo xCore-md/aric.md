@@ -3,11 +3,12 @@ import React from "react";
 import { useOnClickOutside } from "usehooks-ts";
 
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const socialButtons = [
   {
     href: "https://t.me/username",
-    label: "Telegram",
+    labelKey: "call.telegram",
     color: "#02B0F4",
     svgPath: (
       <path d="M24.67 5.45c-.06-.23-.14-.3-.28-.38-.32-.15-.88-.02-.88-.02s-19.89 5.1-21.06 5.76c-.25.15-.34.23-.4.34-.23.53.34.83.34.83l4.8 2.08s.18.05.26.01c1.19-.6 12.02-6.1 12.63-6.26.1-.02.16.02.14.08-.32.81-9.94 7.86-9.94 7.86s-.04.04-.06.1l-.01-.02-.93 4.88s-.34 1.5 1.31.12a42.45 42.45 0 0 1 2.83-2.13c1.6 1.33 3.31 2.81 4.04 3.56.37.38.7.47.97.49.75.04 1.04-.76 1.04-.76S24.31 8.2 24.6 6.32c.03-.18.06-.3.07-.43.02-.17.02-.35 0-.44Z" />
@@ -15,7 +16,7 @@ const socialButtons = [
   },
   {
     href: "viber://chat/?number=%2BPHONENUMBERWITHCOUNTRYCODE",
-    label: "Viber",
+    labelKey: "call.viber",
     color: "#7360F2",
     svgPath: (
       <>
@@ -32,7 +33,7 @@ const socialButtons = [
   },
   {
     href: "whatsapp://send?abid=phonenumber",
-    label: "WhatsApp",
+    labelKey: "call.whatsapp",
     color: "#25D366",
     svgPath: (
       <path
@@ -45,6 +46,7 @@ const socialButtons = [
 ];
 
 export const CallButtonList: React.FC = () => {
+  const t = useTranslations();
   const ref = React.useRef(null);
   const [show, setShow] = React.useState(false);
 
@@ -86,7 +88,7 @@ export const CallButtonList: React.FC = () => {
             >
               {btn?.svgPath}
             </svg>
-            <span className="sr-only">{btn.label}</span>
+            <span className="sr-only">{t(btn.labelKey)}</span>
           </a>
         ))}
       </div>

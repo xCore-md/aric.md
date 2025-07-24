@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import z from "zod";
 import { useForm } from "react-hook-form";
@@ -28,6 +29,7 @@ const schema = z.object({
 });
 
 export const ContactsContainer: React.FC = () => {
+  const t = useTranslations();
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -47,11 +49,9 @@ export const ContactsContainer: React.FC = () => {
       <section className="section">
         <div className="container">
           <div className="mb-12 md:mb-24">
-            <h1 className="h1 mb-4">Contactați-ne. </h1>
+            <h1 className="h1 mb-4">{t("contacts.title")}</h1>
 
-            <p className="text-2xl md:text-4xl">
-              Suntem aici pentru a vă ajuta!
-            </p>
+            <p className="text-2xl md:text-4xl">{t("contacts.subtitle")}</p>
           </div>
 
           <div className="max-w-6xl">
@@ -67,7 +67,10 @@ export const ContactsContainer: React.FC = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="Nume / Prenume" {...field} />
+                          <Input
+                            placeholder={t("input.name_and_surname_label")}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -80,7 +83,10 @@ export const ContactsContainer: React.FC = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="Adresa ta de e-mail" {...field} />
+                          <Input
+                            placeholder={t("input.email_field_label")}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -107,14 +113,17 @@ export const ContactsContainer: React.FC = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Textarea placeholder="Comentariu" {...field} />
+                        <Textarea
+                          placeholder={t("contacts.comment_placeholder")}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <Button>Abonează-te</Button>
+                <Button>{t("contacts.submit")}</Button>
               </form>
             </Form>
           </div>
@@ -144,15 +153,14 @@ export const ContactsContainer: React.FC = () => {
           <div className="grid gap-6 lg:grid-cols-4">
             <div className="sm:col-span-2">
               <h2 className="h2">
-                Suntem mereu
-                <br /> disponibili!
+                {t.rich("general.always_available", { br: () => <br /> })}
               </h2>
               <div className="mt-10 text-lg">🕔 24/24</div>
             </div>
 
             <div className="flex h-full flex-col justify-between">
               <div className="bg-blue max-w-max rounded-full px-2.5 py-0.5">
-                Adresa de email
+                {t("contacts.email_label")}
               </div>
               <a
                 href={`mailto:${123}`}
@@ -164,7 +172,7 @@ export const ContactsContainer: React.FC = () => {
 
             <div className="flex h-full flex-col justify-between">
               <div className="bg-blue max-w-max rounded-full px-2.5 py-0.5">
-                Telefon
+                {t("contacts.phone_label")}
               </div>
               <a
                 href={`tel:${123}`}

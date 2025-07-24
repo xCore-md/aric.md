@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 import { ChevronRightIcon } from "lucide-react";
@@ -16,34 +17,25 @@ import { EmailSubscriptionSection } from "@/components/sections/EmailSubscriptio
 import { DiscountSection } from "@/components/sections/Discount";
 
 export const AboutContainer: React.FC = () => {
+  const t = useTranslations();
   return (
     <>
       <div className="section mt-12">
         <div className="container">
           <div className="grid-cols-2 gap-16 lg:grid">
             <div className="">
-              <p className="text-blue mb-3 text-2xl font-medium">De ce noi?</p>
-              <h1 className="h1 mb-16">Despre noi</h1>
+              <p className="text-blue mb-3 text-2xl font-medium">{t("about.why_us")}</p>
+              <h1 className="h1 mb-16">{t("about.title")}</h1>
 
-              <p className="mt-6 text-2xl">
-                Pentru că îți oferim o platformă rapidă, sigură și ușor de
-                folosit, unde găsești bilete de autobuz la cele mai bune
-                prețuri.
-              </p>
+              <p className="mt-6 text-2xl">{t("about.description1")}</p>
 
-              <p className="mt-6 text-2xl">
-                Colaborăm cu operatori de încredere, actualizăm constant orarele
-                și îți asigurăm suport real atunci când ai nevoie.
-              </p>
+              <p className="mt-6 text-2xl">{t("about.description2")}</p>
 
-              <p className="mt-6 text-2xl">
-                La noi, călătoria ta începe fără stres, direct din câteva
-                clickuri!
-              </p>
+              <p className="mt-6 text-2xl">{t("about.description3")}</p>
 
               <Button asChild className="mt-16">
                 <Link href="/">
-                  Rezervează călătoria ta
+                  {t("about.book_your_trip")}
                   <ChevronRightIcon />
                 </Link>
               </Button>
@@ -93,9 +85,7 @@ export const AboutContainer: React.FC = () => {
                 <span>🔥</span>
                 <span>Sună acum! +37379435990</span>
               </div>
-              <h2 className="h2 !mb-16">
-                Planifică-ți călătoriile mai ușor, mai rapid și mai convenabil!
-              </h2>
+              <h2 className="h2 !mb-16">{t("about.features_title")}</h2>
 
               <ul className="space-y-6 md:space-y-12">
                 <li className="flex gap-6 md:gap-12">
@@ -104,12 +94,10 @@ export const AboutContainer: React.FC = () => {
                   </div>
                   <div className="">
                     <div className="mb-3 text-2xl font-medium">
-                      Garanția celui mai bun preț
+                      {t("about.feature1.title")}
                     </div>
                     <div className="text-text-gray text-sm">
-                      Verificăm constant tarifele partenerilor noștri pentru
-                      a-ți oferi cele mai avantajoase prețuri la biletele de
-                      autobuz.
+                      {t("about.feature1.description")}
                     </div>
                   </div>
                 </li>
@@ -120,11 +108,10 @@ export const AboutContainer: React.FC = () => {
                   </div>
                   <div className="">
                     <div className="mb-3 text-2xl font-medium">
-                      Rezervare rapidă și simplă
+                      {t("about.feature2.title")}
                     </div>
                     <div className="text-text-gray text-sm">
-                      Platforma noastră este intuitivă, funcționează pe orice
-                      dispozitiv și îți permite să alegi ușor ruta preferat.
+                      {t("about.feature2.description")}
                     </div>
                   </div>
                 </li>
@@ -135,11 +122,10 @@ export const AboutContainer: React.FC = () => {
                   </div>
                   <div className="">
                     <div className="mb-3 text-2xl font-medium">
-                      Suport real, atunci când ai nevoie
+                      {t("about.feature3.title")}
                     </div>
                     <div className="text-text-gray text-sm">
-                      Indiferent dacă ai o întrebare, sau ai greșit o rezervare,
-                      echipa noastră de suport îți răspunde prompt!
+                      {t("about.feature3.description")}
                     </div>
                   </div>
                 </li>

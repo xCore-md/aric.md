@@ -10,6 +10,27 @@
     "profile_settings": "Setări profil",
     "my_tickets": "Biletele mele"
   },
+  "about": {
+    "why_us": "De ce noi?",
+    "title": "Despre noi",
+    "description1": "Pentru că îți oferim o platformă rapidă, sigură și ușor de folosit, unde găsești bilete de autobuz la cele mai bune prețuri.",
+    "description2": "Colaborăm cu operatori de încredere, actualizăm constant orarele și îți asigurăm suport real atunci când ai nevoie.",
+    "description3": "La noi, călătoria ta începe fără stres, direct din câteva clickuri!",
+    "book_your_trip": "Rezervează călătoria ta",
+    "features_title": "Planifică-ți călătoriile mai ușor, mai rapid și mai convenabil!",
+    "feature1": {
+      "title": "Garanția celui mai bun preț",
+      "description": "Verificăm constant tarifele partenerilor noștri pentru a-ți oferi cele mai avantajoase prețuri la biletele de autobuz."
+    },
+    "feature2": {
+      "title": "Rezervare rapidă și simplă",
+      "description": "Platforma noastră este intuitivă, funcționează pe orice dispozitiv și îți permite să alegi ușor ruta preferat."
+    },
+    "feature3": {
+      "title": "Suport real, atunci când ai nevoie",
+      "description": "Indiferent dacă ai o întrebare, sau ai greșit o rezervare, echipa noastră de suport îți răspunde prompt!"
+    }
+  },
   "booking": {
     "buy_ticket_slogan": "Cumpără ușor biletul de autobuz online!",
     "additional_info": "Curse regulate, microbuze confortabile și orare flexibile!",
@@ -51,6 +72,8 @@
     "subscribe": "Abonează-te",
     "see_all_routes": "Vezi toate rutele",
     "book_now": "Rezervează acum",
+    "processing": "Se procesează",
+    "complete_booking": "Finalizează rezervarea",
     "search": "Caută"
   },
   "customer_feedback": {
@@ -83,6 +106,19 @@
     "privacy": "Politici de confidențialitate",
     "copyright": "Toate drepturile rezervate"
   },
+  "contacts": {
+    "title": "Contactați-ne.",
+    "subtitle": "Suntem aici pentru a vă ajuta!",
+    "email_label": "Adresa de email",
+    "phone_label": "Telefon",
+    "comment_placeholder": "Comentariu",
+    "submit": "Abonează-te"
+  },
+  "call": {
+    "telegram": "Telegram",
+    "viber": "Viber",
+    "whatsapp": "WhatsApp"
+  },
   "footer": {
     "title": "Rezervă-ți locul ușor și bucură-te de o călătorie sigură și confortabilă. Microbuze moderne, orare flexibile și rezervare rapidă online — tot ce ai nevoie pentru un drum fără griji.",
     "address": "Republica Moldova, mun.Chisinau, str, Calea Basarabiei 26"
@@ -90,6 +126,17 @@
   "email_subscription": {
     "title": "Primește notificări despre reduceri!",
     "description": "Planifică-ți călătoriile mai ușor, mai rapid și mai convenabil."
+  },
+  "auth": {
+    "verify": "Verifică",
+    "resend_code": "Retrimite codul",
+    "otp_not_received": "Nu ai primit codul OTP?",
+    "email_prompt": "Te rugăm să introduci adresa de email unde vom trimite biletele tale.",
+    "add": "Adaugă",
+    "title_add_email": "Adaugă adresa de e-mail",
+    "title_sign_in": "Conectează-te",
+    "phone_prompt": "Pentru autentificare îți vom trimite o parolă de unică folosință pe numărul tău de telefon mobil",
+    "send_otp": "Trimite OTP"
   },
   "duration": {
     "hoursMinutes": "Durata {hours} ore {minutes} min",

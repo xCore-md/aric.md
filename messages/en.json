@@ -10,6 +10,27 @@
     "profile_settings": "Profile settings",
     "my_tickets": "My tickets"
   },
+  "about": {
+    "why_us": "Why us?",
+    "title": "About us",
+    "description1": "We offer a fast, safe and easy-to-use platform where you can find bus tickets at the best prices.",
+    "description2": "We work with trusted operators, constantly update schedules and provide real support when you need it.",
+    "description3": "With us, your journey begins stress-free in just a few clicks!",
+    "book_your_trip": "Book your trip",
+    "features_title": "Plan your trips easier, faster and more conveniently!",
+    "feature1": {
+      "title": "Best price guarantee",
+      "description": "We constantly check partner rates to offer you the best bus ticket prices."
+    },
+    "feature2": {
+      "title": "Fast and simple booking",
+      "description": "Our platform is intuitive, works on any device and lets you easily choose your preferred route."
+    },
+    "feature3": {
+      "title": "Real support when you need it",
+      "description": "Whether you have a question or made a mistake in a booking, our support team responds promptly!"
+    }
+  },
   "booking": {
     "buy_ticket_slogan": "Buy a bus ticket online easily!",
     "additional_info": "Regular trips, comfortable minibuses, and flexible schedules!",
@@ -51,6 +72,8 @@
     "subscribe": "Subscribe",
     "see_all_routes": "See all routes",
     "book_now": "Book now",
+    "processing": "Processing",
+    "complete_booking": "Complete booking",
     "search": "Search"
   },
   "customer_feedback": {
@@ -83,6 +106,19 @@
     "privacy": "Privacy Policy",
     "copyright": "All rights reserved"
   },
+  "contacts": {
+    "title": "Contact us.",
+    "subtitle": "We are here to help you!",
+    "email_label": "Email address",
+    "phone_label": "Phone",
+    "comment_placeholder": "Comment",
+    "submit": "Subscribe"
+  },
+  "call": {
+    "telegram": "Telegram",
+    "viber": "Viber",
+    "whatsapp": "WhatsApp"
+  },
   "footer": {
     "title": "Book your seat easily and enjoy a safe and comfortable journey. Modern minibuses, flexible schedules, and fast online booking – everything you need for a smooth trip.",
     "address": "Republic of Moldova, mun. Chișinău, Calea Basarabiei 26"
@@ -90,6 +126,17 @@
   "email_subscription": {
     "title": "Receive discount notifications!",
     "description": "Plan your trips easier, faster, and more conveniently."
+  },
+  "auth": {
+    "verify": "Verify",
+    "resend_code": "Resend code",
+    "otp_not_received": "Didn't receive the OTP code?",
+    "email_prompt": "Please enter the email address where we will send your tickets.",
+    "add": "Add",
+    "title_add_email": "Add email address",
+    "title_sign_in": "Sign in",
+    "phone_prompt": "We will send a one-time password to your mobile number",
+    "send_otp": "Send OTP"
   },
   "duration": {
     "hoursMinutes": "Duration {hours} hours {minutes} min",
