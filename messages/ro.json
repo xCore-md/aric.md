@@ -157,6 +157,10 @@
     "paid": "Achitat",
     "cancelled": "Anulat"
   },
+  "trip_type": {
+    "one-way": "Dus",
+    "round-trip": "Dus-întors"
+  },
   "passengers": {
     "label": "Număr de pasageri",
     "none": "Niciun pasager",
@@ -231,7 +235,5 @@
   "$Dată: crescător": "Dată: crescător",
   "$Dată: descrescător": "Dată: descrescător",
   "$Întrebări și răspunsuri": "Întrebări și răspunsuri",
-  "$one-way": "Dus",
-  "$round-trip": "Dus-întors",
   "$Salvează": "Salvează"
 }

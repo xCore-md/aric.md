@@ -132,7 +132,7 @@ export const SearchContainer: React.FC = () => {
                               </div>
 
                               <div className="bg-yellow max-w-max rounded-full px-2.5 py-0.5">
-                                <span>{t(type)}</span>
+                                <span>{t(`trip_type.${type}`)}</span>
                               </div>
                             </div>
 

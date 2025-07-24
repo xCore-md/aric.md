@@ -5,6 +5,11 @@ import Image from "next/image";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { HTTPError } from "ky";
+
+import { feedbackService } from "@/services/feedback.service";
 
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -40,8 +45,56 @@ export const ContactsContainer: React.FC = () => {
     },
   });
 
+  const feedbackMutation = useMutation({
+    mutationFn: (payload: {
+      full_name: string;
+      phone: string;
+      email: string;
+      comment: string;
+    }) => feedbackService.send(payload),
+    onSuccess: (response) => {
+      toast.success(response.message);
+      form.reset();
+    },
+    onError: async (error) => {
+      if (error instanceof HTTPError) {
+        const res = await error.response.json();
+        let message =
+          res?.errors?.full_name?.[0] ||
+          res?.errors?.phone?.[0] ||
+          res?.errors?.email?.[0] ||
+          res?.errors?.comment?.[0] ||
+          res?.message ||
+          "Unknown error";
+        if (message === "Too Many Attempts.") {
+          message = t("too_many_attempts");
+        }
+        if (res?.errors?.full_name?.[0]) {
+          form.setError("name", { message });
+        }
+        if (res?.errors?.phone?.[0]) {
+          form.setError("phone", { message });
+        }
+        if (res?.errors?.email?.[0]) {
+          form.setError("email", { message });
+        }
+        if (res?.errors?.comment?.[0]) {
+          form.setError("comment", { message });
+        }
+        if (!res?.errors) {
+          toast.error(message);
+        }
+      }
+    },
+  });
+
   function onSubmit(data: z.infer<typeof schema>) {
-    console.log(data);
+    feedbackMutation.mutate({
+      full_name: data.name,
+      phone: data.phone,
+      email: data.email,
+      comment: data.comment,
+    });
   }
 
   return (
@@ -126,7 +179,11 @@ export const ContactsContainer: React.FC = () => {
                   )}
                 />
 
-                <Button>{t("contacts.submit")}</Button>
+                <Button disabled={feedbackMutation.isPending}>
+                  {feedbackMutation.isPending
+                    ? t("contacts.submit") + "..."
+                    : t("contacts.submit")}
+                </Button>
               </form>
             </Form>
           </div>

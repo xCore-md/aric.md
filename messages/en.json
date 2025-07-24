@@ -157,6 +157,10 @@
     "paid": "Paid",
     "cancelled": "Cancelled"
   },
+  "trip_type": {
+    "one-way": "One way",
+    "round-trip": "Round trip"
+  },
   "passengers": {
     "label": "Number of passengers",
     "none": "No passengers",
@@ -231,7 +235,5 @@
   "$Dată: crescător": "Date: ascending",
   "$Dată: descrescător": "Date: descending",
   "$Întrebări și răspunsuri": "FAQ",
-  "$one-way": "One way",
-  "$round-trip": "Round trip",
   "$Salvează": "Save"
 }
