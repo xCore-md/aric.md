@@ -56,6 +56,7 @@ export const QUERY_KEYS = {
   weeklyTrips: "weeklyTrips",
   nearestTrips: "nearestTrips",
   reviews: "reviews",
+  faq: "faq",
 } as const;
 
 export const PRIVATE_LINK = {

@@ -27,7 +27,14 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { HTTPError } from "ky";
+import { faqService } from "@/services/faq.service";
+import { contactService } from "@/services/contact.service";
+import { QUERY_KEYS } from "@/utils/constants";
+import { LanguageEnum } from "@/types";
 
 const schema = z.object({
   name: z.string().min(3, { message: "Required" }),
@@ -37,6 +44,7 @@ const schema = z.object({
 export const FAQSection: React.FC = () => {
   const t = useTranslations();
   const pathname = usePathname();
+  const locale = useLocale();
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -47,8 +55,54 @@ export const FAQSection: React.FC = () => {
 
   const { control, handleSubmit } = form;
 
+  const contactMutation = useMutation({
+    mutationFn: (payload: { full_name: string; phone: string }) =>
+      contactService.send(payload),
+    onSuccess: (response) => {
+      toast.success(response.message);
+      form.reset();
+    },
+    onError: async (error) => {
+      if (error instanceof HTTPError) {
+        const res = await error.response.json();
+        let message =
+          res?.errors?.full_name?.[0] ||
+          res?.errors?.phone?.[0] ||
+          res?.message ||
+          "Unknown error";
+        if (message === "Too Many Attempts.") {
+          message = t("too_many_attempts");
+        }
+        if (res?.errors?.full_name?.[0]) {
+          form.setError("name", { message });
+        }
+        if (res?.errors?.phone?.[0]) {
+          form.setError("phone", { message });
+        }
+        if (!res?.errors) {
+          toast.error(message);
+        }
+      }
+    },
+  });
+
+  const { data: faqs, isLoading } = useQuery({
+    queryKey: [QUERY_KEYS.faq, locale],
+    queryFn: () => faqService.getAll(locale as LanguageEnum),
+  });
+
+  const filteredFaqs = React.useMemo(
+    () => faqs?.filter((f) => f.title && f.description) || [],
+    [faqs],
+  );
+
+  if (!isLoading && filteredFaqs.length === 0) return null;
+
   function onSubmit(data: z.infer<typeof schema>) {
-    console.log(data);
+    contactMutation.mutate({
+      full_name: data.name,
+      phone: data.phone,
+    });
   }
 
   return (
@@ -84,14 +138,27 @@ export const FAQSection: React.FC = () => {
                   className="absolute right-8 hidden -translate-y-full sm:block"
                 />
 
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                  <AccordionContent>
-                    Yes. It adheres to the WAI-ARIA design pattern.
-                  </AccordionContent>
-                </AccordionItem>
+                {isLoading
+                  ? Array.from({ length: 3 }).map((_, index) => (
+                      <div key={index} className="space-y-2">
+                        <div className="skeleton h-6 w-1/2 rounded-md" />
+                        <div className="skeleton h-5 w-full rounded-md" />
+                      </div>
+                    ))
+                  : filteredFaqs.map((item, index) => (
+                      <AccordionItem key={index} value={String(index)}>
+                        {item.title && (
+                          <AccordionTrigger>{item.title}</AccordionTrigger>
+                        )}
+                        {item.description && (
+                          <AccordionContent>
+                            {item.description}
+                          </AccordionContent>
+                        )}
+                      </AccordionItem>
+                    ))}
 
-                {pathname !== "/faq" && (
+                {!isLoading && pathname !== "/faq" && (
                   <Button asChild className="md:mt-8">
                     <Link href="/faq">
                       {t("general.view_all_label")}

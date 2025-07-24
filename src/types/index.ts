@@ -9,3 +9,4 @@ export * from "./passenger.types";
 export * from "./payment.types";
 export * from "./newsletter.types";
 export * from "./review.types";
+export * from "./faq.types";
