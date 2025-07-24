@@ -1,14 +1,14 @@
 module.exports = {
   apps: [
     {
-      name: "aric-md",           // Numele aplicației în pm2
+      name: "aric-md",
       script: "npm",
-      args: "start",             // Comanda care pornește Next.js (npm start)
+      args: "start",
       env: {
-        NODE_ENV: "production",  // Variabilă mediu, importantă pentru build-urile Next.js
+        NODE_ENV: "production",
       },
-      watch: false,              // Dezactivat pentru producție (nu doriți restarturi automate)
-      max_restarts: 5,           // Protecție împotriva restarturilor în buclă
+      watch: false,
+      max_restarts: 5,
       autorestart: true,
       out_file: "./logs/out.log",
       error_file: "./logs/error.log",
