@@ -66,7 +66,8 @@
   },
   "input": {
     "email_field_label": "Adresa ta de e-mail",
-    "name_and_surname_label": "Nume / Prenume"
+    "name_and_surname_label": "Nume / Prenume",
+    "phone_placeholder": "+373 | 000 00 000"
   },
   "action": {
     "subscribe": "Abonează-te",
@@ -209,5 +210,28 @@
   "$Se descarcă": "Se descarcă...",
   "$Descarcă bilet": "Descarcă bilet",
   "$Descarcă biletele": "Descarcă biletele",
-  "$Profile updated!": "Profil actualizat!"
+  "$Profile updated!": "Profil actualizat!",
+  "$Anulează biletele": "Anulează biletele",
+  "$Pasager": "Pasager",
+  "$Preț": "Preț",
+  "$Anulează": "Anulează",
+  "$Achită toate": "Achită toate",
+  "$Nume": "Nume",
+  "$Telefon": "Telefon",
+  "$Data nașterii": "Data nașterii",
+  "$Acțiuni": "Acțiuni",
+  "$Modifică": "Modifică",
+  "$Se procesează": "Se procesează",
+  "$Ruta": "Ruta",
+  "$Data tranzacției": "Data tranzacției",
+  "$Suma": "Suma",
+  "$Statut": "Statut",
+  "$Datele tale personale": "Datele tale personale",
+  "Datele tale personale": "Datele tale personale",
+  "$Dată: crescător": "Dată: crescător",
+  "$Dată: descrescător": "Dată: descrescător",
+  "$Întrebări și răspunsuri": "Întrebări și răspunsuri",
+  "$one-way": "Dus",
+  "$round-trip": "Dus-întors",
+  "$Salvează": "Salvează"
 }

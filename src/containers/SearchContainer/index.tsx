@@ -132,7 +132,7 @@ export const SearchContainer: React.FC = () => {
                               </div>
 
                               <div className="bg-yellow max-w-max rounded-full px-2.5 py-0.5">
-                                <span>{type}</span>
+                                <span>{t(type)}</span>
                               </div>
                             </div>
 
@@ -196,7 +196,7 @@ export const SearchContainer: React.FC = () => {
                                     id="option-one"
                                   />
                                   <Label htmlFor="option-one">
-                                    Dată: crescător
+                                    {t("$Dată: crescător")}
                                   </Label>
                                 </div>
                                 <div className="flex items-center space-x-2">
@@ -205,7 +205,7 @@ export const SearchContainer: React.FC = () => {
                                     id="option-two"
                                   />
                                   <Label htmlFor="option-two">
-                                    Dată: descrescător
+                                    {t("$Dată: descrescător")}
                                   </Label>
                                 </div>
                               </RadioGroup>

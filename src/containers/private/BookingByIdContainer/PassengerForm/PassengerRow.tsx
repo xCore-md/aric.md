@@ -81,7 +81,10 @@ export const PassengerRow: React.FC<PassengerRowProps> = ({
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <PhoneInput placeholder="Telefon" {...field} />
+                <PhoneInput
+                  placeholder={t("input.phone_placeholder")}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

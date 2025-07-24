@@ -59,11 +59,11 @@ export const PassengersContainer: React.FC = () => {
           <table className="table">
             <thead className="thead hidden lg:table-header-group [&_th]:last:text-right">
               <tr>
-                <th>Nume</th>
-                <th>Prenume</th>
-                <th>Telefon</th>
-                <th>Data nașterii</th>
-                <th>Acțiuni</th>
+                <th>{t("$Nume")}</th>
+                <th>{t("$Prenume")}</th>
+                <th>{t("$Telefon")}</th>
+                <th>{t("$Data nașterii")}</th>
+                <th>{t("$Acțiuni")}</th>
               </tr>
             </thead>
             {/* Corp tabel – carduri pe mobil */}
@@ -105,6 +105,7 @@ const PassengerRow: React.FC<{
   const queryClient = useQueryClient();
   const [open, setOpen] = React.useState(false);
   const { formatUTC } = useFormatUTCToLocal();
+  const t = useTranslations();
 
   const [edit, setEdit] = React.useState(false);
   const [first_name, setFirstName] = React.useState("");
@@ -172,7 +173,7 @@ const PassengerRow: React.FC<{
       {/* First name */}
       <td className="flex justify-between px-4 lg:table-cell lg:px-0">
         <span className="text-text-gray w-full max-w-36 font-normal lg:hidden">
-          Nume
+          {t("$Nume")}
         </span>
         {edit ? (
           <input
@@ -189,7 +190,7 @@ const PassengerRow: React.FC<{
       {/* Last name */}
       <td className="flex justify-between px-4 lg:table-cell lg:px-0">
         <span className="text-text-gray w-full max-w-36 font-normal lg:hidden">
-          Prenume
+          {t("$Prenume")}
         </span>
         {edit ? (
           <input
@@ -205,12 +206,12 @@ const PassengerRow: React.FC<{
       {/* Phone */}
       <td className="flex justify-between px-4 lg:table-cell lg:px-0">
         <span className="text-text-gray w-full max-w-36 font-normal lg:hidden">
-          Telefon
+          {t("$Telefon")}
         </span>
         {edit ? (
           <div className="relative">
             <input
-              placeholder="000 00 000"
+              placeholder={t("input.phone_placeholder")}
               value={removeMoldovaPrefix(phone)}
               onChange={(e) => setPhone(e.target.value)}
               className="h-11 w-full max-w-56 rounded-full border bg-white px-4 pl-20"
@@ -228,7 +229,7 @@ const PassengerRow: React.FC<{
       {/* Birth date */}
       <td className="flex justify-between px-4 lg:table-cell lg:px-0">
         <span className="text-text-gray w-full max-w-36 font-normal lg:hidden">
-          Data nașterii
+          {t("$Data nașterii")}
         </span>
 
         {edit ? (
@@ -262,18 +263,18 @@ const PassengerRow: React.FC<{
       {/* Actions */}
       <td className="flex items-center justify-between px-4 lg:table-cell">
         <span className="text-text-gray w-full max-w-36 font-normal lg:hidden">
-          Acțiuni
+          {t("$Acțiuni")}
         </span>
 
         <div className="flex items-center justify-end gap-4">
           {edit ? (
             <Button onClick={saveChange} disabled={loading}>
-              Salvează
+              {t("$Salvează")}
               {loading && <Loader className="ml-2 h-4 w-4 animate-spin" />}
             </Button>
           ) : (
             <Button onClick={() => setEdit(true)} variant="reverse">
-              Modifică
+              {t("$Modifică")}
             </Button>
           )}
 
@@ -303,7 +304,7 @@ const PassengerRow: React.FC<{
                   size="sm"
                   onClick={() => setOpen(false)}
                 >
-                  Anulează
+                  {t("$Anulează")}
                 </Button>
 
                 <Button

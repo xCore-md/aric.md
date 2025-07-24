@@ -75,7 +75,7 @@ export const AboutContainer: React.FC = () => {
                   </svg>
                 </div>
                 <div className="max-w-24 text-lg font-semibold text-white">
-                  Întrebări și răspunsuri
+                  {t("$Întrebări și răspunsuri")}
                 </div>
               </Link>
             </div>

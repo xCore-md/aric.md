@@ -204,7 +204,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="000 00 000"
+                                placeholder={t("input.phone_placeholder")}
                                 className="h-16 pl-18"
                                 {...field}
                                 value={field?.value || ""}
@@ -315,7 +315,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
                         <FormItem>
                           <FormControl>
                             <Input
-                              placeholder="E-mail"
+                              placeholder={t("input.email_field_label")}
                               className="h-16"
                               {...field}
                               value={field?.value || ""}

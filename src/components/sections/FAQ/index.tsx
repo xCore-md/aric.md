@@ -203,7 +203,10 @@ export const FAQSection: React.FC = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="+373 | 000 00 000" {...field} />
+                          <Input
+                            placeholder={t("input.phone_placeholder")}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

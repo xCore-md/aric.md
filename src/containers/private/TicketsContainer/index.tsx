@@ -98,7 +98,7 @@ export const TicketsContainer: React.FC = () => {
                     {booking?.tickets?.length > 1 && (
                       <div className="border-platinum bg-card flex flex-wrap gap-4 border-x border-t p-4 lg:flex-row-reverse lg:border-none lg:bg-transparent lg:p-0">
                         <Button>
-                          Achită toate
+                          {t("$Achită toate")}
                           <ChevronRightIcon />
                         </Button>
 
@@ -110,7 +110,7 @@ export const TicketsContainer: React.FC = () => {
 
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="link">Anulează biletele</Button>
+                            <Button variant="link">{t("$Anulează biletele")}</Button>
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader className="sr-only">
@@ -191,7 +191,7 @@ export const TicketsContainer: React.FC = () => {
                                 </div>
                                 <div>
                                   <div className="text-text-gray text-xs">
-                                    Pasager
+                                    {t("$Pasager")}
                                   </div>
                                   <div className="-mt-1 text-lg font-semibold">
                                     {ticket?.passenger_name}
@@ -205,7 +205,7 @@ export const TicketsContainer: React.FC = () => {
                                 </div>
                                 <div>
                                   <div className="text-text-gray text-xs">
-                                    Preț
+                                    {t("$Preț")}
                                   </div>
                                   <div className="-mt-1 text-lg font-semibold">
                                     {formatCurrency(
@@ -221,7 +221,7 @@ export const TicketsContainer: React.FC = () => {
                                 <DialogTrigger asChild>
                                   <Button variant="ghost" size="sm">
                                     <Ban />
-                                    Anulează
+                                    {t("$Anulează")}
                                   </Button>
                                 </DialogTrigger>
                                 <DialogContent>
@@ -286,7 +286,7 @@ export const TicketsContainer: React.FC = () => {
                               />
 
                               <Button size="sm" variant="reverse">
-                                Achită
+                                {t("$Achită")}
                                 <ChevronRightIcon />
                               </Button>
                             </div>
@@ -397,13 +397,13 @@ export const TicketsContainer: React.FC = () => {
     <Button variant="reverse">Descarcă bilet</Button>
 
     <Button>
-      Achită
+      {t("$Achită")}
       <ChevronRightIcon />
     </Button>
 
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="link">Anulează</Button>
+        <Button variant="link">{t("$Anulează")}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="sr-only">

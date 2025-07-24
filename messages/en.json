@@ -66,7 +66,8 @@
   },
   "input": {
     "email_field_label": "Your email address",
-    "name_and_surname_label": "First name / Last name"
+    "name_and_surname_label": "First name / Last name",
+    "phone_placeholder": "+373 | 000 00 000"
   },
   "action": {
     "subscribe": "Subscribe",
@@ -209,5 +210,28 @@
   "$Se descarcă": "Downloading...",
   "$Descarcă bilet": "Download ticket",
   "$Descarcă biletele": "Download tickets",
-  "$Profile updated!": "Profile updated!"
+  "$Profile updated!": "Profile updated!",
+  "$Anulează biletele": "Cancel tickets",
+  "$Pasager": "Passenger",
+  "$Preț": "Price",
+  "$Anulează": "Cancel",
+  "$Achită toate": "Pay all",
+  "$Nume": "Last name",
+  "$Telefon": "Phone",
+  "$Data nașterii": "Date of birth",
+  "$Acțiuni": "Actions",
+  "$Modifică": "Edit",
+  "$Se procesează": "Processing",
+  "$Ruta": "Route",
+  "$Data tranzacției": "Transaction date",
+  "$Suma": "Amount",
+  "$Statut": "Status",
+  "$Datele tale personale": "Your personal data",
+  "Datele tale personale": "Your personal data",
+  "$Dată: crescător": "Date: ascending",
+  "$Dată: descrescător": "Date: descending",
+  "$Întrebări și răspunsuri": "FAQ",
+  "$one-way": "One way",
+  "$round-trip": "Round trip",
+  "$Salvează": "Save"
 }

@@ -19,10 +19,10 @@ export const PaymentContainer: React.FC = () => {
             <thead className="thead">
               <tr>
                 <th>ID</th>
-                <th>Ruta</th>
-                <th>Data tranzacției</th>
-                <th>Suma</th>
-                <th>Statut</th>
+                <th>{t("$Ruta")}</th>
+                <th>{t("$Data tranzacției")}</th>
+                <th>{t("$Suma")}</th>
+                <th>{t("$Statut")}</th>
               </tr>
             </thead>
             <tbody className="tbody">
@@ -33,7 +33,7 @@ export const PaymentContainer: React.FC = () => {
                 <td>120 MDL</td>
                 <td>
                   <div className="bg-yellow max-w-max rounded-full px-2.5 text-base font-normal">
-                    Se procesează
+                    {t("$Se procesează")}
                   </div>
                 </td>
               </tr>

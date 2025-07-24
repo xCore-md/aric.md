@@ -93,7 +93,7 @@ export const SettingContainer: React.FC = () => {
 
       <Card className="ring-platinum ring ring-inset">
         <CardHeader platinum>
-          <CardTitle className="h4">Datele tale personale</CardTitle>
+          <CardTitle className="h4">{t("$Datele tale personale")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -117,7 +117,7 @@ export const SettingContainer: React.FC = () => {
                             <FormControl>
                               <div className="relative">
                                 <Input
-                                  placeholder="000 00 000"
+                                  placeholder={t("input.phone_placeholder")}
                                   className="h-16 pl-18"
                                   disabled
                                   {...field}
@@ -142,7 +142,7 @@ export const SettingContainer: React.FC = () => {
                             <FormControl>
                               <Input
                                 className="h-16"
-                                placeholder="Email *"
+                                placeholder={`${t("input.email_field_label")} *`}
                                 disabled={Boolean(profileData?.data.email)}
                                 {...field}
                               />
@@ -160,7 +160,7 @@ export const SettingContainer: React.FC = () => {
                             <FormControl>
                               <Input
                                 className="h-16"
-                                placeholder="Nume de familie *"
+                                placeholder={`${t("$Nume de familie")} *`}
                                 {...field}
                               />
                             </FormControl>
@@ -177,7 +177,7 @@ export const SettingContainer: React.FC = () => {
                             <FormControl>
                               <Input
                                 className="h-16"
-                                placeholder="Prenume *"
+                                placeholder={`${t("$Prenume")} *`}
                                 {...field}
                               />
                             </FormControl>
