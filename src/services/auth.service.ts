@@ -12,7 +12,7 @@ import type {
 
 class AuthService {
   private authApi = ky.create({
-    prefixUrl: API_URL + "customer/auth",
+    prefixUrl: API_URL + "/customer/auth",
   });
 
   sendVerificationCode = (data: SendCodePayload) => {
