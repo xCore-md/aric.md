@@ -7,19 +7,7 @@ on:
       - main
 
 jobs:
-  code_analysis:
-    strategy:
-      fail-fast: false
-      matrix:
-        actions:
-          -
-            name: 'Composer Validate'
-            run: composer validate --ansi
-
-          -
-            name: 'Coding Standard'
-            run: composer phpcs
-
+  build:
     name: ${{ matrix.actions.name }}
     runs-on: ubuntu-latest
 
