@@ -62,7 +62,7 @@ export const DownloadTicketButton: React.FC<Props> = ({
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error(error);
-      toast.error(t("$Eroare la descărcare."));
+      toast.error(t("$Eroare la descărcare"));
     } finally {
       setLoading(false);
     }
@@ -73,7 +73,7 @@ export const DownloadTicketButton: React.FC<Props> = ({
       {loading ? (
         <>
           <LoaderCircle className="size-4 animate-spin" />
-          {t("$Se descarcă...")}
+          {t("$Se descarcă")}
         </>
       ) : (
         <>
