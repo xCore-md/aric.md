@@ -47,7 +47,7 @@ jobs:
           name: next-build
           path: ./deploy
 
-      - name: 🧪 Debug: Afișare fișiere descărcate
+      - name: 🧪 Debug Afișare fișiere descărcate
         run: ls -laR ./deploy
 
       - name: 📂 Copiere fișiere pe CloudPanel server
