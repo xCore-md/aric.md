@@ -332,14 +332,7 @@ export const HomeContainer: React.FC = () => {
                                 className="border-platinum relative rounded-xl border p-3 pb-16 md:px-10 md:py-6"
                               >
                                 <div className="flex items-center justify-between gap-8">
-                                  <Link
-                                    href="/"
-                                    className="xs:static hover:text-blue absolute bottom-4 flex items-center gap-1 font-semibold transition"
-                                  >
-                                    <span>Detalii bilet</span>
-                                    <ChevronRightIcon className="size-5" />
-                                  </Link>
-                                  <div className="xs:ml-auto text-2xl font-medium">
+                                  <div className="text-2xl font-medium">
                                     {formatCurrency(
                                       getAmountByCurrency(trip?.prices),
                                     )}
