@@ -1,6 +1,6 @@
 import ro from "../../messages/ro.json";
 import { AVAILABLE_LANGUAGES } from "@/utils/constants";
-import type { Station, TripItem } from "@/types";
+import type { Station, TripItem, Facility } from "@/types";
 
 export type Messages = typeof ro;
 
@@ -95,9 +95,14 @@ export interface DepartureArrivalTime {
   arrival_datetime: string;
 }
 
+export interface FiltersBlock {
+  facilities?: Facility[];
+  departure_times?: string[];
+}
+
 export interface SearchResponse {
   data: TripItem[];
-  // filters: FiltersBlock;
+  filters?: FiltersBlock;
   meta: Omit<PaginatedResponse<null>, "data">;
   metadata: {
     from_station: Station;
