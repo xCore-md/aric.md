@@ -136,7 +136,12 @@ export const SearchTicketForm: React.FC<{
     }
   }, [fromStationId]);
 
+  const isFirstToStationRef = React.useRef(true);
   React.useEffect(() => {
+    if (isFirstToStationRef.current) {
+      isFirstToStationRef.current = false;
+      return;
+    }
     if (toStationId) {
       setDepartureDate("");
       refetchTripDates();
@@ -211,7 +216,7 @@ export const SearchTicketForm: React.FC<{
               onClick={handleSubmit}
             >
               <span className="lg:sr-only">{t("action.search")}</span>
-              <Search />
+              {isLoading ? <LoadingSpinner /> : <Search />}
             </Button>
           </div>
         </div>

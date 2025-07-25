@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useTransition } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronRightIcon } from "lucide-react";
@@ -59,6 +59,7 @@ export const HomeContainer: React.FC = () => {
   const { formatCurrency } = useCurrency();
   const { formatUTC } = useFormatUTCToLocal();
   const { updateTicketSearchParams } = useTicketForm();
+  const [isSearching, startTransition] = useTransition();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useOnScreen<HTMLDivElement>(
@@ -141,7 +142,12 @@ export const HomeContainer: React.FC = () => {
             </div>
 
             <div className="mt-20 lg:mt-44">
-              <SearchTicketForm onSubmit={updateTicketSearchParams} />
+            <SearchTicketForm
+              onSubmit={(data) =>
+                startTransition(() => updateTicketSearchParams(data))
+              }
+              isLoading={isSearching}
+            />
             </div>
           </div>
         </div>

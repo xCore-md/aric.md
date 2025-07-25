@@ -105,7 +105,7 @@ export const Footer: React.FC = () => {
                           const toId = stations[stations.length - 1]?.id;
                           const departureDate = format(
                             parseISO(trip.route_departure.departure_datetime),
-                            "yyyy-MM-dd",
+                            "dd.MM.yyyy",
                           );
                           const params = new URLSearchParams({
                             from_station_id: String(fromId),
