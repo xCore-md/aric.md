@@ -137,7 +137,7 @@ export const EmailSubscriptionSection: React.FC<{ withBg?: boolean }> = ({
                       <FormItem className="w-full">
                         <FormControl>
                           <Input
-                            placeholder="Adresa ta de e-mail"
+                            placeholder={t("input.email_placeholder")}
                             className="placeholder:text-platinum border-transparent bg-white/14 focus:bg-white"
                             {...field}
                           />

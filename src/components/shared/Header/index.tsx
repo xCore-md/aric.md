@@ -38,7 +38,6 @@ import {
   NAV_LINKS,
   PRIVATE_LINKS,
 } from "@/utils/constants";
-import { getFullName } from "@/utils/getFullName";
 import { CurrencyEnum, LanguageEnum } from "@/types";
 import { useCurrency } from "@/hooks/useCurrency";
 
@@ -289,7 +288,7 @@ const AccountButton = () => {
   const t = useTranslations();
   const pathname = usePathname();
   const { status } = useSession();
-  const { profileData, isLoadingProfileData } = useProfile();
+  const { isLoadingProfileData } = useProfile();
 
   return (
     <>
@@ -301,15 +300,7 @@ const AccountButton = () => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="white" className="max-w-44 ring-0">
-                  <span className="truncate">
-                    {getFullName(
-                      profileData?.data?.first_name,
-                      profileData?.data?.last_name,
-                    ) ||
-                      profileData?.data?.email ||
-                      "Contul meu"}
-                    {/* Мой аккаунт */}
-                  </span>{" "}
+                  <span className="truncate">{t("nav.profile")}</span>{" "}
                   <ChevronDown />
                 </Button>
               </PopoverTrigger>
@@ -341,7 +332,7 @@ const AccountButton = () => {
             </Popover>
           ) : (
             <Button variant="white" asChild>
-              <Link href="/login">Contul meu</Link>
+              <Link href="/login">{t("nav.profile")}</Link>
             </Button>
           )}
         </>

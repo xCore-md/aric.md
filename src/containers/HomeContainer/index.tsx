@@ -28,6 +28,7 @@ import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
 import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 import { useCurrency } from "@/hooks/useCurrency";
+import { fromApiDate } from "@/utils/format-date";
 import { useOnScreen } from "@/hooks/useOnScreen";
 import { StationImage } from "@/components/shared/StationImage";
 
@@ -70,6 +71,10 @@ export const HomeContainer: React.FC = () => {
     enabled: isInView,
   });
 
+  const isWeeklyTripsReady = Boolean(
+    weeklyTrips?.metadata?.from_station && weeklyTrips?.metadata?.to_station,
+  );
+
   const stationLabel = useMemo(() => {
     const fromName = getLocalizedField(
       weeklyTrips?.metadata?.from_station!,
@@ -97,6 +102,25 @@ export const HomeContainer: React.FC = () => {
       ),
     [weeklyTrips],
   );
+
+  const [selectedDate, setSelectedDate] = React.useState<string>("");
+
+  React.useEffect(() => {
+    if (weeklyTripsEntries.length) {
+      setSelectedDate(weeklyTripsEntries[0][0]);
+    }
+  }, [weeklyTripsEntries]);
+
+  const searchHref = React.useMemo(() => {
+    if (!selectedDate || !isWeeklyTripsReady) return "/search";
+    const params = new URLSearchParams({
+      from_station_id: String(weeklyTrips?.metadata?.from_station?.id || ""),
+      to_station_id: String(weeklyTrips?.metadata?.to_station?.id || ""),
+      departure_date: fromApiDate(selectedDate) || selectedDate,
+      passengers: "1",
+    });
+    return `/search?${params.toString()}`;
+  }, [selectedDate, weeklyTrips, isWeeklyTripsReady]);
 
   const hasTrips = weeklyTripsEntries.length > 0;
   return (
@@ -183,7 +207,12 @@ export const HomeContainer: React.FC = () => {
               <div className="max-w-xs">
                 <h2 className="h1 text-white">{t("reservation.title")}</h2>
                 <p className="text-2xl text-white/90">
-                  {t("reservation.subtitle")}: <br /> {isLoadingWeeklyTrips ? <span className="skeleton rounded-xl inline-block h-6 w-32" /> : stationLabel}
+                  {t("reservation.subtitle")}: <br />
+                  {isLoadingWeeklyTrips || !isWeeklyTripsReady ? (
+                    <span className="skeleton rounded-xl inline-block h-6 w-32" />
+                  ) : (
+                    stationLabel
+                  )}
                 </p>
 
                 <Button className="mt-8 mb-12" variant="white" asChild>
@@ -201,16 +230,22 @@ export const HomeContainer: React.FC = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>{isLoadingWeeklyTrips ? <span className="skeleton rounded-xl inline-block h-6 w-20" /> : stationLabel.split("-")[0]}</span>
+                    <span>
+                      {isLoadingWeeklyTrips || !isWeeklyTripsReady ? (
+                        <span className="skeleton rounded-xl inline-block h-6 w-20" />
+                      ) : (
+                        stationLabel.split("-")[0]
+                      )}
+                    </span>
                   </div>
                   <div className="relative aspect-[5/4] h-[208px] flex-none overflow-hidden rounded-lg border-2 border-white">
-                    {isLoadingWeeklyTrips && (
+                    {(isLoadingWeeklyTrips || !isWeeklyTripsReady) && (
                       <div className="skeleton absolute inset-0 rounded-lg" />
                     )}
                     <StationImage
                       src={weeklyTrips?.metadata?.from_station_image}
                       alt="From Station"
-                      skeleton={isLoadingWeeklyTrips}
+                      skeleton={isLoadingWeeklyTrips || !isWeeklyTripsReady}
                     />
 
                   </div>
@@ -225,16 +260,22 @@ export const HomeContainer: React.FC = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>{isLoadingWeeklyTrips ? <span className="skeleton rounded-full inline-block h-6 w-20" /> : stationLabel.split("-")[1]}</span>
+                    <span>
+                      {isLoadingWeeklyTrips || !isWeeklyTripsReady ? (
+                        <span className="skeleton rounded-full inline-block h-6 w-20" />
+                      ) : (
+                        stationLabel.split("-")[1]
+                      )}
+                    </span>
                   </div>
                   <div className="relative aspect-[5/4] h-[208px] flex-none overflow-hidden rounded-lg border-2 border-white">
-                    {isLoadingWeeklyTrips && (
+                    {(isLoadingWeeklyTrips || !isWeeklyTripsReady) && (
                       <div className="skeleton absolute inset-0 rounded-lg" />
                     )}
                     <StationImage
                       src={weeklyTrips?.metadata?.to_station_image}
                       alt="To Station"
-                      skeleton={isLoadingWeeklyTrips}
+                      skeleton={isLoadingWeeklyTrips || !isWeeklyTripsReady}
                     />
                   </div>
                 </div>
@@ -252,7 +293,7 @@ export const HomeContainer: React.FC = () => {
               className="relative z-10 mx-auto w-full lg:max-w-3xl"
               ref={containerRef}
             >
-              {isLoadingWeeklyTrips ? (
+              {isLoadingWeeklyTrips || !isWeeklyTripsReady ? (
                 <Card className="gap-4 pb-4 sm:gap-6 sm:pb-6">
                   <CardHeader
                     className="relative rounded-t-xl border bg-[#F9F9F9] p-3 sm:py-6"
@@ -293,7 +334,11 @@ export const HomeContainer: React.FC = () => {
                     platinum
                   >
                     <CardTitle className="!w-1/2 text-center text-xl font-normal sm:text-left md:text-2xl">
-                      {isLoadingWeeklyTrips ? <span className="skeleton rounded-xl inline-block h-6 w-32" /> : stationLabel}
+                      {isLoadingWeeklyTrips || !isWeeklyTripsReady ? (
+                        <span className="skeleton rounded-xl inline-block h-6 w-32" />
+                      ) : (
+                        stationLabel
+                      )}
                     </CardTitle>
                     <div className="bg-mentol mx-auto mt-3 max-w-max space-x-2 rounded-full px-4 py-2 sm:absolute sm:top-1/2 sm:right-0 sm:mt-0 sm:-translate-y-1/2 sm:rounded-l-full sm:rounded-r-none">
                       <span className="text-xl">🔥</span>
@@ -303,28 +348,21 @@ export const HomeContainer: React.FC = () => {
                     </div>
                   </CardHeader>
                   <CardContent className="px-2 sm:px-6">
-                    <Tabs defaultValue="first" className="items-center">
+                    <Tabs
+                      value={selectedDate || (weeklyTripsEntries[0]?.[0] ?? "")}
+                      onValueChange={setSelectedDate}
+                      className="items-center"
+                    >
                       <TabsList>
                         {weeklyTripsEntries.map(([date]) => (
-                          <TabsTrigger
-                            key={date}
-                            value={
-                              weeklyTripsEntries[0][0] === date ? "first" : date
-                            }
-                          >
+                          <TabsTrigger key={date} value={date}>
                             {formatUTC(date, { dateFormat: "E, dd MMMM" })?.date}
                           </TabsTrigger>
                         ))}
                       </TabsList>
 
                       {weeklyTripsEntries.map(([date, trips]) => (
-                        <TabsContent
-                          key={date}
-                          value={
-                            weeklyTripsEntries[0][0] === date ? "first" : date
-                          }
-                          className="w-full"
-                        >
+                        <TabsContent key={date} value={date} className="w-full">
                           <ul className="space-y-4">
                             {trips?.map((trip, index) => (
                               <li
@@ -377,7 +415,7 @@ export const HomeContainer: React.FC = () => {
                     </Tabs>
 
                     <Button asChild className="mt-4">
-                      <Link href="/search">
+                      <Link href={searchHref}>
                         {t("action.see_all_routes")}
                         <ChevronRightIcon />
                       </Link>
@@ -391,7 +429,11 @@ export const HomeContainer: React.FC = () => {
                     platinum
                   >
                     <CardTitle className="!w-1/2 text-center text-xl font-normal sm:text-left md:text-2xl">
-                      {isLoadingWeeklyTrips ? <span className="skeleton rounded-xl inline-block h-6 w-32" /> : stationLabel}
+                      {isLoadingWeeklyTrips || !isWeeklyTripsReady ? (
+                        <span className="skeleton rounded-xl inline-block h-6 w-32" />
+                      ) : (
+                        stationLabel
+                      )}
                     </CardTitle>
                     <div className="bg-mentol mx-auto mt-3 max-w-max space-x-2 rounded-full px-4 py-2 sm:absolute sm:top-1/2 sm:right-0 sm:mt-0 sm:-translate-y-1/2 sm:rounded-l-full sm:rounded-r-none">
                       <span className="text-xl">🔥</span>

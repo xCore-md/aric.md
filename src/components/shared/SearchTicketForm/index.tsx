@@ -274,7 +274,7 @@ const SelectCity: React.FC<SelectCityProps> = ({
               placeholder={placeholder}
               className="focus:placeholder:text-platinum placeholder:text-text-gray h-full w-full text-black focus:outline-none"
             />
-            <ChevronRightIcon className="size-5 flex-none" />
+            {!loading && <ChevronRightIcon className="size-5 flex-none" />}
             {loading && <LoadingSpinner className="ml-2" />}
           </div>
         </PopoverTrigger>
@@ -296,7 +296,10 @@ const SelectCity: React.FC<SelectCityProps> = ({
           data?.map((item, index) => (
             <button
               key={index}
-              onClick={() => setValue(String(item?.value))}
+              onClick={() => {
+                setValue(String(item?.value));
+                setIsOpen(false);
+              }}
               type="button"
               className="hover:text-blue flex w-full p-2 text-left transition"
             >
@@ -351,6 +354,7 @@ export const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
   const handleChange = (date: Date | undefined) => {
     if (date) {
       setValue(format(date, "dd.MM.yyyy"));
+      setIsOpen(false);
     }
   };
   const [isOpen, setIsOpen] = React.useState(false);
@@ -392,6 +396,7 @@ export const SelectDate: React.FC<IProps & { allowedDates?: string[] }> = ({
                   const parsed = parse(val, "dd.MM.yyyy", new Date());
                   if (isValid(parsed)) {
                     setValue(format(parsed, "dd.MM.yyyy"));
+                    setIsOpen(false);
                   }
                 }}
                 type="text"
