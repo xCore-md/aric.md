@@ -11,6 +11,8 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MoldovaPhoneInput } from "@/components/shared/MoldovaPhoneInput";
+import { MOLDOVA_PHONE_CODE } from "@/utils/constants";
 import {
   Accordion,
   AccordionContent,
@@ -101,7 +103,7 @@ export const FAQSection: React.FC = () => {
   function onSubmit(data: z.infer<typeof schema>) {
     contactMutation.mutate({
       full_name: data.name,
-      phone: data.phone,
+      phone: MOLDOVA_PHONE_CODE + data.phone.replace(/\s+/g, ""),
     });
   }
 
@@ -203,7 +205,7 @@ export const FAQSection: React.FC = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input
+                          <MoldovaPhoneInput
                             placeholder={t("input.phone_placeholder")}
                             {...field}
                           />

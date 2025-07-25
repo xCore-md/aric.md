@@ -17,6 +17,9 @@ import { EmailSubscriptionSection } from "@/components/sections/EmailSubscriptio
 
 import bgChairs from "@/assets/images/chairs.jpg";
 import heroBackground from "@/assets/images/hero.jpg";
+import fac1Image from "@/assets/images/fac1.webp";
+import fac2Image from "@/assets/images/fac2.webp";
+import fac3Image from "@/assets/images/fac3.webp";
 import { useTicketForm } from "@/hooks/useTicketForm";
 import { Messages } from "@/types";
 import { useQuery } from "@tanstack/react-query";
@@ -52,6 +55,8 @@ export const planningData = [
     description: "planning.feature3.description",
   },
 ] as const satisfies readonly TitleDescription[];
+
+const planningImages = [fac1Image, fac2Image, fac3Image] as const;
 
 export const HomeContainer: React.FC = () => {
   const t = useTranslations();
@@ -173,7 +178,7 @@ export const HomeContainer: React.FC = () => {
               >
                 <div className="relative hidden size-28 flex-none overflow-hidden rounded-lg xl:block">
                   <Image
-                    src="https://placehold.co/600x400/png"
+                    src={planningImages[index].src}
                     alt="Image"
                     fill
                     className="object-cover"

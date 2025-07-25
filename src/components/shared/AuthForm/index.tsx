@@ -3,6 +3,7 @@ import Image from "next/image";
 import logo from "@/assets/images/logo-black.svg";
 import image from "@/assets/images/auth-wall.jpg";
 import { Input } from "@/components/ui/input";
+import { MoldovaPhoneInput } from "@/components/shared/MoldovaPhoneInput";
 import { Button } from "@/components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
 
@@ -202,18 +203,12 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder={t("input.phone_placeholder")}
-                                className="h-16 pl-18"
-                                {...field}
-                                value={field?.value || ""}
-                              />
-
-                              <div className="absolute top-1/2 left-5 flex -translate-y-1/2">
-                                +373 |
-                              </div>
-                            </div>
+                            <MoldovaPhoneInput
+                              placeholder={t("input.phone_placeholder")}
+                              className="h-16"
+                              {...field}
+                              value={field?.value || ""}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

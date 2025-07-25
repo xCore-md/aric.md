@@ -8,6 +8,7 @@ import {
 } from "@/utils/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { MoldovaPhoneInput } from "@/components/shared/MoldovaPhoneInput";
 import { Button } from "@/components/ui/button";
 import z from "zod";
 import { useForm } from "react-hook-form";
@@ -115,19 +116,13 @@ export const SettingContainer: React.FC = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <div className="relative">
-                                <Input
-                                  placeholder={t("input.phone_placeholder")}
-                                  className="h-16 pl-18"
-                                  disabled
-                                  {...field}
-                                  value={field?.value || ""}
-                                />
-
-                                <div className="text-text-gray absolute top-1/2 left-5 flex -translate-y-1/2">
-                                  +373 |
-                                </div>
-                              </div>
+                              <MoldovaPhoneInput
+                                placeholder={t("input.phone_placeholder")}
+                                className="h-16"
+                                disabled
+                                {...field}
+                                value={field?.value || ""}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>

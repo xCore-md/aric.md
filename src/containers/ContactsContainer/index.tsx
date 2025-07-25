@@ -14,7 +14,9 @@ import { feedbackService } from "@/services/feedback.service";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MoldovaPhoneInput } from "@/components/shared/MoldovaPhoneInput";
 import { EmailSubscriptionSection } from "@/components/sections/EmailSubscription";
+import { MOLDOVA_PHONE_CODE } from "@/utils/constants";
 import {
   Form,
   FormControl,
@@ -91,7 +93,7 @@ export const ContactsContainer: React.FC = () => {
   function onSubmit(data: z.infer<typeof schema>) {
     feedbackMutation.mutate({
       full_name: data.name,
-      phone: data.phone,
+      phone: MOLDOVA_PHONE_CODE + data.phone.replace(/\s+/g, ""),
       email: data.email,
       comment: data.comment,
     });
@@ -152,7 +154,7 @@ export const ContactsContainer: React.FC = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input
+                          <MoldovaPhoneInput
                             placeholder={t("input.phone_placeholder")}
                             {...field}
                           />

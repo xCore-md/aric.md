@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 
 import { removeMoldovaPrefix } from "@/utils";
+import { MoldovaPhoneInput } from "@/components/shared/MoldovaPhoneInput";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
@@ -209,18 +210,12 @@ const PassengerRow: React.FC<{
           {t("$Telefon")}
         </span>
         {edit ? (
-          <div className="relative">
-            <input
-              placeholder={t("input.phone_placeholder")}
-              value={removeMoldovaPrefix(phone)}
-              onChange={(e) => setPhone(e.target.value)}
-              className="h-11 w-full max-w-56 rounded-full border bg-white px-4 pl-20"
-            />
-
-            <div className="text-text-gray absolute top-1/2 left-5 flex -translate-y-1/2">
-              +373 |
-            </div>
-          </div>
+          <MoldovaPhoneInput
+            placeholder={t("input.phone_placeholder")}
+            value={removeMoldovaPrefix(phone)}
+            onChange={(e) => setPhone(e.target.value)}
+            className="h-11 w-full max-w-56 rounded-full border bg-white"
+          />
         ) : (
           <span>{phone}</span>
         )}
@@ -269,8 +264,14 @@ const PassengerRow: React.FC<{
         <div className="flex items-center justify-end gap-4">
           {edit ? (
             <Button onClick={saveChange} disabled={loading}>
-              {t("$Salvează")}
-              {loading && <Loader className="ml-2 h-4 w-4 animate-spin" />}
+              {loading ? (
+                <>
+                  <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  {t("$Se salvează")}
+                </>
+              ) : (
+                t("$Salvează")
+              )}
             </Button>
           ) : (
             <Button onClick={() => setEdit(true)} variant="reverse">
