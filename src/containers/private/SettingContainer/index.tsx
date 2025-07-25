@@ -192,7 +192,7 @@ export const SettingContainer: React.FC = () => {
                           type="submit"
                           disabled={updateProfileData.isPending}
                         >
-                          Salvează modificările
+                          {t("$Salvează modificările")}
                         </Button>
 
                         {updateProfileData.isPending && (

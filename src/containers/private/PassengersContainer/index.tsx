@@ -127,6 +127,14 @@ const PassengerRow: React.FC<{
     setEdit(false);
   };
 
+  const cancelEdit = () => {
+    setFirstName(data.first_name || "");
+    setLastName(data.last_name || "");
+    setPhone(removeMoldovaPrefix(data.phone || ""));
+    setBirthDate(data.birth_date || "");
+    setEdit(false);
+  };
+
   React.useEffect(() => {
     if (edit) {
       refInput?.current?.focus();
@@ -165,7 +173,7 @@ const PassengerRow: React.FC<{
 
     setFirstName(data.first_name || "");
     setLastName(data.last_name || "");
-    setPhone(data.phone || "");
+    setPhone(removeMoldovaPrefix(data.phone || ""));
     setBirthDate(data.birth_date || "");
   }, [data]);
 
@@ -212,12 +220,12 @@ const PassengerRow: React.FC<{
         {edit ? (
           <MoldovaPhoneInput
             placeholder={t("input.phone_placeholder")}
-            value={removeMoldovaPrefix(phone)}
+            value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="h-11 w-full max-w-56 rounded-full border bg-white"
           />
         ) : (
-          <span>{phone}</span>
+          <span>{phone ? MOLDOVA_PHONE_CODE + phone : ""}</span>
         )}
       </td>
 
@@ -263,20 +271,38 @@ const PassengerRow: React.FC<{
 
         <div className="flex items-center justify-end gap-4">
           {edit ? (
-            <Button onClick={saveChange} disabled={loading}>
+            <>
+              <Button onClick={saveChange} disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                    {t("$Se salvează")}
+                  </>
+                ) : (
+                  t("$Salvează")
+                )}
+              </Button>
+              <Button
+                onClick={cancelEdit}
+                variant="outline"
+                disabled={loading}
+              >
+                {t("$Anulează")}
+              </Button>
+            </>
+          ) : (
+            <>
               {loading ? (
-                <>
+                <Button disabled>
                   <Loader className="mr-2 h-4 w-4 animate-spin" />
                   {t("$Se salvează")}
-                </>
+                </Button>
               ) : (
-                t("$Salvează")
+                <Button onClick={() => setEdit(true)} variant="reverse">
+                  {t("$Modifică")}
+                </Button>
               )}
-            </Button>
-          ) : (
-            <Button onClick={() => setEdit(true)} variant="reverse">
-              {t("$Modifică")}
-            </Button>
+            </>
           )}
 
           <Popover open={open} onOpenChange={setOpen}>
