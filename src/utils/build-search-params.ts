@@ -1,4 +1,4 @@
-export function buildSearchParams(params?: Record<string, unknown>): URLSearchParams {
+export function buildSearchParams<T extends object>(params?: T): URLSearchParams {
   const searchParams = new URLSearchParams();
   if (!params) return searchParams;
 
