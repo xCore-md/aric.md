@@ -44,15 +44,32 @@ if [ -d ".next" ]; then
   cp -r .next "$BACKUP_DIR/.next_$TIMESTAMP" 2>/dev/null || echo "⚠️ Warning: Nu s-a putut crea backup pentru .next existent"
 fi
 
+echo "🔍 Verificare completă a fișierelor transferate"
+echo "📂 Conținutul directorului curent:"
+ls -la
+
+echo "🔍 Verificare BUILD_VERIFICATION:"
+if [ -f "BUILD_VERIFICATION" ]; then
+  echo "✅ Build verification găsit:"
+  cat BUILD_VERIFICATION
+else
+  echo "⚠️ Build verification lipsește"
+fi
+
 echo "🔍 Verificare dacă folderul .next există"
 if [ ! -d ".next" ]; then
   echo "❌ Error: .next folder nu există! Build-ul nu s-a transferat corect."
-  echo "📂 Conținutul directorului curent:"
-  ls -la
+  echo "📂 Toate fișierele disponibile:"
+  find . -name "*" -type f | head -20
+  echo "📂 Toate directoarele disponibile:"
+  find . -name "*" -type d | head -10
+  echo "📋 Căutare după anything cu 'next':"
+  find . -name "*next*" | head -10
   exit 1
 fi
 
 echo "✅ .next folder găsit cu dimensiunea: $(du -sh .next | cut -f1)"
+echo "📊 Numărul de fișiere în .next: $(find .next -type f | wc -l)"
 
 echo "➡️ Instalare dependențe runtime (production only)"
 npm ci --omit=dev --prefer-offline --no-audit
