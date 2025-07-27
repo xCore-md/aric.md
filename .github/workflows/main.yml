@@ -93,31 +93,26 @@ jobs:
           echo "size=$BUILD_SIZE" >> $GITHUB_OUTPUT
           ls -la .next/
 
-      - name: 📦 Create deployment package
+      - name: 📦 Create deployment archive
         run: |
-          echo "📦 Creating deployment package..."
+          echo "📦 Creating deployment archive..."
+          echo "🔍 Pre-archive file listing:"
           ls -la
-          echo "🔍 Contents of .next folder:"
-          ls -la .next/ || echo "❌ .next folder not found!"
+          echo "🔍 .next folder content:"
+          ls -la .next/ || (echo "❌ .next folder not found!" && exit 1)
           
-          # Create a deployment directory
-          mkdir -p deploy-package
+          # Create tar archive with all files
+          tar -czf deployment.tar.gz .next/ public/ package.json package-lock.json next.config.ts
           
-          # Copy all necessary files
-          cp -r .next deploy-package/ || (echo "❌ Failed to copy .next" && exit 1)
-          cp -r public deploy-package/
-          cp package.json deploy-package/
-          cp package-lock.json deploy-package/
-          cp next.config.ts deploy-package/
-          
-          echo "✅ Deployment package created:"
-          ls -la deploy-package/
+          echo "✅ Archive created:"
+          ls -la deployment.tar.gz
+          tar -tzf deployment.tar.gz | head -20
 
       - name: 📤 Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: next-build
-          path: deploy-package/
+          path: deployment.tar.gz
           retention-days: 1
 
   deploy:
@@ -137,18 +132,32 @@ jobs:
           name: next-build
           path: .
 
-      - name: 🧪 Debug afișare conținut artifact
+      - name: 📦 Extract deployment archive
         run: |
-          echo "📂 Conținutul artifact-ului descărcat:"
-          ls -laR .
-          echo "🔍 Verificare .next în artifact:"
-          if [ -d ".next" ]; then
-            echo "✅ .next folder găsit în artifact"
-            ls -la .next/
+          echo "📂 Downloaded artifact content:"
+          ls -la
+          
+          if [ -f "deployment.tar.gz" ]; then
+            echo "✅ Archive found, extracting..."
+            tar -xzf deployment.tar.gz
+            rm deployment.tar.gz
+            echo "✅ Archive extracted, contents:"
+            ls -la
           else
-            echo "❌ .next folder NU a fost găsit în artifact!"
-            echo "📋 Verificare conținut complet:"
-            find . -name "*.next*" -o -name "*next*" | head -10
+            echo "❌ deployment.tar.gz not found!"
+            exit 1
+          fi
+
+      - name: 🧪 Debug afișare conținut final
+        run: |
+          echo "📂 Final content after extraction:"
+          ls -laR .
+          echo "🔍 Verificare .next folder:"
+          if [ -d ".next" ]; then
+            echo "✅ .next folder găsit!"
+            ls -la .next/ | head -10
+          else
+            echo "❌ .next folder încă nu există!"
             exit 1
           fi
 
