@@ -97,64 +97,41 @@ jobs:
           
           echo "📊 .next files count: $(find .next -type f | wc -l)"
 
-      - name: 📦 Create reliable deployment package
+      - name: 📦 Create TAR deployment package
         run: |
-          echo "📦 Creating deployment package with explicit structure..."
+          echo "📦 Creating TAR deployment package (bypass upload-artifact .next issues)..."
           
-          # Pre-copy verification
-          echo "🔍 Before copy - current directory:"
-          ls -la
-          echo "🔍 .next folder verification:"
-          if [ -d ".next" ]; then
-            echo "✅ .next exists with $(find .next -type f | wc -l) files"
-            echo "📊 .next size: $(du -sh .next | cut -f1)"
-            echo "📂 .next permissions:"
-            ls -ld .next
-          else
+          # Verify .next exists
+          if [ ! -d ".next" ]; then
             echo "❌ .next does not exist!"
             exit 1
           fi
           
-          # Create deployment directory
-          mkdir -p deployment-files
-          echo "✅ Created deployment-files directory"
+          echo "✅ .next exists with $(find .next -type f | wc -l) files"
           
-          # Copy with preserved structure and verbose output
-          echo "📁 Copying .next folder..."
-          cp -rv .next deployment-files/ || (echo "❌ Failed to copy .next" && exit 1)
+          # Create TAR archive with all deployment files
+          echo "📁 Creating deployment.tar.gz..."
+          tar -czf deployment.tar.gz .next/ public/ package.json package-lock.json next.config.ts
           
-          echo "📁 Copying other files..."
-          cp -v public -r deployment-files/ || (echo "❌ Failed to copy public" && exit 1)
-          cp -v package.json deployment-files/ || (echo "❌ Failed to copy package.json" && exit 1)
-          cp -v package-lock.json deployment-files/ || (echo "❌ Failed to copy package-lock.json" && exit 1)
-          cp -v next.config.ts deployment-files/ || (echo "❌ Failed to copy next.config.ts" && exit 1)
+          # Verify TAR contains .next
+          echo "🔍 TAR contents verification:"
+          tar -tzf deployment.tar.gz | head -20
           
-          # Post-copy verification
-          echo "✅ Post-copy verification:"
-          ls -la deployment-files/
-          
-          if [ -d "deployment-files/.next" ]; then
-            echo "✅ .next successfully copied to deployment-files"
-            echo "📊 Files in deployment-files/.next: $(find deployment-files/.next -type f | wc -l)"
-            echo "📂 .next structure in deployment:"
-            find deployment-files/.next -type f | head -10
-          else
-            echo "❌ .next NOT found in deployment-files after copy!"
-            echo "📋 What's in deployment-files:"
-            find deployment-files -type f | head -20
-            exit 1
-          fi
+          echo "📊 TAR file size: $(du -sh deployment.tar.gz | cut -f1)"
           
           # Create verification file
-          echo "BUILD_VERIFICATION_$(date +%s)" > deployment-files/BUILD_VERIFICATION
-          echo "HASH: ${{ steps.build-info.outputs.hash }}" >> deployment-files/BUILD_VERIFICATION
-          echo "NEXT_FILES: $(find deployment-files/.next -type f | wc -l)" >> deployment-files/BUILD_VERIFICATION
+          echo "BUILD_VERIFICATION_$(date +%s)" > BUILD_VERIFICATION
+          echo "HASH: ${{ steps.build-info.outputs.hash }}" >> BUILD_VERIFICATION
+          echo "NEXT_FILES: $(find .next -type f | wc -l)" >> BUILD_VERIFICATION
+          echo "TAR_SIZE: $(du -sb deployment.tar.gz | cut -f1)" >> BUILD_VERIFICATION
 
       - name: 📤 Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: next-build
-          path: deployment-files/
+          path: |
+            deployment.tar.gz
+            BUILD_VERIFICATION
           retention-days: 1
 
   deploy:
@@ -174,10 +151,10 @@ jobs:
           name: next-build
           path: .
 
-      - name: 🧪 Debug și verificare artifact complet
+      - name: 📦 Extract TAR deployment package
         run: |
-          echo "📂 Conținutul artifact-ului descărcat:"
-          ls -laR .
+          echo "📂 Downloaded artifact contents:"
+          ls -la
           
           echo "🔍 Verificare BUILD_VERIFICATION:"
           if [ -f "BUILD_VERIFICATION" ]; then
@@ -185,17 +162,36 @@ jobs:
             cat BUILD_VERIFICATION
           else
             echo "❌ Build verification missing!"
+            exit 1
           fi
           
-          echo "🔍 Verificare .next folder:"
+          echo "📦 Verificare și extragere TAR:"
+          if [ -f "deployment.tar.gz" ]; then
+            echo "✅ deployment.tar.gz found, size: $(du -sh deployment.tar.gz | cut -f1)"
+            
+            # Extract TAR
+            echo "📁 Extracting deployment.tar.gz..."
+            tar -xzf deployment.tar.gz
+            
+            # Remove TAR file
+            rm deployment.tar.gz
+            
+            echo "✅ TAR extracted, final contents:"
+            ls -la
+          else
+            echo "❌ deployment.tar.gz not found!"
+            exit 1
+          fi
+          
+          echo "🔍 Verificare finală .next folder:"
           if [ -d ".next" ]; then
-            echo "✅ .next folder găsit!"
+            echo "✅ .next folder găsit după extragere!"
             echo "📊 Dimensiune .next: $(du -sh .next | cut -f1)"
             echo "📊 Numărul de fișiere: $(find .next -type f | wc -l)"
-            echo "📂 Structura .next (primele 20 files):"
-            find .next -type f | head -20
+            echo "📂 Structura .next (primele 15 files):"
+            find .next -type f | head -15
           else
-            echo "❌ .next folder NU a fost găsit în artifact!"
+            echo "❌ .next folder NU a fost găsit după extragere!"
             echo "📋 Toate files disponibile:"
             find . -type f | head -20
             echo "📋 Toate directories disponibile:"
