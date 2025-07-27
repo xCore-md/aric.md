@@ -93,16 +93,31 @@ jobs:
           echo "size=$BUILD_SIZE" >> $GITHUB_OUTPUT
           ls -la .next/
 
+      - name: 📦 Create deployment package
+        run: |
+          echo "📦 Creating deployment package..."
+          ls -la
+          echo "🔍 Contents of .next folder:"
+          ls -la .next/ || echo "❌ .next folder not found!"
+          
+          # Create a deployment directory
+          mkdir -p deploy-package
+          
+          # Copy all necessary files
+          cp -r .next deploy-package/ || (echo "❌ Failed to copy .next" && exit 1)
+          cp -r public deploy-package/
+          cp package.json deploy-package/
+          cp package-lock.json deploy-package/
+          cp next.config.ts deploy-package/
+          
+          echo "✅ Deployment package created:"
+          ls -la deploy-package/
+
       - name: 📤 Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: next-build
-          path: |
-            .next/
-            public/
-            package.json
-            package-lock.json
-            next.config.ts
+          path: deploy-package/
           retention-days: 1
 
   deploy:
@@ -132,6 +147,8 @@ jobs:
             ls -la .next/
           else
             echo "❌ .next folder NU a fost găsit în artifact!"
+            echo "📋 Verificare conținut complet:"
+            find . -name "*.next*" -o -name "*next*" | head -10
             exit 1
           fi
 
