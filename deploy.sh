@@ -9,6 +9,33 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 echo "➡️ Navigare în directorul aplicației: $APP_DIR"
 cd "$APP_DIR"
 
+# Check Node.js version
+echo "🔍 Verificare versiune Node.js"
+NODE_VERSION=$(node --version)
+echo "📋 Node.js version detectată: $NODE_VERSION"
+
+# Extract major version number
+NODE_MAJOR=$(echo $NODE_VERSION | sed 's/v\([0-9]*\).*/\1/')
+echo "📊 Node.js major version: $NODE_MAJOR"
+
+if [ "$NODE_MAJOR" -lt 18 ]; then
+  echo "❌ Error: Node.js $NODE_VERSION este prea vechi!"
+  echo "🔧 Aplicația necesită Node.js >=18.0.0"
+  echo "💡 Te rog să actualizezi Node.js pe server la versiunea 18, 20 sau 22"
+  echo ""
+  echo "🚀 Comenzi pentru actualizare Node.js:"
+  echo "curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -"
+  echo "sudo apt-get install -y nodejs"
+  echo ""
+  echo "sau folosește nvm:"
+  echo "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"
+  echo "nvm install 20"
+  echo "nvm use 20"
+  exit 1
+fi
+
+echo "✅ Node.js version este compatibilă"
+
 # Create backup directory if it doesn't exist
 mkdir -p "$BACKUP_DIR"
 
