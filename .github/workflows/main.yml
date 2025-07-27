@@ -4,10 +4,25 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:  # Allow manual trigger
+
+# Allow only one deployment at a time
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NODE_ENV: production
+  NEXT_TELEMETRY_DISABLED: 1
 
 jobs:
-  build:
+  security:
+    name: Security Checks
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: ✅ Checkout code
         uses: actions/checkout@v4
@@ -19,26 +34,87 @@ jobs:
           cache: 'npm'
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🔍 Dependency Review
+        uses: actions/dependency-review-action@v3
+        if: github.event_name == 'pull_request'
+
+      - name: 🔒 Security Audit
+        run: npm audit --audit-level=moderate
+
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      build-hash: ${{ steps.build-info.outputs.hash }}
+    permissions:
+      contents: read
+    steps:
+      - name: ✅ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🛠 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: 📦 Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 📦 Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🔒 Audit dependencies
+        run: npm audit --audit-level=high
+        continue-on-error: true
 
       - name: 🏗️ Build Next.js app
         run: npm run build
+
+      - name: 🔍 Verify .next folder exists
+        id: build-info
+        run: |
+          if [ ! -d ".next" ]; then
+            echo "❌ Error: .next folder not found after build"
+            exit 1
+          fi
+          BUILD_SIZE=$(du -sh .next | cut -f1)
+          BUILD_HASH=$(find .next -type f -exec md5sum {} \; | sort -k 2 | md5sum | cut -d' ' -f1)
+          echo "✅ .next folder exists with $BUILD_SIZE size"
+          echo "hash=$BUILD_HASH" >> $GITHUB_OUTPUT
+          echo "size=$BUILD_SIZE" >> $GITHUB_OUTPUT
+          ls -la .next/
 
       - name: 📤 Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: next-build
           path: |
-            .next
-            node_modules
-            public
+            .next/
+            public/
             package.json
             package-lock.json
             next.config.ts
+          retention-days: 1
 
   deploy:
-    needs: build
+    name: Deploy to Server
+    needs: [security, build]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: production
+      url: https://aric.md
+    permissions:
+      contents: read
     steps:
       - name: 📥 Download build artifact
         uses: actions/download-artifact@v4
@@ -47,7 +123,17 @@ jobs:
           path: .
 
       - name: 🧪 Debug afișare conținut artifact
-        run: ls -laR .
+        run: |
+          echo "📂 Conținutul artifact-ului descărcat:"
+          ls -laR .
+          echo "🔍 Verificare .next în artifact:"
+          if [ -d ".next" ]; then
+            echo "✅ .next folder găsit în artifact"
+            ls -la .next/
+          else
+            echo "❌ .next folder NU a fost găsit în artifact!"
+            exit 1
+          fi
 
       - name: 📂 Transfer build pe server
         uses: appleboy/scp-action@master
@@ -55,15 +141,36 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "**"
+          source: "."
           target: "/home/aric/htdocs/aric.md"
+          strip_components: 0
+          timeout: 300s
+          command_timeout: 10m
 
       - name: 🚀 Executare deploy script pe server
+        id: deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
+          timeout: 300s
+          command_timeout: 10m
           script: |
+            set -euo pipefail
+            echo "🏷️ Deploy hash: ${{ needs.build.outputs.build-hash }}"
             chmod +x /home/aric/htdocs/aric.md/deploy.sh
             /home/aric/htdocs/aric.md/deploy.sh
+
+      - name: ✅ Deploy Success Notification
+        if: success()
+        run: |
+          echo "🎉 Deploy successful!"
+          echo "Build hash: ${{ needs.build.outputs.build-hash }}"
+          echo "Deployed to: https://aric.md"
+
+      - name: ❌ Deploy Failure Notification
+        if: failure()
+        run: |
+          echo "💥 Deploy failed!"
+          echo "Check logs above for details"
