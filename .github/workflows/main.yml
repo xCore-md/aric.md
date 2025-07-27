@@ -93,27 +93,18 @@ jobs:
           echo "size=$BUILD_SIZE" >> $GITHUB_OUTPUT
           ls -la .next/
 
-      - name: 📦 Create deployment archive
-        run: |
-          echo "📦 Creating deployment archive..."
-          echo "🔍 Pre-archive file listing:"
-          ls -la
-          echo "🔍 .next folder content:"
-          ls -la .next/ || (echo "❌ .next folder not found!" && exit 1)
-          
-          # Create tar archive with all files
-          tar -czf deployment.tar.gz .next/ public/ package.json package-lock.json next.config.ts
-          
-          echo "✅ Archive created:"
-          ls -la deployment.tar.gz
-          tar -tzf deployment.tar.gz | head -20
-
       - name: 📤 Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: next-build
-          path: deployment.tar.gz
+          path: |
+            .next
+            public
+            package.json
+            package-lock.json
+            next.config.ts
           retention-days: 1
+          include-hidden-files: true
 
   deploy:
     name: Deploy to Server
@@ -132,32 +123,21 @@ jobs:
           name: next-build
           path: .
 
-      - name: 📦 Extract deployment archive
+      - name: 🧪 Debug afișare conținut artifact
         run: |
-          echo "📂 Downloaded artifact content:"
-          ls -la
-          
-          if [ -f "deployment.tar.gz" ]; then
-            echo "✅ Archive found, extracting..."
-            tar -xzf deployment.tar.gz
-            rm deployment.tar.gz
-            echo "✅ Archive extracted, contents:"
-            ls -la
-          else
-            echo "❌ deployment.tar.gz not found!"
-            exit 1
-          fi
-
-      - name: 🧪 Debug afișare conținut final
-        run: |
-          echo "📂 Final content after extraction:"
+          echo "📂 Conținutul artifact-ului descărcat:"
           ls -laR .
           echo "🔍 Verificare .next folder:"
           if [ -d ".next" ]; then
             echo "✅ .next folder găsit!"
+            echo "📊 Dimensiune .next: $(du -sh .next | cut -f1)"
             ls -la .next/ | head -10
           else
-            echo "❌ .next folder încă nu există!"
+            echo "❌ .next folder NU a fost găsit în artifact!"
+            echo "📋 Verificare files cu 'next' în nume:"
+            find . -name "*next*" -type f 2>/dev/null || echo "Nu există files cu 'next'"
+            echo "📋 Verificare directories:"
+            find . -type d 2>/dev/null | head -10
             exit 1
           fi
 
