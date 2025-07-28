@@ -97,9 +97,9 @@ jobs:
           
           echo "📊 .next files count: $(find .next -type f | wc -l)"
 
-      - name: 📦 Create TAR deployment package
+      - name: 📦 Prepare deployment files (rename .next to avoid dot folder issues)
         run: |
-          echo "📦 Creating TAR deployment package (bypass upload-artifact .next issues)..."
+          echo "📦 Preparing deployment files with .next renamed..."
           
           # Verify .next exists
           if [ ! -d ".next" ]; then
@@ -109,28 +109,30 @@ jobs:
           
           echo "✅ .next exists with $(find .next -type f | wc -l) files"
           
-          # Create TAR archive with all deployment files
-          echo "📁 Creating deployment.tar.gz..."
-          tar -czf deployment.tar.gz .next/ public/ package.json package-lock.json next.config.ts
+          # Rename .next to next-build to avoid dot folder issues
+          echo "🔄 Renaming .next to next-build..."
+          mv .next next-build
           
-          # Verify TAR contains .next
-          echo "🔍 TAR contents verification:"
-          tar -tzf deployment.tar.gz | head -20
-          
-          echo "📊 TAR file size: $(du -sh deployment.tar.gz | cut -f1)"
+          echo "✅ Renamed .next to next-build"
+          echo "📊 next-build folder size: $(du -sh next-build | cut -f1)"
+          echo "📊 next-build files count: $(find next-build -type f | wc -l)"
           
           # Create verification file
           echo "BUILD_VERIFICATION_$(date +%s)" > BUILD_VERIFICATION
           echo "HASH: ${{ steps.build-info.outputs.hash }}" >> BUILD_VERIFICATION
-          echo "NEXT_FILES: $(find .next -type f | wc -l)" >> BUILD_VERIFICATION
-          echo "TAR_SIZE: $(du -sb deployment.tar.gz | cut -f1)" >> BUILD_VERIFICATION
+          echo "NEXT_FILES: $(find next-build -type f | wc -l)" >> BUILD_VERIFICATION
+          echo "FOLDER_NAME: next-build" >> BUILD_VERIFICATION
 
       - name: 📤 Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: next-build
           path: |
-            deployment.tar.gz
+            next-build
+            public
+            package.json
+            package-lock.json
+            next.config.ts
             BUILD_VERIFICATION
           retention-days: 1
 
@@ -151,7 +153,7 @@ jobs:
           name: next-build
           path: .
 
-      - name: 📦 Extract TAR deployment package
+      - name: 🔍 Verify and rename next-build back to .next
         run: |
           echo "📂 Downloaded artifact contents:"
           ls -la
@@ -165,33 +167,21 @@ jobs:
             exit 1
           fi
           
-          echo "📦 Verificare și extragere TAR:"
-          if [ -f "deployment.tar.gz" ]; then
-            echo "✅ deployment.tar.gz found, size: $(du -sh deployment.tar.gz | cut -f1)"
+          echo "🔍 Verificare next-build folder:"
+          if [ -d "next-build" ]; then
+            echo "✅ next-build folder găsit!"
+            echo "📊 Dimensiune next-build: $(du -sh next-build | cut -f1)"
+            echo "📊 Numărul de fișiere: $(find next-build -type f | wc -l)"
             
-            # Extract TAR
-            echo "📁 Extracting deployment.tar.gz..."
-            tar -xzf deployment.tar.gz
+            # Rename back to .next
+            echo "🔄 Renaming next-build back to .next..."
+            mv next-build .next
             
-            # Remove TAR file
-            rm deployment.tar.gz
-            
-            echo "✅ TAR extracted, final contents:"
-            ls -la
-          else
-            echo "❌ deployment.tar.gz not found!"
-            exit 1
-          fi
-          
-          echo "🔍 Verificare finală .next folder:"
-          if [ -d ".next" ]; then
-            echo "✅ .next folder găsit după extragere!"
-            echo "📊 Dimensiune .next: $(du -sh .next | cut -f1)"
-            echo "📊 Numărul de fișiere: $(find .next -type f | wc -l)"
-            echo "📂 Structura .next (primele 15 files):"
+            echo "✅ Successfully renamed to .next"
+            echo "📂 Final .next structure (primele 15 files):"
             find .next -type f | head -15
           else
-            echo "❌ .next folder NU a fost găsit după extragere!"
+            echo "❌ next-build folder NU a fost găsit în artifact!"
             echo "📋 Toate files disponibile:"
             find . -type f | head -20
             echo "📋 Toate directories disponibile:"
@@ -207,15 +197,28 @@ jobs:
           echo "📊 .next folder size: $(du -sh .next | cut -f1)"
           echo "📊 .next files count: $(find .next -type f | wc -l)"
 
-      - name: 📂 Transfer build pe server
+      - name: 📂 Transfer build pe server (using rsync via SSH)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # Create target directory
+            mkdir -p /home/aric/htdocs/aric.md
+            
+            # Clear target directory (backup important files first if needed)
+            cd /home/aric/htdocs/aric.md
+            rm -rf .next public package.json package-lock.json next.config.ts BUILD_VERIFICATION 2>/dev/null || true
+
+      - name: 📂 SCP Transfer (fallback method)
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: ".next,public,package.json,package-lock.json,next.config.ts,BUILD_VERIFICATION"
-          target: "/home/aric/htdocs/aric.md"
-          strip_components: 0
+          source: "*"
+          target: "/home/aric/htdocs/aric.md/"
           timeout: 300s
           command_timeout: 10m
 
