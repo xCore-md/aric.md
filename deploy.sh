@@ -48,6 +48,9 @@ main() {
     # Verify deployment files
     verify_deployment_files
     
+    # Setup environment variables
+    setup_environment
+    
     # Install dependencies
     install_dependencies
     
@@ -129,6 +132,75 @@ verify_deployment_files() {
     log_success ".next folder found: $next_size ($next_files files)"
 }
 
+setup_environment() {
+    log_info "Setting up environment variables"
+    
+    # Check if .env exists
+    if [ ! -f ".env" ]; then
+        log_info "Creating .env file from template..."
+        
+        # Create .env file with runtime-only settings
+        cat > .env << 'EOF'
+# Production Runtime Environment Configuration
+NODE_ENV=production
+
+# Authentication (Runtime Secret)
+AUTH_SECRET=your-secret-key-change-this-in-production
+
+# Next.js Configuration (Runtime)
+NEXTAUTH_URL=https://aric.md
+NEXT_PUBLIC_API_URL=https://aric-api-main-n0rc65.laravel.cloud/api/
+EOF
+        
+        log_success ".env file created with default values"
+        log_warning "⚠️  Please update AUTH_SECRET and other sensitive values!"
+        
+    else
+        log_success ".env file already exists"
+        log_info "Current .env contents (sensitive values hidden):"
+        
+        # Show .env contents but hide sensitive values
+        while IFS= read -r line; do
+            if [[ $line == *"SECRET"* ]] || [[ $line == *"KEY"* ]] || [[ $line == *"PASSWORD"* ]]; then
+                key=$(echo "$line" | cut -d'=' -f1)
+                echo "  $key=***hidden***"
+            elif [[ $line == \#* ]] || [[ -z $line ]]; then
+                echo "  $line"
+            else
+                echo "  $line"
+            fi
+        done < .env
+    fi
+    
+    # Validate required environment variables
+    log_info "Validating required environment variables..."
+    
+    local missing_vars=()
+    
+    # Check for required runtime variables only
+    # (NEXT_PUBLIC_* vars are set at build time, not runtime)
+    
+    if ! grep -q "^AUTH_SECRET=" .env; then
+        missing_vars+=("AUTH_SECRET")
+    fi
+    
+    # Check that AUTH_SECRET is not default value
+    if grep -q "^AUTH_SECRET=your-secret-key-change-this-in-production" .env; then
+        missing_vars+=("AUTH_SECRET (needs to be changed from default)")
+    fi
+    
+    if [ ${#missing_vars[@]} -gt 0 ]; then
+        log_warning "Missing required environment variables: ${missing_vars[*]}"
+        log_info "Please add these to your .env file before deployment"
+    else
+        log_success "All required environment variables are present"
+    fi
+    
+    # Make sure .env has correct permissions
+    chmod 600 .env
+    log_info "Set .env permissions to 600 (owner read/write only)"
+}
+
 install_dependencies() {
     log_info "Installing production dependencies"
     
@@ -169,23 +241,79 @@ deploy_application() {
     fi
     
     # Find npm path for PM2
-    local npm_path=$(which npm)
+    local npm_path
+    npm_path=$(which npm)
     if [ -z "$npm_path" ]; then
         log_error "npm not found in PATH"
         exit 1
     fi
     
-    # Deploy with PM2
+    # Stop PM2 app first to free up port
     if pm2 describe "$APP_NAME" > /dev/null 2>&1; then
-        log_info "Application exists, restarting..."
-        pm2 restart "$APP_NAME" --update-env
-    else
-        log_info "Starting new application..."
-        pm2 start "$npm_path" --name "$APP_NAME" -- start
+        log_info "Stopping existing PM2 application..."
+        pm2 stop "$APP_NAME" 2>/dev/null || true
+        pm2 delete "$APP_NAME" 2>/dev/null || true
+        sleep 3
     fi
     
-    # Wait for PM2 to stabilize
+    # Kill any remaining process using the port
+    log_info "Ensuring port $APP_PORT is free..."
+    local port_pids=$(ss -tulnp | grep ":$APP_PORT " | awk '{print $7}' | cut -d',' -f2 | cut -d'=' -f2)
+    if [ -n "$port_pids" ]; then
+        for pid in $port_pids; do
+            if [ "$pid" != "-" ] && [ -n "$pid" ]; then
+                log_warning "Killing process $pid using port $APP_PORT"
+                kill -TERM "$pid" 2>/dev/null || true
+                sleep 1
+                kill -KILL "$pid" 2>/dev/null || true
+            fi
+        done
+        sleep 2
+    fi
+    
+    # Final port check
+    if ss -tulnp | grep ":$APP_PORT " > /dev/null; then
+        log_error "Port $APP_PORT is still in use after cleanup!"
+        ss -tulnp | grep ":$APP_PORT "
+        exit 1
+    fi
+    
+    log_success "Port $APP_PORT is now free"
+    
+    # Test if application can start manually first
+    log_info "Testing application startup..."
+    timeout 10s npm start &
+    local test_pid=$!
     sleep 3
+    
+    if kill -0 "$test_pid" 2>/dev/null; then
+        log_success "Application can start successfully"
+        kill "$test_pid" 2>/dev/null || true
+        # Wait for process to fully terminate
+        sleep 2
+    else
+        log_error "Application fails to start manually!"
+        log_info "Checking for errors..."
+        npm start &
+        local debug_pid=$!
+        sleep 5
+        kill "$debug_pid" 2>/dev/null || true
+        exit 1
+    fi
+    
+    log_info "Starting application with PM2 using correct npm path: $npm_path"
+    pm2 start "$npm_path" --name "$APP_NAME" -- start
+    
+    # Wait for PM2 to stabilize and check logs
+    sleep 5
+    
+    # Check for immediate errors
+    local current_restarts=$(pm2 jlist | jq -r ".[] | select(.name==\"$APP_NAME\") | .pm2_env.restart_time" 2>/dev/null || echo "0")
+    if [ "$current_restarts" -gt 3 ]; then
+        log_error "Application is restarting frequently! Checking logs..."
+        pm2 logs "$APP_NAME" --lines 10 --nostream
+        exit 1
+    fi
     
     # Show PM2 status
     echo
@@ -196,21 +324,50 @@ health_check_and_cleanup() {
     log_info "Performing health check"
     
     # Wait for application to start
-    sleep 5
+    log_info "Waiting for application to initialize..."
+    sleep 8
     
-    if curl -f -s "http://localhost:$APP_PORT" > /dev/null; then
-        log_success "Application is responding correctly"
+    # Multiple health check attempts
+    local attempts=0
+    local max_attempts=3
+    
+    while [ $attempts -lt $max_attempts ]; do
+        attempts=$((attempts + 1))
+        log_info "Health check attempt $attempts/$max_attempts"
         
-        # Clean old backups (keep last 5)
-        if [ -d "$BACKUP_DIR" ]; then
-            find "$BACKUP_DIR" -name ".next_*" -type d | sort -r | tail -n +6 | xargs rm -rf 2>/dev/null || true
-            log_info "Cleaned old backups"
+        if curl -f -s -m 10 "http://localhost:$APP_PORT" > /dev/null; then
+            log_success "✅ Application is responding correctly!"
+            
+            # Clean old backups (keep last 5)
+            if [ -d "$BACKUP_DIR" ]; then
+                find "$BACKUP_DIR" -name ".next_*" -type d | sort -r | tail -n +6 | xargs rm -rf 2>/dev/null || true
+                log_info "Cleaned old backups"
+            fi
+            return 0
+        else
+            log_warning "Health check failed (attempt $attempts)"
+            if [ $attempts -lt $max_attempts ]; then
+                log_info "Retrying in 5 seconds..."
+                sleep 5
+            fi
         fi
-        
-    else
-        log_error "Application is not responding! Attempting rollback..."
-        attempt_rollback
-    fi
+    done
+    
+    # All health checks failed
+    log_error "All health checks failed! Checking application status..."
+    
+    # Debug information
+    log_info "Checking PM2 logs..."
+    pm2 logs "$APP_NAME" --lines 15 --nostream || true
+    
+    log_info "Checking if port $APP_PORT is in use..."
+    ss -tulnp | grep ":$APP_PORT" || log_warning "Port $APP_PORT is not in use"
+    
+    log_info "Checking PM2 process status..."
+    pm2 describe "$APP_NAME" || true
+    
+    log_error "Application is not responding! Attempting rollback..."
+    attempt_rollback
 }
 
 attempt_rollback() {
