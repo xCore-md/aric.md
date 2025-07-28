@@ -149,7 +149,7 @@ AUTH_SECRET=your-secret-key-change-this-in-production
 
 # Next.js Configuration (Runtime)
 NEXTAUTH_URL=https://aric.md
-NEXT_PUBLIC_API_URL=https://aric-api-main-n0rc65.laravel.cloud/api/
+NEXT_PUBLIC_API_URL=https://aric-api-main-n0rc65.laravel.cloud/api
 EOF
         
         log_success ".env file created with default values"

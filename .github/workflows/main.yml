@@ -15,7 +15,7 @@ env:
   NODE_ENV: production
   NEXT_TELEMETRY_DISABLED: 1
   # Public environment variables for build
-  NEXT_PUBLIC_API_URL: https://aric-api-main-n0rc65.laravel.cloud/api/
+  NEXT_PUBLIC_API_URL: https://aric-api-main-n0rc65.laravel.cloud/apiß
 
 jobs:
   security:
