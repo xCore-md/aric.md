@@ -42,7 +42,19 @@ export const apiInstance = ky.create({
     afterResponse: [
       async (_request, _options, response) => {
         if (response.status === 401 || response.status === 403) {
-          await authService.logout();
+          try {
+            const data = await response.clone().json();
+            const message = data?.message as string | undefined;
+
+            if (
+              message === "Unauthenticated." ||
+              message === "This action is unauthorized."
+            ) {
+              await authService.logout();
+            }
+          } catch {
+            await authService.logout();
+          }
         }
         return response;
       },

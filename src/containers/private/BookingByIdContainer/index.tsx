@@ -9,7 +9,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PRIVATE_LINK, QUERY_KEYS } from "@/utils/constants";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { bookingService } from "@/services/booking.service";
@@ -37,7 +37,6 @@ import {
   Passenger,
 } from "@/types";
 
-import { toast } from "sonner";
 import { formatISO, differenceInYears } from "date-fns";
 
 export const phoneNumberSchema = z.string().refine(
@@ -160,11 +159,19 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
     passengerCounts: passengerCountsForPrice,
   });
 
+  const { push } = useRouter();
+
   const bookingComplete = useMutation({
     mutationFn: bookingService.complete,
     onSuccess: (data) => {
-      console.log(data);
-      toast.success(`Succes => ${data.booking_id} => ${data.redirect_url}`);
+      if (data.redirect_url) {
+        window.location.href = data.redirect_url;
+      } else {
+        push("/booking/success");
+      }
+    },
+    onError: (error) => {
+      console.error(error);
     },
   });
 

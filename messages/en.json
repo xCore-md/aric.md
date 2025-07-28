@@ -69,7 +69,7 @@
     "email_field_label": "Your email address",
     "email_placeholder": "Your email address",
     "name_and_surname_label": "First name / Last name",
-    "phone_placeholder": "+373 | 000 00 000"
+    "phone_placeholder": "000 00 000"
   },
   "action": {
     "subscribe": "Subscribe",
