@@ -197,30 +197,56 @@ jobs:
           echo "📊 .next folder size: $(du -sh .next | cut -f1)"
           echo "📊 .next files count: $(find .next -type f | wc -l)"
 
-      - name: 📂 Transfer build pe server (using rsync via SSH)
+      - name: 📦 Create deployment archive on runner
+        run: |
+          echo "📦 Creating deployment archive for direct transfer..."
+          tar -czf deployment-complete.tar.gz .next/ public/ package.json package-lock.json next.config.ts BUILD_VERIFICATION
+          echo "✅ Archive created, size: $(du -sh deployment-complete.tar.gz | cut -f1)"
+
+      - name: 📂 Transfer archive to server via SCP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "deployment-complete.tar.gz"
+          target: "/home/aric/htdocs/aric.md/"
+          timeout: 300s
+          command_timeout: 10m
+
+      - name: 📦 Extract archive on server via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            # Create target directory
-            mkdir -p /home/aric/htdocs/aric.md
-            
-            # Clear target directory (backup important files first if needed)
             cd /home/aric/htdocs/aric.md
+            
+            # Remove old files
             rm -rf .next public package.json package-lock.json next.config.ts BUILD_VERIFICATION 2>/dev/null || true
-
-      - name: 📂 SCP Transfer (fallback method)
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: "*"
-          target: "/home/aric/htdocs/aric.md/"
-          timeout: 300s
-          command_timeout: 10m
+            
+            # Extract new deployment
+            if [ -f "deployment-complete.tar.gz" ]; then
+              echo "✅ Archive found, extracting..."
+              tar -xzf deployment-complete.tar.gz
+              rm deployment-complete.tar.gz
+              
+              echo "📂 Extracted contents:"
+              ls -la
+              
+              if [ -d ".next" ]; then
+                echo "✅ .next folder successfully extracted!"
+                echo "📊 .next size: $(du -sh .next | cut -f1)"
+                echo "📊 .next files: $(find .next -type f | wc -l)"
+              else
+                echo "❌ .next still missing after extraction!"
+                exit 1
+              fi
+            else
+              echo "❌ deployment-complete.tar.gz not found!"
+              exit 1
+            fi
 
       - name: 🚀 Executare deploy script pe server
         id: deploy
