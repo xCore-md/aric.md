@@ -2,130 +2,247 @@
 
 set -euo pipefail
 
+# Configuration
 APP_DIR="/home/aric/htdocs/aric.md"
 BACKUP_DIR="/home/aric/backups/aric.md"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+APP_NAME="aric-md"
+APP_PORT="3000"
 
-echo "➡️ Navigare în directorul aplicației: $APP_DIR"
-cd "$APP_DIR"
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
 
-# Check Node.js version
-echo "🔍 Verificare versiune Node.js"
-NODE_VERSION=$(node --version)
-echo "📋 Node.js version detectată: $NODE_VERSION"
+# Logging functions
+log_info() { echo -e "${BLUE}ℹ️  $1${NC}"; }
+log_success() { echo -e "${GREEN}✅ $1${NC}"; }
+log_warning() { echo -e "${YELLOW}⚠️  $1${NC}"; }
+log_error() { echo -e "${RED}❌ $1${NC}"; }
 
-# Extract major version number
-NODE_MAJOR=$(echo $NODE_VERSION | sed 's/v\([0-9]*\).*/\1/')
-echo "📊 Node.js major version: $NODE_MAJOR"
+# Error handling
+cleanup() {
+    if [ $? -ne 0 ]; then
+        log_error "Deploy failed! Check logs above for details."
+        exit 1
+    fi
+}
+trap cleanup EXIT
 
-if [ "$NODE_MAJOR" -lt 18 ]; then
-  echo "❌ Error: Node.js $NODE_VERSION este prea vechi!"
-  echo "🔧 Aplicația necesită Node.js >=18.0.0"
-  echo "💡 Te rog să actualizezi Node.js pe server la versiunea 18, 20 sau 22"
-  echo ""
-  echo "🚀 Comenzi pentru actualizare Node.js:"
-  echo "curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -"
-  echo "sudo apt-get install -y nodejs"
-  echo ""
-  echo "sau folosește nvm:"
-  echo "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"
-  echo "nvm install 20"
-  echo "nvm use 20"
-  exit 1
-fi
-
-echo "✅ Node.js version este compatibilă"
-
-# Create backup directory if it doesn't exist
-mkdir -p "$BACKUP_DIR"
-
-echo "💾 Creează backup înainte de deploy"
-if [ -d ".next" ]; then
-  cp -r .next "$BACKUP_DIR/.next_$TIMESTAMP" 2>/dev/null || echo "⚠️ Warning: Nu s-a putut crea backup pentru .next existent"
-fi
-
-echo "🔍 Verificare completă a fișierelor transferate"
-echo "📂 Conținutul directorului curent:"
-ls -la
-
-echo "🔍 Verificare BUILD_VERIFICATION:"
-if [ -f "BUILD_VERIFICATION" ]; then
-  echo "✅ Build verification găsit:"
-  cat BUILD_VERIFICATION
-else
-  echo "⚠️ Build verification lipsește"
-fi
-
-echo "🔍 Verificare dacă folderul .next există"
-if [ ! -d ".next" ]; then
-  echo "❌ Error: .next folder nu există! Build-ul nu s-a transferat corect."
-  echo "📂 Toate fișierele disponibile:"
-  find . -name "*" -type f | head -20
-  echo "📂 Toate directoarele disponibile:"
-  find . -name "*" -type d | head -10
-  echo "📋 Căutare după anything cu 'next':"
-  find . -name "*next*" | head -10
-  exit 1
-fi
-
-echo "✅ .next folder găsit cu dimensiunea: $(du -sh .next | cut -f1)"
-echo "📊 Numărul de fișiere în .next: $(find .next -type f | wc -l)"
-
-echo "➡️ Instalare dependențe runtime (production only)"
-npm ci --omit=dev --prefer-offline --no-audit
-
-echo "➡️ Verificare dacă pm2 este instalat"
-if ! command -v pm2 &> /dev/null; then
-  echo "⚠️ pm2 nu este instalat. Instalează-l global cu: npm i -g pm2"
-  exit 1
-fi
-
-echo "➡️ Pornire/restart aplicație cu pm2"
-if pm2 describe aric-md > /dev/null 2>&1; then
-  echo "🔄 Aplicația este deja pornită, restart pm2"
-  pm2 restart aric-md --update-env
-else
-  echo "🚀 Aplicația nu rulează încă, pornire pm2"
-  pm2 start npm --name aric-md -- start
-fi
-
-echo "📊 Status pm2:"
-pm2 list
-
-# Health check
-echo "🏥 Verificare health check"
-sleep 5
-if curl -f -s http://localhost:3000 > /dev/null; then
-  echo "✅ Aplicația răspunde corect"
-  # Clean old backups (keep last 5)
-  find "$BACKUP_DIR" -name ".next_*" -type d | sort -r | tail -n +6 | xargs rm -rf 2>/dev/null || true
-  echo "✅ Deploy finalizat cu succes!"
-else
-  echo "❌ Aplicația nu răspunde! Încercare rollback..."
-  
-  # Find latest backup
-  LATEST_BACKUP=$(find "$BACKUP_DIR" -name ".next_*" -type d | sort -r | head -n 1)
-  
-  if [ -n "$LATEST_BACKUP" ] && [ -d "$LATEST_BACKUP" ]; then
-    echo "🔄 Restaurare din backup: $LATEST_BACKUP"
-    rm -rf .next
-    cp -r "$LATEST_BACKUP" .next
+# Main deployment function
+main() {
+    log_info "🚀 Starting deployment for $APP_NAME"
     
-    # Restart pm2
-    if pm2 describe aric-md > /dev/null 2>&1; then
-      pm2 restart aric-md --update-env
+    # Navigate to app directory
+    log_info "Navigating to: $APP_DIR"
+    cd "$APP_DIR"
+    
+    # Check Node.js compatibility
+    check_nodejs_version
+    
+    # Create backup
+    create_backup
+    
+    # Verify deployment files
+    verify_deployment_files
+    
+    # Install dependencies
+    install_dependencies
+    
+    # Fix permissions
+    fix_permissions
+    
+    # Deploy application
+    deploy_application
+    
+    # Health check and cleanup
+    health_check_and_cleanup
+    
+    log_success "🎉 Deployment completed successfully!"
+}
+
+check_nodejs_version() {
+    log_info "Checking Node.js version"
+    
+    if ! command -v node &> /dev/null; then
+        log_error "Node.js is not installed!"
+        exit 1
     fi
     
-    # Check again
-    sleep 5
-    if curl -f -s http://localhost:3000 > /dev/null; then
-      echo "✅ Rollback successful"
+    local node_version=$(node --version)
+    local node_major="${node_version#v}"
+    node_major="${node_major%%.*}"
+    
+    log_info "Detected Node.js version: $node_version"
+    
+    if [ "$node_major" -lt 18 ]; then
+        log_error "Node.js $node_version is too old! Required: >=18.0.0"
+        echo
+        echo "📋 Update commands:"
+        echo "curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -"
+        echo "sudo apt-get install -y nodejs"
+        exit 1
+    fi
+    
+    log_success "Node.js version is compatible"
+}
+
+create_backup() {
+    log_info "Creating backup"
+    mkdir -p "$BACKUP_DIR"
+    
+    if [ -d ".next" ]; then
+        if cp -r .next "$BACKUP_DIR/.next_$TIMESTAMP" 2>/dev/null; then
+            log_success "Backup created: .next_$TIMESTAMP"
+        else
+            log_warning "Could not create backup"
+        fi
+    fi
+}
+
+verify_deployment_files() {
+    log_info "Verifying deployment files"
+    
+    # Check BUILD_VERIFICATION
+    if [ -f "BUILD_VERIFICATION" ]; then
+        log_success "Build verification found:"
+        cat BUILD_VERIFICATION | sed 's/^/  /'
     else
-      echo "❌ Rollback failed - manual intervention needed"
-      exit 1
+        log_warning "Build verification missing"
     fi
-  else
-    echo "❌ Nu există backup pentru rollback - manual intervention needed"
-    exit 1
-  fi
-fi
+    
+    # Check .next folder
+    if [ ! -d ".next" ]; then
+        log_error ".next folder missing! Deployment files not transferred correctly."
+        echo
+        echo "📂 Available files:"
+        find . -maxdepth 2 -type f | head -10
+        echo "📁 Available directories:"
+        find . -maxdepth 2 -type d | head -10
+        exit 1
+    fi
+    
+    local next_size=$(du -sh .next | cut -f1)
+    local next_files=$(find .next -type f | wc -l)
+    log_success ".next folder found: $next_size ($next_files files)"
+}
+
+install_dependencies() {
+    log_info "Installing production dependencies"
+    
+    if npm ci --omit=dev --prefer-offline --no-audit --silent; then
+        log_success "Dependencies installed successfully"
+    else
+        log_error "Failed to install dependencies"
+        exit 1
+    fi
+}
+
+fix_permissions() {
+    log_info "Fixing permissions"
+    
+    # Fix node_modules/.bin permissions
+    if [ -d "node_modules/.bin" ]; then
+        chmod +x node_modules/.bin/* 2>/dev/null || log_warning "Could not fix all binary permissions"
+        chmod +x node_modules/.bin/next 2>/dev/null || log_warning "Could not fix next binary permissions"
+        
+        # Verify next binary
+        if ./node_modules/.bin/next --version &>/dev/null; then
+            log_success "Next.js binary is working"
+        else
+            log_error "Next.js binary has issues"
+            ls -la node_modules/.bin/next
+            exit 1
+        fi
+    fi
+}
+
+deploy_application() {
+    log_info "Deploying application with PM2"
+    
+    # Check if PM2 is installed
+    if ! command -v pm2 &> /dev/null; then
+        log_error "PM2 is not installed! Install with: npm i -g pm2"
+        exit 1
+    fi
+    
+    # Find npm path for PM2
+    local npm_path=$(which npm)
+    if [ -z "$npm_path" ]; then
+        log_error "npm not found in PATH"
+        exit 1
+    fi
+    
+    # Deploy with PM2
+    if pm2 describe "$APP_NAME" > /dev/null 2>&1; then
+        log_info "Application exists, restarting..."
+        pm2 restart "$APP_NAME" --update-env
+    else
+        log_info "Starting new application..."
+        pm2 start "$npm_path" --name "$APP_NAME" -- start
+    fi
+    
+    # Wait for PM2 to stabilize
+    sleep 3
+    
+    # Show PM2 status
+    echo
+    pm2 list | grep -E "(App name|$APP_NAME|──)" || pm2 list
+}
+
+health_check_and_cleanup() {
+    log_info "Performing health check"
+    
+    # Wait for application to start
+    sleep 5
+    
+    if curl -f -s "http://localhost:$APP_PORT" > /dev/null; then
+        log_success "Application is responding correctly"
+        
+        # Clean old backups (keep last 5)
+        if [ -d "$BACKUP_DIR" ]; then
+            find "$BACKUP_DIR" -name ".next_*" -type d | sort -r | tail -n +6 | xargs rm -rf 2>/dev/null || true
+            log_info "Cleaned old backups"
+        fi
+        
+    else
+        log_error "Application is not responding! Attempting rollback..."
+        attempt_rollback
+    fi
+}
+
+attempt_rollback() {
+    log_info "🔄 Starting rollback procedure"
+    
+    # Find latest backup
+    local latest_backup=$(find "$BACKUP_DIR" -name ".next_*" -type d | sort -r | head -n 1)
+    
+    if [ -n "$latest_backup" ] && [ -d "$latest_backup" ]; then
+        log_info "Restoring from backup: $(basename "$latest_backup")"
+        
+        rm -rf .next
+        cp -r "$latest_backup" .next
+        
+        # Restart PM2
+        if pm2 describe "$APP_NAME" > /dev/null 2>&1; then
+            pm2 restart "$APP_NAME" --update-env
+        fi
+        
+        # Check if rollback worked
+        sleep 5
+        if curl -f -s "http://localhost:$APP_PORT" > /dev/null; then
+            log_success "Rollback successful!"
+        else
+            log_error "Rollback failed - manual intervention required"
+            exit 1
+        fi
+    else
+        log_error "No backup available for rollback - manual intervention required"
+        exit 1
+    fi
+}
+
+# Run main function
+main "$@"
