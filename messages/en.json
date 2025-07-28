@@ -109,6 +109,62 @@
     "privacy": "Privacy Policy",
     "copyright": "All rights reserved"
   },
+  "legal_links": {
+    "terms": "/en/legal/terms",
+    "privacy": "/en/legal/privacy"
+  },
+  "legal_pages": {
+    "terms": {
+      "title": "Terms and Conditions",
+      "section1": {
+        "title": "1. Acceptance of terms",
+        "text": "By accessing and using this site, you agree to the terms presented here."
+      },
+      "section2": {
+        "title": "2. Services",
+        "text": "We provide a platform where users can compare offers for transport services."
+      },
+      "section3": {
+        "title": "3. User obligations",
+        "text": "Users must provide correct information and not use the platform for illegal purposes."
+      },
+      "section4": {
+        "title": "4. Liability",
+        "text": "We are not liable for losses resulting from the use or inability to use our services."
+      },
+      "section5": {
+        "title": "5. Changes",
+        "text": "We may modify these terms at any time. Updates will appear on this page."
+      }
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "section1": {
+        "title": "1. Data collection",
+        "text": "We collect personal information submitted through forms, such as name and email."
+      },
+      "section2": {
+        "title": "2. Data use",
+        "text": "The data is used to contact you, send offers and improve our services."
+      },
+      "section3": {
+        "title": "3. Data security",
+        "text": "We implement measures to protect personal data from unauthorized access."
+      },
+      "section4": {
+        "title": "4. User rights",
+        "text": "You can request to access or delete your personal data at any time."
+      },
+      "section5": {
+        "title": "5. Cookies",
+        "text": "We use cookies to enhance your experience. Continuing navigation implies acceptance."
+      },
+      "section6": {
+        "title": "6. Changes",
+        "text": "We may update this policy from time to time. Changes will be posted here."
+      }
+    }
+  },
   "contacts": {
     "title": "Contact us.",
     "subtitle": "We are here to help you!",
@@ -176,7 +232,7 @@
   },
   "logout": "Log out",
   "passengerData": "Passenger data:",
-  "consentText": "I agree to the <terms/> in accordance with the <privacyPolicy/>",
+  "consentText": "I agree to the <terms></terms> in accordance with the <privacyPolicy></privacyPolicy>",
   "too_many_attempts": "Too Many Attempts.",
   "$Nu a fost găsit nici un bilet pentru această rută!": "No tickets were found for this route!",
   "$Modifică căutarea": "Modify search",

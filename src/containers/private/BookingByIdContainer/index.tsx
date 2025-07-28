@@ -469,7 +469,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                       terms: () => (
                         <Link
                           className="text-blue underline-offset-2 transition hover:underline"
-                          href="/legal/terms"
+                          href={t("legal_links.terms")}
                         >
                           {t("legal_info.terms")}
                         </Link>
@@ -477,7 +477,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                       privacyPolicy: () => (
                         <Link
                           className="text-blue underline-offset-2 transition hover:underline"
-                          href="/legal/privacy"
+                          href={t("legal_links.privacy")}
                         >
                           {t("legal_info.privacy")}
                         </Link>

@@ -263,13 +263,13 @@ const TermsAndSocial = () => {
       <div className="flex h-full flex-col gap-4">
         <div className="flex flex-col sm:items-end">
           <Link
-            href="/legal/terms"
+            href={t("legal_links.terms")}
             className="text-blue inline-block text-sm underline-offset-2 transition hover:underline"
           >
             {t("legal_info.terms")}
           </Link>
           <Link
-            href="/legal/privacy"
+            href={t("legal_links.privacy")}
             className="text-blue inline-block text-sm underline-offset-2 transition hover:underline"
           >
             {t("legal_info.privacy")}

@@ -109,6 +109,62 @@
     "privacy": "Politici de confidențialitate",
     "copyright": "Toate drepturile rezervate"
   },
+  "legal_links": {
+    "terms": "/ro/legal/terms",
+    "privacy": "/ro/legal/privacy"
+  },
+  "legal_pages": {
+    "terms": {
+      "title": "Termeni și Condiții",
+      "section1": {
+        "title": "1. Acceptarea termenilor",
+        "text": "Prin accesarea site-ului acceptați termenii prezentați aici."
+      },
+      "section2": {
+        "title": "2. Serviciile oferite",
+        "text": "Oferim o platformă unde puteți compara oferte pentru servicii de transport."
+      },
+      "section3": {
+        "title": "3. Obligațiile utilizatorului",
+        "text": "Utilizatorii trebuie să furnizeze informații corecte și să nu folosească platforma în scopuri ilegale."
+      },
+      "section4": {
+        "title": "4. Răspunderea",
+        "text": "Nu ne asumăm răspunderea pentru pierderi rezultate din utilizarea serviciilor."
+      },
+      "section5": {
+        "title": "5. Modificări",
+        "text": "Putem modifica termenii oricând. Actualizările vor apărea pe această pagină."
+      }
+    },
+    "privacy": {
+      "title": "Politica de Confidențialitate",
+      "section1": {
+        "title": "1. Colectarea datelor",
+        "text": "Colectăm informații personale din formulare, cum ar fi nume și email."
+      },
+      "section2": {
+        "title": "2. Utilizarea datelor",
+        "text": "Datele sunt folosite pentru a vă contacta și a îmbunătăți serviciile."
+      },
+      "section3": {
+        "title": "3. Securitatea datelor",
+        "text": "Implementăm măsuri pentru protejarea datelor personale."
+      },
+      "section4": {
+        "title": "4. Drepturile utilizatorului",
+        "text": "Aveți dreptul să accesați sau să ștergeți datele personale oricând."
+      },
+      "section5": {
+        "title": "5. Cookie-uri",
+        "text": "Folosim cookie-uri pentru o experiență mai bună. Continuarea navigării implică acceptul."
+      },
+      "section6": {
+        "title": "6. Modificări",
+        "text": "Politica poate fi actualizată periodic. Schimbările vor fi publicate aici."
+      }
+    }
+  },
   "contacts": {
     "title": "Contactați-ne.",
     "subtitle": "Suntem aici pentru a vă ajuta!",
@@ -176,7 +232,7 @@
   },
   "logout": "Deconectare",
   "passengerData": "Date pasager:",
-  "consentText": "Sunt de acord cu <terms/> conform <privacyPolicy/>",
+  "consentText": "Sunt de acord cu <terms></terms> conform <privacyPolicy></privacyPolicy>",
   "too_many_attempts": "Prea multe încercări.",
   "$Nu a fost găsit nici un bilet pentru această rută!": "Nu a fost găsit nici un bilet pentru această rută!",
   "$Modifică căutarea": "Modifică căutarea",
