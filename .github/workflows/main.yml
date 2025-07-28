@@ -199,13 +199,21 @@ jobs:
             exit 1
           fi
 
+      - name: 🔍 Pre-transfer verification
+        run: |
+          echo "🔍 Final verification before transfer:"
+          echo "📂 All files to be transferred:"
+          ls -la .next public package.json package-lock.json next.config.ts BUILD_VERIFICATION
+          echo "📊 .next folder size: $(du -sh .next | cut -f1)"
+          echo "📊 .next files count: $(find .next -type f | wc -l)"
+
       - name: 📂 Transfer build pe server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "."
+          source: ".next,public,package.json,package-lock.json,next.config.ts,BUILD_VERIFICATION"
           target: "/home/aric/htdocs/aric.md"
           strip_components: 0
           timeout: 300s
