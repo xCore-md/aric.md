@@ -175,7 +175,8 @@
     "max_seats_reached": "Достигнут предел в {count} доступных мест"
   },
   "logout": "Выйти",
-  "consentText": "Я согласен с {terms} в соответствии с {privacyPolicy}",
+  "passengerData": "Данные пассажира:",
+  "consentText": "Я согласен с <terms/> в соответствии с <privacyPolicy/>",
   "too_many_attempts": "Слишком много попыток.",
   "$Nu a fost găsit nici un bilet pentru această rută!": "Билеты по данному маршруту не найдены!",
   "$Modifică căutarea": "Изменить поиск",
@@ -212,6 +213,8 @@
   "$Stații": "Станции",
   "$Preț total": "Итоговая цена",
   "$Achită": "Оплатить",
+  "$Формирование": "Формирование",
+  "$Пересчёт": "Пересчёт",
   "$Eroare la descărcare": "Ошибка загрузки.",
   "$Se descarcă": "Загрузка...",
   "$Descarcă bilet": "Скачать билет",

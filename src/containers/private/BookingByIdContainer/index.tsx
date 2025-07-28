@@ -19,6 +19,7 @@ import flagMD from "@/assets/images/languages/md.svg";
 import flagUA from "@/assets/images/languages/ua.svg";
 import logoMaib from "@/assets/images/bank/maib.svg";
 import { TicketDetailsCollapsible } from "@/components/shared/TicketDetailsCollapsible";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { PassengerForm } from "./PassengerForm";
 import { getLocalizedField } from "@/utils/getLocalizedField";
 import { FormProvider, useForm } from "react-hook-form";
@@ -29,9 +30,15 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { isValidPhoneNumber } from "libphonenumber-js";
-import { CurrencyEnum, PaymentMethodEnum } from "@/types";
+
+import {
+  CurrencyEnum,
+  PaymentMethodEnum,
+  Passenger,
+} from "@/types";
+
 import { toast } from "sonner";
-import { formatISO } from "date-fns";
+import { formatISO, differenceInYears } from "date-fns";
 
 export const phoneNumberSchema = z.string().refine(
   (val) => {
@@ -67,9 +74,16 @@ export const passengerFormSchema = z.object({
   }),
 });
 
-const defaultValues = {
+const defaultValues: Partial<PassengerFormSchema> = {
   passengers: {
-    new: [],
+    new: [
+      {
+        first_name: "",
+        last_name: "",
+        phone: "",
+        birth_date: new Date(),
+      },
+    ],
     existing: [],
   },
   passengerCounts: {
@@ -103,12 +117,47 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
     queryFn: () => bookingService.getById(id),
   });
 
+  const stationFrom =
+    booking?.station_from ||
+    booking?.trip?.route_departure?.route?.stations?.[0];
+  const stationTo =
+    booking?.station_to ||
+    booking?.trip?.route_departure?.route?.stations?.[
+      (booking?.trip?.route_departure?.route?.stations?.length || 1) - 1
+    ];
+
   const passengerCounts = watch("passengerCounts");
   const paymentMethod = watch("payment.method");
 
+  const [existingCounts, setExistingCounts] = React.useState({ adult: 0, child: 0 });
+
+  const handleExistingChange = React.useCallback((passengers: Passenger[]) => {
+    const today = new Date();
+    const counts = passengers.reduce(
+      (acc, p) => {
+        if (!p.birth_date) return acc;
+        const birth = new Date(p.birth_date);
+        const age = differenceInYears(today, birth);
+        if (age <= 11) acc.child += 1;
+        else acc.adult += 1;
+        return acc;
+      },
+      { adult: 0, child: 0 },
+    );
+    setExistingCounts(counts);
+  }, []);
+
+  const passengerCountsForPrice = React.useMemo(
+    () => ({
+      adult: passengerCounts.adult + existingCounts.adult,
+      child: passengerCounts.child + existingCounts.child,
+    }),
+    [passengerCounts, existingCounts],
+  );
+
   const { recalculatedPrices, isRecalculatingPrice } = useBookingPrice({
     bookingId: id,
-    passengerCounts,
+    passengerCounts: passengerCountsForPrice,
   });
 
   const bookingComplete = useMutation({
@@ -128,11 +177,11 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
           ...p,
           birth_date: formatISO(p?.birth_date),
         })),
-        existing: { ...passengers?.existing },
+        existing: passengers?.existing || [],
       },
       payment: {
         method: payment.method,
-        ...(payment.method === PaymentMethodEnum.Card && { gateway: "fake" }),
+        ...(payment.method === PaymentMethodEnum.Card && { gateway: "maib" }),
       },
       currency,
     });
@@ -163,6 +212,9 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                 availableSeats={
                   booking?.trip?.route_departure?.seats_available || 0
                 }
+                
+                existingCounts={existingCounts}
+                onExistingChange={handleExistingChange}
               />
 
               <div className="my-8 space-y-12 border-y border-dashed py-8">
@@ -337,7 +389,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                         formatUTC(booking?.departure_datetime!, {
                           dateFormat: "d MMMM yyyy",
                         }).date
-                      }
+                      }, {formatUTC(booking?.departure_datetime!)?.time}
                     </div>
                   </div>
 
@@ -348,7 +400,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                         formatUTC(booking?.arrival_datetime!, {
                           dateFormat: "d MMMM yyyy",
                         }).date
-                      }
+                      }, {formatUTC(booking?.arrival_datetime!)?.time}
                     </div>
                   </div>
                 </div>
@@ -360,20 +412,12 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                       <div className="flex items-center">
                         <div className="w-5 text-lg font-semibold">⚲</div>
                         <div className="text-lg font-medium">
-                          {getLocalizedField(
-                            booking?.station_from!,
-                            "name",
-                            locale,
-                          )}
+                          {getLocalizedField(stationFrom!, "name", locale)}
                         </div>
                       </div>
 
                       <div className="text-text-gray ml-5">
-                        {getLocalizedField(
-                          booking?.station_from!,
-                          "address",
-                          locale,
-                        )}
+                        {getLocalizedField(stationFrom!, "address", locale)}
                       </div>
                     </div>
 
@@ -387,20 +431,12 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                       <div className="flex items-center">
                         <div className="w-5 text-lg font-semibold">⚲</div>
                         <div className="text-lg font-medium">
-                          {getLocalizedField(
-                            booking?.station_to!,
-                            "name",
-                            locale,
-                          )}
+                          {getLocalizedField(stationTo!, "name", locale)}
                         </div>
                       </div>
 
                       <div className="text-text-gray ml-5">
-                        {getLocalizedField(
-                          booking?.station_to!,
-                          "address",
-                          locale,
-                        )}
+                        {getLocalizedField(stationTo!, "address", locale)}
                       </div>
                     </div>
 
@@ -427,28 +463,51 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
 
                 <div className="flex gap-4 border-t py-6">
                   <Checkbox />
-
+                  
                   <p className="text-text-gray -mt-0.5">
-                    Sunt de acord cu{" "}
-                    <Link
-                      className="text-blue underline-offset-2 transition hover:underline"
-                      href="/legal/terms"
-                    >
-                      Termenii și condițiile generale
-                    </Link>{" "}
-                    conform{" "}
-                    <Link
-                      className="text-blue underline-offset-2 transition hover:underline"
-                      href="/legal/privacy"
-                    >
-                      Politicii de confidențialitate
-                    </Link>
+                    {t.rich("consentText", {
+                      terms: () => (
+                        <Link
+                          className="text-blue underline-offset-2 transition hover:underline"
+                          href="/legal/terms"
+                        >
+                          {t("legal_info.terms")}
+                        </Link>
+                      ),
+                      privacyPolicy: () => (
+                        <Link
+                          className="text-blue underline-offset-2 transition hover:underline"
+                          href="/legal/privacy"
+                        >
+                          {t("legal_info.privacy")}
+                        </Link>
+                      ),
+                    })}
                   </p>
                 </div>
 
-                <Button type="submit" size="lg" className="w-full">
-                  {paymentMethod === "cash" ? t("$Rezervare") : t("$Achită")}
-                  <ChevronRightIcon />
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full"
+                  disabled={bookingComplete.isPending || isRecalculatingPrice}
+                >
+                  {isRecalculatingPrice ? (
+                    <>
+                      {t("$Пересчёт")}
+                      <LoadingSpinner className="ml-2" />
+                    </>
+                  ) : bookingComplete.isPending ? (
+                    <>
+                      {t("$Формирование")}
+                      <LoadingSpinner className="ml-2" />
+                    </>
+                  ) : (
+                    <>
+                      {paymentMethod === "cash" ? t("$Rezervare") : t("$Achită")}
+                      <ChevronRightIcon />
+                    </>
+                  )}
                 </Button>
               </div>
             </CardContent>

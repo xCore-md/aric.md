@@ -1,16 +1,14 @@
 "use client";
 import React from "react";
 import { useTranslations } from "use-intl";
-import { FieldArrayWithId, useFormContext } from "react-hook-form";
+import { FieldArrayWithId } from "react-hook-form";
 
 import { subYears } from "date-fns/subYears";
 import { subDays } from "date-fns/subDays";
 import { PassengerRow } from "./PassengerRow";
 import { PassengerSelectExisting } from "./PassengerSelectExisting";
 import { Passenger, PassengerType } from "@/types";
-import { Button } from "@/components/ui/button";
-import { CalendarCheck, Delete, PhoneCall } from "lucide-react";
-import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
+import { PassengerRowReadonly } from "./PassengerRowReadonly";
 
 type PassengerGroupProps = {
   type?: PassengerType;
@@ -20,6 +18,7 @@ type PassengerGroupProps = {
   fields: FieldArrayWithId<any, "passengers.new", "id">[];
   passengerCounts: { adult: number; child: number };
   remove: (index: number) => void;
+  onExistingChange?: (type: PassengerType, passengers: Passenger[]) => void;
 };
 
 export const PassengerGroup: React.FC<PassengerGroupProps> = ({
@@ -30,10 +29,9 @@ export const PassengerGroup: React.FC<PassengerGroupProps> = ({
   passengerCounts,
   remove,
   type,
+  onExistingChange,
 }) => {
   const t = useTranslations();
-  const { formatUTC } = useFormatUTCToLocal();
-  const { setValue } = useFormContext();
   const [selectedPassengers, setSelectedPassengers] = React.useState<
     Passenger[]
   >([]);
@@ -68,10 +66,9 @@ export const PassengerGroup: React.FC<PassengerGroupProps> = ({
   };
 
   React.useEffect(() => {
-    setValue(
-      "passengers.existing",
-      selectedPassengers?.map((p) => p.id),
-    );
+    if (type) {
+      onExistingChange?.(type, selectedPassengers);
+    }
 
     // type === "adult" ? removeLastAdult() : removeLastChild();
   }, [selectedPassengers]);
@@ -120,42 +117,18 @@ export const PassengerGroup: React.FC<PassengerGroupProps> = ({
           })}
 
           {selectedPassengers?.length > 0 && (
-            <div className="grid grid-cols-3 gap-4">
-              {selectedPassengers?.map(
-                ({ id, first_name, last_name, phone, birth_date }) => (
-                  <div
-                    key={id}
-                    className="flex w-full items-center gap-2 rounded-lg bg-white px-3 py-2"
-                  >
-                    <div className="flex w-full flex-col gap-0.5 text-sm">
-                      <div className="font-medium">
-                        {first_name} {last_name}
-                      </div>
-                      <div className="text-muted-foreground flex items-center gap-1 text-sm">
-                        <PhoneCall className="size-4" />
-                        <span>{phone ? phone : "--- --- ---"}</span>
-                      </div>
-                      <div className="text-muted-foreground flex items-center gap-1 text-sm">
-                        <CalendarCheck className="size-4" />{" "}
-                        <span>
-                          {birth_date
-                            ? formatUTC(birth_date)?.date
-                            : "-- --- ----"}
-                        </span>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm-icon"
-                      type="button"
-                      className="text-red disabled:text-gray-300"
-                      onClick={() => onRemoveExistingPassenger(id)}
-                    >
-                      <Delete />
-                    </Button>
-                  </div>
-                ),
-              )}
+            <div className="grid grid-cols-1 gap-4">
+              {selectedPassengers?.map(({ id, first_name, last_name, phone, birth_date }, index) => (
+                <PassengerRowReadonly
+                  key={id}
+                  index={fields.slice(offset, offset + count).length + index}
+                  first_name={first_name}
+                  last_name={last_name}
+                  phone={phone}
+                  birth_date={birth_date}
+                  onRemove={() => onRemoveExistingPassenger(id)}
+                />
+              ))}
             </div>
           )}
         </div>

@@ -4,7 +4,13 @@ import { useTranslations } from "use-intl";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { PassengerGroup } from "./PassengerGroup";
 
-export const PassengerFields: React.FC = () => {
+import { Passenger, PassengerType } from "@/types";
+
+type Props = {
+  onExistingChange?: (passengers: Passenger[]) => void;
+};
+
+export const PassengerFields: React.FC<Props> = ({ onExistingChange }) => {
   const t = useTranslations();
   const { control, watch, setValue } = useFormContext();
   const passengerCounts = watch("passengerCounts") || {
@@ -19,6 +25,26 @@ export const PassengerFields: React.FC = () => {
     name: "passengers.new",
   });
 
+  const [existingByType, setExistingByType] = React.useState<{
+    adult: Passenger[];
+    child: Passenger[];
+  }>({ adult: [], child: [] });
+
+  const handleExistingChangeInternal = React.useCallback(
+    (type: PassengerType, passengers: Passenger[]) => {
+      setExistingByType((prev) => ({ ...prev, [type]: passengers }));
+    },
+    [],
+  );
+
+  React.useEffect(() => {
+    const all = [...existingByType.adult, ...existingByType.child];
+    setValue(
+      "passengers.existing",
+      all.map((p) => p.id),
+    );
+    onExistingChange?.(all);
+  }, [existingByType, onExistingChange, setValue]);
   const handleRemove = (index: number) => {
     const isAdult = index < (passengerCounts.adult || 0);
     remove(index);
@@ -37,7 +63,7 @@ export const PassengerFields: React.FC = () => {
           last_name: "",
           first_name: "",
           phone: "",
-          birth_date: "",
+          birth_date: undefined,
         }),
         {
           shouldFocus: false,
@@ -60,6 +86,7 @@ export const PassengerFields: React.FC = () => {
         fields={fields}
         passengerCounts={passengerCounts}
         remove={handleRemove}
+        onExistingChange={handleExistingChangeInternal}
       />
 
       <PassengerGroup
@@ -70,6 +97,7 @@ export const PassengerFields: React.FC = () => {
         fields={fields}
         passengerCounts={passengerCounts}
         remove={handleRemove}
+        onExistingChange={handleExistingChangeInternal}
       />
     </div>
   );

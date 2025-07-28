@@ -14,13 +14,18 @@ import { PassengerType } from "@/types";
 
 export const PassengerCountSelect: React.FC<{
   availableSeats: number;
-}> = ({ availableSeats }) => {
+  existingCounts?: { adult: number; child: number };
+}> = ({ availableSeats, existingCounts = { adult: 0, child: 0 } }) => {
   const t = useTranslations();
   const [open, setOpen] = React.useState(false);
   const { setValue, control } = useFormContext();
   const passengerCounts = useWatch({ control, name: "passengerCounts" });
 
-  const totalPassengers = passengerCounts.adult + passengerCounts.child;
+  const totalPassengers =
+    passengerCounts.adult +
+    passengerCounts.child +
+    existingCounts.adult +
+    existingCounts.child;
   const isAtLimit = totalPassengers >= availableSeats;
 
   const updateCount = (type: PassengerType, value: number) => {
@@ -31,13 +36,11 @@ export const PassengerCountSelect: React.FC<{
   };
 
   const totalLabel = () => {
+    const adult = passengerCounts.adult + existingCounts.adult;
+    const child = passengerCounts.child + existingCounts.child;
     const parts = [
-      passengerCounts?.adult > 0
-        ? t("passengers.adult", { count: passengerCounts?.adult })
-        : null,
-      passengerCounts?.child > 0
-        ? t("passengers.child", { count: passengerCounts?.child })
-        : null,
+      adult > 0 ? t("passengers.adult", { count: adult }) : null,
+      child > 0 ? t("passengers.child", { count: child }) : null,
     ].filter(Boolean);
 
     return parts.join(", ") || t("passengers.none");

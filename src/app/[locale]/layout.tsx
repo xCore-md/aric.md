@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 
@@ -9,10 +8,6 @@ import "@/assets/styles/globals.css";
 import { Header } from "@/components/shared/Header";
 import { Providers } from "@/providers";
 
-const fontInter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Aric.md",
@@ -50,7 +45,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body className={`${fontInter.variable} antialiased`}>
+      <body className="antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>
             <div className="flex min-h-screen flex-col">
