@@ -83,6 +83,7 @@ export type BookingPayload = {
 
 export interface BookingCompleteDto extends BookingPayload {
   booking_id: number;
+  recaptcha_token: string;
 }
 
 export interface BookingCompleteResponse {

@@ -39,6 +39,7 @@ export const NAV_LINKS = Object.values(NAV_LINK);
 export const MOLDOVA_PHONE_CODE = "+373";
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
+export const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string;
 
 export const QUERY_KEYS = {
   searchStations: "searchStations",

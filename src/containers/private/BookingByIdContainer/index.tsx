@@ -14,7 +14,8 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { PRIVATE_LINK, QUERY_KEYS } from "@/utils/constants";
+import Script from "next/script";
+import { PRIVATE_LINK, QUERY_KEYS, RECAPTCHA_SITE_KEY } from "@/utils/constants";
 import { Link, useRouter } from "@/i18n/navigation";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -205,8 +206,13 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
     },
   });
 
-  const onSubmit = (data: PassengerFormSchema) => {
+  const onSubmit = async (data: PassengerFormSchema) => {
     const { passengers, payment } = data;
+
+    const token = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, {
+      action: "booking",
+    });
+
     bookingComplete.mutate({
       booking_id: id,
       passengers: {
@@ -221,6 +227,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
         ...(payment.method === PaymentMethodEnum.Card && { gateway: "maib" }),
       },
       currency,
+      recaptcha_token: token,
     });
     console.log(data);
   };
@@ -231,6 +238,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
     </div>
   ) : (
     <FormProvider {...form}>
+      <Script src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`} strategy="lazyOnload" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="py-8">
           <h3 className="h3 !mb-0">{t(PRIVATE_LINK.booking.label)}</h3>

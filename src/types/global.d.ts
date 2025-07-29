@@ -60,3 +60,15 @@ declare module "usehooks-ts" {
     elementRef: RefObject<T | null | undefined>,
   ): boolean;
 }
+
+declare global {
+  interface Window {
+    grecaptcha: {
+      ready: (cb: () => void) => void;
+      execute: (
+        siteKey: string,
+        options: { action: string },
+      ) => Promise<string>;
+    };
+  }
+}

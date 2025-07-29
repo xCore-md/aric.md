@@ -46,6 +46,7 @@ Create a `.env.local` file in the root of your project and add the following var
 ```env
 NEXT_PUBLIC_API_URL=https://your-api-url.com
 AUTH_SECRET=your-secret-key
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your-recaptcha-site-key
 ```
 
 > These variables are required for the application to connect to the backend and handle authentication.
