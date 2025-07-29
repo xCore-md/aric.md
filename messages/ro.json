@@ -261,6 +261,8 @@
   "$Finalizează rezervarea": "Finalizează rezervarea",
   "$Alegeți moneda": "Alegeți moneda",
   "$Metoda de plată": "Metoda de plată",
+  "$Bilet ID": "Bilet ID",
+  "$Nr Invoice": "Nr. factură",
   "$Achitare online": "Achitare online",
   "$Rezervare": "Rezervare",
   "$Alegeți o poartă de plată": "Alegeți o poartă de plată",
@@ -301,4 +303,10 @@
   "$Se salvează": "Se salvează...",
   "$Salvează modificările": "Salvează modificările",
   "$Salvează": "Salvează"
+  ,"$Plata dumneavoastră a fost efectuată cu succes!": "Plata dumneavoastră a fost efectuată cu succes!"
+  ,"$Plata dumneavoastră a eșuat": "Plata dumneavoastră a eșuat."
+  ,"$Vă rugăm să încercați din nou": "Vă rugăm să încercați din nou."
+  ,"$Vă rugăm să verificați datele introduse sau să încercați din nou Dacă problema persistă, contactați-ne pentru asistență": "Vă rugăm să verificați datele introduse sau să încercați din nou. Dacă problema persistă, contactați-ne pentru asistență."
+  ,"$Pagina principală": "Pagina principală"
+  ,"$Vezi biletele": "Mergi la bilete"
 }

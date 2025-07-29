@@ -1,3 +1,6 @@
+"use client";
+
+import React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Link, ArrowRight } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -22,10 +25,16 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
   const { push } = useRouter();
   const { saveBookingDraft } = useBookingDraft();
 
+  const [isCompleted, setIsCompleted] = React.useState(false);
+
   const bookingInit = useMutation({
     mutationFn: bookingService.init,
     onSuccess: (data) => {
+      setIsCompleted(true);
       push(`/booking/${data?.booking_id}`);
+    },
+    onError: () => {
+      setIsCompleted(false);
     },
   });
 
@@ -53,9 +62,9 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
       variant="reverse"
       className="col-span-full"
       onClick={handleClick}
-      disabled={bookingInit.isPending}
+      disabled={bookingInit.isPending || isCompleted}
     >
-      {bookingInit.isPending
+      {bookingInit.isPending || isCompleted
         ? t("action.processing") + "..."
         : t("action.book_now")}
     </Button>

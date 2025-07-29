@@ -8,6 +8,12 @@ import { ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  FormField,
+  FormItem,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { PRIVATE_LINK, QUERY_KEYS } from "@/utils/constants";
 import { Link, useRouter } from "@/i18n/navigation";
 
@@ -71,6 +77,12 @@ export const passengerFormSchema = z.object({
   payment: z.object({
     method: z.nativeEnum(PaymentMethodEnum),
   }),
+
+  consent: z
+    .boolean()
+    .refine((val) => val === true, {
+      message: "Trebuie să acceptați termenii",
+    }),
 });
 
 const defaultValues: Partial<PassengerFormSchema> = {
@@ -92,6 +104,7 @@ const defaultValues: Partial<PassengerFormSchema> = {
   payment: {
     method: PaymentMethodEnum.Cash,
   },
+  consent: false,
 };
 
 export type PassengerFormSchema = z.infer<typeof passengerFormSchema>;
@@ -108,6 +121,8 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
   });
 
   const { watch, setValue, handleSubmit } = form;
+
+  const consent = watch("consent");
 
   console.warn(form.formState.errors);
 
@@ -161,9 +176,12 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
 
   const { push } = useRouter();
 
+  const [isCompleted, setIsCompleted] = React.useState(false);
+
   const bookingComplete = useMutation({
     mutationFn: bookingService.complete,
     onSuccess: (data) => {
+      setIsCompleted(true);
       if (data.redirect_url) {
         window.location.href = data.redirect_url;
       } else {
@@ -171,6 +189,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
       }
     },
     onError: (error) => {
+      setIsCompleted(false);
       console.error(error);
     },
   });
@@ -468,43 +487,59 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                   )}
                 </div>
 
-                <div className="flex gap-4 border-t py-6">
-                  <Checkbox />
-                  
-                  <p className="text-text-gray -mt-0.5">
-                    {t.rich("consentText", {
-                      terms: () => (
-                        <Link
-                          className="text-blue underline-offset-2 transition hover:underline"
-                          href={t("legal_links.terms")}
-                        >
-                          {t("legal_info.terms")}
-                        </Link>
-                      ),
-                      privacyPolicy: () => (
-                        <Link
-                          className="text-blue underline-offset-2 transition hover:underline"
-                          href={t("legal_links.privacy")}
-                        >
-                          {t("legal_info.privacy")}
-                        </Link>
-                      ),
-                    })}
-                  </p>
-                </div>
+                <FormField
+                  control={form.control}
+                  name="consent"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-4 border-t py-6">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="text-text-gray -mt-0.5">
+                        {t.rich("consentText", {
+                          terms: () => (
+                            <Link
+                              className="text-blue underline-offset-2 transition hover:underline"
+                              href={t("legal_links.terms")}
+                            >
+                              {t("legal_info.terms")}
+                            </Link>
+                          ),
+                          privacyPolicy: () => (
+                            <Link
+                              className="text-blue underline-offset-2 transition hover:underline"
+                              href={t("legal_links.privacy")}
+                            >
+                              {t("legal_info.privacy")}
+                            </Link>
+                          ),
+                        })}
+                        <FormMessage />
+                      </div>
+                    </FormItem>
+                  )}
+                />
 
                 <Button
                   type="submit"
                   size="lg"
                   className="w-full"
-                  disabled={bookingComplete.isPending || isRecalculatingPrice}
+                  disabled={
+                    bookingComplete.isPending ||
+                    isRecalculatingPrice ||
+                    isCompleted ||
+                    !consent
+                  }
                 >
                   {isRecalculatingPrice ? (
                     <>
                       {t("$Пересчёт")}
                       <LoadingSpinner className="ml-2" />
                     </>
-                  ) : bookingComplete.isPending ? (
+                  ) : bookingComplete.isPending || isCompleted ? (
                     <>
                       {t("$Формирование")}
                       <LoadingSpinner className="ml-2" />

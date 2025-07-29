@@ -40,35 +40,34 @@ export const BookingContainer: React.FC<{
 
           <div className="mt-12">
             <div className="mx-auto w-full max-w-3xl space-y-6 rounded-2xl border border-dashed px-16 py-8 shadow-xl shadow-black/5">
-              <div className="h4">Bilet ID 07564</div>
+              <div className="h4">{t("$Bilet ID")} 07564</div>
 
               <div className="bg-back grid grid-cols-2 rounded-3xl px-6 py-4">
                 <div className="">
-                  <div className="font-semibold">Nr. Invoice</div>
+                  <div className="font-semibold">{t("$Nr Invoice")}</div>
                   <div className="text-text-gray">INV567489240UI</div>
                 </div>
 
                 <div className="text-right">
-                  <div className="font-semibold">Metoda de plată</div>
+                  <div className="font-semibold">{t("$Metoda de plată")}</div>
                   <div className="text-text-gray">MAIB</div>
                 </div>
               </div>
 
               <div className="bg-back grid grid-cols-2 rounded-3xl px-6 py-4">
                 <div className="">
-                  <div className="font-semibold">Nr. Invoice</div>
+                  <div className="font-semibold">{t("$Nr Invoice")}</div>
                   <div className="text-text-gray">INV567489240UI</div>
                 </div>
 
                 <div className="text-right">
-                  <div className="font-semibold">Metoda de plată</div>
+                  <div className="font-semibold">{t("$Metoda de plată")}</div>
                   <div className="text-text-gray">MAIB</div>
                 </div>
               </div>
 
               <div className="flex items-center justify-between gap-10 border-t pt-6">
-                <Button variant="reverse">Descarcă bilet</Button>
-                <Button>Pagina principală</Button>
+                <Button asChild><Link href="/tickets">{t("$Vezi biletele")}</Link></Button>
               </div>
             </div>
           </div>

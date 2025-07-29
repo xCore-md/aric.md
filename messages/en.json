@@ -261,6 +261,8 @@
   "$Finalizează rezervarea": "Complete booking",
   "$Alegeți moneda": "Choose currency",
   "$Metoda de plată": "Payment method",
+  "$Bilet ID": "Ticket ID",
+  "$Nr Invoice": "Invoice number",
   "$Achitare online": "Pay online",
   "$Rezervare": "Reservation",
   "$Alegeți o poartă de plată": "Choose a payment gateway",
@@ -301,4 +303,10 @@
   "$Se salvează": "Saving...",
   "$Salvează modificările": "Save changes",
   "$Salvează": "Save"
+  ,"$Plata dumneavoastră a fost efectuată cu succes!": "Your payment was successful!"
+  ,"$Plata dumneavoastră a eșuat": "Your payment failed."
+  ,"$Vă rugăm să încercați din nou": "Please try again."
+  ,"$Vă rugăm să verificați datele introduse sau să încercați din nou Dacă problema persistă, contactați-ne pentru asistență": "Please check the entered data or try again. If the problem persists, contact us for assistance."
+  ,"$Pagina principală": "Home page"
+  ,"$Vezi biletele": "Go to tickets"
 }

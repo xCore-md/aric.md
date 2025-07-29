@@ -103,6 +103,9 @@ export const PassengerGroup: React.FC<PassengerGroupProps> = ({
             const minDate = isAdult ? minDateAdult : minDateChild;
             const maxDate = isAdult ? maxDateAdult : maxDateChild;
 
+            const totalAdults =
+              passengerCounts.adult + (type === "adult" ? selectedPassengers.length : 0);
+
             return (
               <PassengerRow
                 key={field.id}
@@ -111,7 +114,9 @@ export const PassengerGroup: React.FC<PassengerGroupProps> = ({
                 minDate={minDate}
                 maxDate={maxDate}
                 onRemove={() => remove(realIndex)}
-                hideRemoveButton={type === "adult" && index === 0}
+                hideRemoveButton={
+                  type === "adult" && index === 0 && totalAdults <= 1
+                }
               />
             );
           })}
