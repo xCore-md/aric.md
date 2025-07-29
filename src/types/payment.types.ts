@@ -25,3 +25,11 @@ export type Payment = {
   updated_at: string;
   ticket_id: number | null;
 };
+
+export type PaymentRedirect = {
+  id: number;
+  gateway: string | null;
+  currency: string;
+  amount: number;
+  paid_at: string | null;
+};

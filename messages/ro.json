@@ -1,4 +1,9 @@
 {
+  "site": {
+    "url": "https://aric.md",
+    "name": "Aric",
+    "description": "Servicii ale companiei de transport"
+  },
   "nav": {
     "home": "Acasă",
     "about": "Despre noi",
@@ -309,4 +314,7 @@
   ,"$Vă rugăm să verificați datele introduse sau să încercați din nou Dacă problema persistă, contactați-ne pentru asistență": "Vă rugăm să verificați datele introduse sau să încercați din nou. Dacă problema persistă, contactați-ne pentru asistență."
   ,"$Pagina principală": "Pagina principală"
   ,"$Vezi biletele": "Mergi la bilete"
+  ,"$Website": "Website",
+  "$Comerciant": "Comerciant",
+  "$Descriere": "Descriere"
 }
