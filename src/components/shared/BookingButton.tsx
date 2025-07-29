@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useMutation } from "@tanstack/react-query";
-import { Link, ArrowRight } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
@@ -51,11 +51,10 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
   };
 
   return draft_booking_id ? (
-      <Button className="col-span-full" asChild>
-        <Link href={"/booking/" + draft_booking_id}>
-          {t("action.complete_booking")}
-          <ArrowRight />
-        </Link>
+    <Button variant="reverse" className="col-span-full" asChild>
+      <Link href={"/booking/" + draft_booking_id}>
+        {t("action.book_now")}
+      </Link>
     </Button>
   ) : (
     <Button
