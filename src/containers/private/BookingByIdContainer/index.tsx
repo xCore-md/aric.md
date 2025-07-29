@@ -185,7 +185,15 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
       if (data.redirect_url) {
         window.location.href = data.redirect_url;
       } else {
-        push("/booking/success");
+        const amount =
+          getAmountByCurrency(recalculatedPrices || booking?.trip?.prices) || 0;
+        const searchParams = new URLSearchParams({
+          id: String(data.booking_id),
+          currency,
+          amount: String(amount),
+          gateway: paymentMethod,
+        });
+        push(`/booking/success?${searchParams.toString()}`);
       }
     },
     onError: (error) => {

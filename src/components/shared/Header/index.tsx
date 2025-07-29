@@ -332,7 +332,7 @@ const AccountButton = () => {
             </Popover>
           ) : (
             <Button variant="white" asChild>
-              <Link href="/login">{t("nav.profile")}</Link>
+              <Link href="/login">{t("nav.login")}</Link>
             </Button>
           )}
         </>

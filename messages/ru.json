@@ -14,7 +14,9 @@
     "payments": "Платежи",
     "profile": "Профиль",
     "profile_settings": "Настройки профиля",
-    "my_tickets": "Мои билеты"
+    "my_tickets": "Мои билеты",
+    "login": "Войти",
+    "logout": "Выйти"
   },
   "about": {
     "why_us": "Почему мы?",

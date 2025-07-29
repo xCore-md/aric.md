@@ -14,7 +14,9 @@
     "payments": "Plăți",
     "profile": "Profil",
     "profile_settings": "Setări profil",
-    "my_tickets": "Biletele mele"
+    "my_tickets": "Biletele mele",
+    "login": "Autentificare",
+    "logout": "Dezautentificare"
   },
   "about": {
     "why_us": "De ce noi?",

@@ -14,7 +14,9 @@
     "payments": "Payments",
     "profile": "Profile",
     "profile_settings": "Profile settings",
-    "my_tickets": "My tickets"
+    "my_tickets": "My tickets",
+    "login": "Login",
+    "logout": "Logout"
   },
   "about": {
     "why_us": "Why us?",
