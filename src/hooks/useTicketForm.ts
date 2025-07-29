@@ -34,6 +34,26 @@ export const useTicketForm = () => {
     searchQueryState?.passengers,
   );
 
+  React.useEffect(() => {
+    setFromStationId(searchQueryState.from_station_id);
+  }, [searchQueryState.from_station_id]);
+
+  React.useEffect(() => {
+    setToStationId(searchQueryState.to_station_id);
+  }, [searchQueryState.to_station_id]);
+
+  React.useEffect(() => {
+    setDepartureDate(searchQueryState.departure_date);
+  }, [searchQueryState.departure_date]);
+
+  React.useEffect(() => {
+    setReturnDate(searchQueryState.return_date);
+  }, [searchQueryState.return_date]);
+
+  React.useEffect(() => {
+    setPassengers(searchQueryState.passengers);
+  }, [searchQueryState.passengers]);
+
   const canSearch = React.useMemo(() => {
     return [fromStationId, toStationId, departureDate, passengers].every(
       Boolean,

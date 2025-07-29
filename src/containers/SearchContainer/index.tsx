@@ -21,6 +21,8 @@ import { getAmountByCurrency } from "@/utils/getAmountByCurrency";
 import { useCurrency } from "@/hooks/useCurrency";
 import { Label } from "@/components/ui/label";
 import { BookingButton } from "@/components/shared/BookingButton";
+import { localTimeToUtc, utcTimeToLocal } from "@/utils/timezone";
+import { parse } from "date-fns";
 
 export const SearchContainer: React.FC = () => {
   const locale = useLocale();
@@ -54,6 +56,7 @@ export const SearchContainer: React.FC = () => {
       const { departure_date, return_date } = params;
 
       const formattedDepartureDate = toApiDate(departure_date);
+      const departureDateObj = parse(departure_date, "dd.MM.yyyy", new Date());
       const formattedReturnDate = toApiDate(return_date || "");
 
       try {
@@ -64,9 +67,16 @@ export const SearchContainer: React.FC = () => {
           ...(order && { order }),
           ...(selectedFacilities.length && { facilities: selectedFacilities }),
           ...(selectedDepartureTimes.length && {
-            departure_time: selectedDepartureTimes,
+            departure_time: selectedDepartureTimes.map((t) =>
+              localTimeToUtc(t, undefined, departureDateObj),
+            ),
           }),
         });
+        if (result.filters?.departure_times) {
+          result.filters.departure_times = result.filters.departure_times.map((t) =>
+            utcTimeToLocal(t, undefined, departureDateObj),
+          );
+        }
 
         setSearchData(result);
       } catch (e) {
@@ -94,7 +104,7 @@ export const SearchContainer: React.FC = () => {
 
   return (
     <>
-      <section className="section">
+      <section className="section mb-10">
         <div className="container">
           <div className="mb-10">
             <SearchTicketForm onSubmit={handleSearch} isLoading={isLoading} />
@@ -254,6 +264,7 @@ export const SearchContainer: React.FC = () => {
                                   <div key={f.id} className="flex items-center space-x-2">
                                     <Checkbox
                                       id={`facility-${f.id}`}
+                                      className="cursor-pointer"
                                       checked={selectedFacilities.includes(f.id)}
                                       onCheckedChange={(checked) => toggleFacility(f.id, checked)}
                                     />
@@ -274,6 +285,7 @@ export const SearchContainer: React.FC = () => {
                                   <div key={index} className="flex items-center space-x-2">
                                     <Checkbox
                                       id={`dtime-${index}`}
+                                      className="cursor-pointer"
                                       checked={selectedDepartureTimes.includes(time)}
                                       onCheckedChange={(checked) => toggleDepartureTime(time, checked)}
                                     />
