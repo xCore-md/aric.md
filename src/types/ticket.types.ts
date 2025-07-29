@@ -11,6 +11,10 @@ export interface Ticket extends Timestamps {
 
   booking: Pick<
     Booking,
-    "trip" | "return_trip" | "total_amount_mdl" | "total_amount_uah"
+    | "trip"
+    | "return_trip"
+    | "total_amount_mdl"
+    | "total_amount_uah"
+    | "payment"
   >;
 }

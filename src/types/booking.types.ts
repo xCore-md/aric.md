@@ -12,7 +12,7 @@ import type {
   PassengerCreateDto,
   CurrencyEnum,
 } from "@/types";
-import { PaymentInput } from "./payment.types";
+import { PaymentInput, Payment } from "./payment.types";
 
 export enum BookingStatusEnum {
   Draft = "draft",
@@ -43,6 +43,7 @@ export interface Booking
   station_from: Station | null;
   station_to: Station | null;
   tickets: Ticket[];
+  payment?: Payment | null;
 }
 
 export interface BookingInitDto {

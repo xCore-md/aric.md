@@ -24,6 +24,7 @@ export type Payment = {
   created_at: string;
   updated_at: string;
   ticket_id: number | null;
+  method?: PaymentMethodEnum;
 };
 
 export type PaymentRedirect = {

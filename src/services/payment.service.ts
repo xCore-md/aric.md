@@ -1,16 +1,6 @@
 import { apiInstance } from "@/utils/api";
-import {
-  PaginatedResponse,
-  PaginationParams,
-  BookingCompleteDto,
-  BookingCompleteResponse,
-} from "@/types";
+import { PaginatedResponse, PaginationParams } from "@/types";
 import { Payment } from "@/types/payment.types";
-
-type RefundPayload = {
-  reason?: string;
-  amount?: number;
-};
 
 type PaymentResponse = {
   success: boolean;
@@ -27,40 +17,47 @@ class PaymentService {
   }
 
   // Refund ticket
-  ticketRefund = ({ booking_id, ...data }: BookingCompleteDto) => {
+  refundTicket = (ticketId: number) => {
     return this.clientApi
-      .post(`customer/payments/ticket/${booking_id}/refund`, { json: data })
-      .json<BookingCompleteResponse>();
+      .post(`customer/payments/refund-ticket/${ticketId}`)
+      .json<PaymentResponse>();
   };
 
   // Refund booking
-  bookingRefund = (bookingId: number, data?: RefundPayload) => {
+  refundBooking = (bookingId: number) => {
     return this.clientApi
-      .post(`customer/payments/booking/${bookingId}/refund`, {
-        json: data,
-      })
+      .post(`customer/payments/refund-booking/${bookingId}`)
       .json<PaymentResponse>();
   };
 
   // Pay ticket
-  payTicket = (ticketId: number) => {
+  payTicket = (
+    ticketId: number,
+    data: { gateway: string; recaptcha_token: string },
+  ) => {
     return this.clientApi
-      .post(`customer/payments/pay-ticket/${ticketId}`)
-      .json<PaymentResponse>();
+      .post(`customer/payments/pay-ticket/${ticketId}`, { json: data })
+      .json<PaymentResponse & { redirect_url?: string }>();
   };
 
   // Pay booking
-  payBooking = (bookingId: number) => {
+  payBooking = (
+    bookingId: number,
+    data: { gateway: string; recaptcha_token: string },
+  ) => {
     return this.clientApi
-      .post(`customer/payments/pay-booking/${bookingId}`)
-      .json<PaymentResponse>();
+      .post(`customer/payments/pay-booking/${bookingId}`, { json: data })
+      .json<PaymentResponse & { redirect_url?: string }>();
   };
 
   // Pay unpaid booking
-  payUnpaidBooking = (bookingId: number) => {
+  payUnpaidBooking = (
+    bookingId: number,
+    data: { gateway: string; recaptcha_token: string },
+  ) => {
     return this.clientApi
-      .post(`customer/booking/pay-unpaid/${bookingId}`)
-      .json<PaymentResponse>();
+      .post(`customer/booking/pay-unpaid/${bookingId}`, { json: data })
+      .json<PaymentResponse & { redirect_url?: string }>();
   };
 }
 
