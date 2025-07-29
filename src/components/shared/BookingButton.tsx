@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { flushSync } from "react-dom";
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
@@ -30,7 +31,9 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
   const bookingInit = useMutation({
     mutationFn: bookingService.init,
     onSuccess: (data) => {
-      setIsCompleted(true);
+      flushSync(() => {
+        setIsCompleted(true);
+      });
       push(`/booking/${data?.booking_id}`);
     },
     onError: () => {

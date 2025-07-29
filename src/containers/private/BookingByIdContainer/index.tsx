@@ -56,18 +56,20 @@ export const phoneNumberSchema = z.string().refine(
 
 export const passengerFormSchema = z.object({
   passengers: z.object({
-    new: z
-      .array(
-        z.object({
-          first_name: z.string().min(3),
-          last_name: z.string().min(3),
-          birth_date: z.date(),
-          phone: phoneNumberSchema,
-        }),
-      )
-      .min(1),
-    existing: z.array(z.number()),
-  }),
+    new: z.array(
+      z.object({
+        first_name: z.string().min(3),
+        last_name: z.string().min(3),
+        birth_date: z.date(),
+        phone: phoneNumberSchema,
+      }),
+    ).default([]),
+    existing: z.array(z.number()).default([]),
+  })
+    .refine((val) => (val.new.length + val.existing.length) > 0, {
+      message: "Trebuie să adăugați cel puțin un pasager",
+      path: ["new"],
+    }),
 
   passengerCounts: z.object({
     adult: z.number().min(0),
@@ -85,7 +87,10 @@ export const passengerFormSchema = z.object({
     }),
 });
 
-const defaultValues: Partial<PassengerFormSchema> = {
+export type PassengerFormInput = z.input<typeof passengerFormSchema>;
+export type PassengerFormSchema = z.infer<typeof passengerFormSchema>;
+
+const defaultValues: Partial<PassengerFormInput> = {
   passengers: {
     new: [
       {
@@ -107,15 +112,13 @@ const defaultValues: Partial<PassengerFormSchema> = {
   consent: false,
 };
 
-export type PassengerFormSchema = z.infer<typeof passengerFormSchema>;
-
 export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
   const t = useTranslations();
   const locale = useLocale();
   const { formatUTC } = useFormatUTCToLocal();
   const { formatCurrency, setCurrency, currency } = useCurrency();
 
-  const form = useForm<PassengerFormSchema>({
+  const form = useForm<PassengerFormInput, undefined, PassengerFormSchema>({
     resolver: zodResolver(passengerFormSchema),
     defaultValues,
   });

@@ -77,12 +77,12 @@ export const PassengerCountSelect: React.FC<{
             <div className="mt-2 flex items-center justify-between">
               <ControlButton
                 onClick={() =>
-                  updateCount("adult", Math.max(1, passengerCounts.adult - 1))
+                  updateCount("adult", Math.max(0, passengerCounts.adult - 1))
                 }
-                disabled={passengerCounts.adult <= 1}
+                disabled={passengerCounts.adult <= 0}
               />
               <span className="flex size-10 flex-none items-center justify-center">
-                {passengerCounts.adult}
+                {passengerCounts.adult + existingCounts.adult}
               </span>
               <ControlButton
                 onClick={() => updateCount("adult", passengerCounts.adult + 1)}
@@ -112,7 +112,7 @@ export const PassengerCountSelect: React.FC<{
                 disabled={passengerCounts.child <= 0}
               />
               <span className="flex size-10 flex-none items-center justify-center">
-                {passengerCounts.child}
+                {passengerCounts.child + existingCounts.child}
               </span>
               <ControlButton
                 onClick={() => updateCount("child", passengerCounts.child + 1)}

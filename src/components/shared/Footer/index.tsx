@@ -5,6 +5,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 
 import logo from "@/assets/images/logo.svg";
+import payment from "@/assets/images/payment.webp";
 import { Button } from "@/components/ui/button";
 import { ChevronRightIcon, Facebook, Instagram } from "lucide-react";
 
@@ -280,6 +281,14 @@ const TermsAndSocial = () => {
           <div>© 2025 — Copyright</div>
           <div> {t("legal_info.copyright")}</div>
         </div>
+
+        <Image
+          src={payment.src}
+          width={payment.width}
+          height={payment.height}
+          alt="Payment methods"
+          className="mx-auto mt-4 h-auto w-full max-w-xs sm:max-w-sm"
+        />
       </div>
     </div>
   );
