@@ -16,7 +16,7 @@ env:
   NEXT_TELEMETRY_DISABLED: 1
   # Public environment variables for build
   NEXT_PUBLIC_API_URL: https://aric-api-main-n0rc65.laravel.cloud/api
-  FRONTEND_URL: https://aric.md
+  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: 6LfpqJMrAAAAAA7Z_vTLKVT5UA9-WDSn69zSoFd7
 
 jobs:
   security:
