@@ -16,6 +16,16 @@ class PaymentService {
       .json<PaginatedResponse<Payment>>();
   }
 
+  async download(id: number) {
+    const blob = await this.clientApi
+      .get(`customer/payments/${id}/download`, {
+        headers: { Accept: "application/pdf" },
+      })
+      .blob();
+
+    return blob;
+  }
+
   // Refund ticket
   refundTicket = (ticketId: number) => {
     return this.clientApi

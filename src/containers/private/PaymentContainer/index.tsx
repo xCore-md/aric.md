@@ -1,11 +1,24 @@
 "use client";
 import React from "react";
 import { useTranslations } from "use-intl";
-import { PRIVATE_LINK } from "@/utils/constants";
+import { PRIVATE_LINK, QUERY_KEYS } from "@/utils/constants";
 import { Card, CardContent } from "@/components/ui/card";
+import { DownloadPaymentButton } from "@/components/shared/DownloadPaymentButton";
+import { useQuery } from "@tanstack/react-query";
+import { paymentService } from "@/services/payment.service";
+import { usePagination } from "@/hooks/usePagination";
+import { PaginationUI } from "@/components/shared/pagination-ui";
+import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 
 export const PaymentContainer: React.FC = () => {
   const t = useTranslations();
+  const { per_page, page, updateLimit, updatePage } = usePagination();
+  const { formatUTC } = useFormatUTCToLocal();
+
+  const { data: payments, isLoading } = useQuery({
+    queryKey: [QUERY_KEYS.payments, page, per_page],
+    queryFn: () => paymentService.getAll({ page, per_page }),
+  });
 
   return (
     <>
@@ -14,7 +27,7 @@ export const PaymentContainer: React.FC = () => {
       </div>
 
       <Card className="ring-platinum ring ring-inset">
-        <CardContent className="">
+        <CardContent>
           <table className="table">
             <thead className="thead">
               <tr>
@@ -23,24 +36,66 @@ export const PaymentContainer: React.FC = () => {
                 <th>{t("$Data tranzacției")}</th>
                 <th>{t("$Suma")}</th>
                 <th>{t("$Statut")}</th>
+                <th>{t("$Acțiuni")}</th>
               </tr>
             </thead>
             <tbody className="tbody">
-              <tr>
-                <td>257</td>
-                <td>Chișinău - Ismail</td>
-                <td>04/04/2025</td>
-                <td>120 MDL</td>
-                <td>
-                  <div className="bg-yellow max-w-max rounded-full px-2.5 text-base font-normal">
-                    {t("$Se procesează")}
-                  </div>
-                </td>
-              </tr>
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, index) => (
+                  <tr key={index} className="h-12">
+                    <td colSpan={6} className="skeleton" />
+                  </tr>
+                ))
+              ) : payments?.data?.length ? (
+                payments.data.map((payment) => (
+                  <tr key={payment.id}>
+                    <td>{payment.id}</td>
+                    <td>-</td>
+                    <td>
+                      {formatUTC(payment.paid_at || payment.created_at, {
+                        dateFormat: "dd/MM/yyyy",
+                      })?.date}
+                    </td>
+                    <td>
+                      {payment.amount} {payment.currency.toUpperCase()}
+                    </td>
+                    <td>
+                      {payment.status === "pending"
+                        ? t("$Se procesează")
+                        : payment.status}
+                    </td>
+                    <td>
+                      <DownloadPaymentButton
+                        paymentId={payment.id}
+                        size="sm"
+                        variant="outline"
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="py-6 text-center text-lg">
+                    {t("$Nu există plăți")}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </CardContent>
       </Card>
+
+      {payments?.meta?.total ? (
+        <div className="mt-6">
+          <PaginationUI
+            totalItems={payments.meta.total}
+            page={page}
+            perPage={per_page}
+            onPageChange={updatePage}
+            onPageSizeChange={updateLimit}
+          />
+        </div>
+      ) : null}
     </>
   );
 };

@@ -53,6 +53,7 @@ export const QUERY_KEYS = {
   booking: "booking",
   drafts: "drafts",
   tickets: "tickets",
+  payments: "payments",
   bookingPrice: "bookingPrice",
   weeklyTrips: "weeklyTrips",
   nearestTrips: "nearestTrips",
