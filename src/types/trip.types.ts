@@ -16,7 +16,8 @@ export interface Trip extends Timestamps, DepartureArrivalTime {
   bus_id: number;
   recurring_trip_id: number;
   route: {
-    stations: Station;
+    stations: Station[];
+    route_prices: RoutePrice[];
   };
 }
 

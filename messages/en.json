@@ -46,7 +46,9 @@
     "arrival_city": "Arrival city",
     "departure_date": "Departure date",
     "return_date": "Return date",
-    "passengers": "Passengers"
+    "passengers": "Passengers",
+    "return_route": "Return route",
+    "total_price": "Total price"
   },
   "planning": {
     "title": "Plan your perfect trip!",

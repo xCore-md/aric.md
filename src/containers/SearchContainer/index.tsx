@@ -27,6 +27,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { Label } from "@/components/ui/label";
 import { BookingButton } from "@/components/shared/BookingButton";
 import { localTimeToUtc, utcTimeToLocal } from "@/utils/timezone";
+import { User, Wallet } from "lucide-react";
 import { parse, differenceInMinutes } from "date-fns";
 
 export const SearchContainer: React.FC = () => {
@@ -201,14 +202,17 @@ export const SearchContainer: React.FC = () => {
                             {!routes_return.length && (
                               <>
                                 <div className="sm:ml-auto text-right">
-                                  <div className="text-2xl font-medium">
-                                    {formatCurrency(getAmountByCurrency(prices))}
-                                  </div>
-                                  <div className="text-base text-text-gray">
+                                  <div className="text-2xl font-medium flex items-center justify-end gap-1">
+                                    <Wallet className="h-5 w-5" />
                                     {formatCurrency(
                                       (getAmountByCurrency(prices) || 0) *
                                         (searchParams?.passengers || 1),
                                     )}
+                                  </div>
+                                  <div className="text-base text-text-gray flex items-center justify-end gap-1">
+                                    <User className="h-4 w-4" />
+                                    <span>x{searchParams?.passengers || 1}</span>
+                                    {formatCurrency(getAmountByCurrency(prices))}
                                   </div>
                                 </div>
 
@@ -286,16 +290,17 @@ export const SearchContainer: React.FC = () => {
                                       </div>
 
                                       <div className="sm:ml-auto text-right">
-                                        <div className="text-2xl font-medium">
-                                          {formatCurrency(
-                                            getAmountByCurrency(totalPrices),
-                                          )}
-                                        </div>
-                                        <div className="text-base text-text-gray">
+                                        <div className="text-2xl font-medium flex items-center justify-end gap-1">
+                                          <Wallet className="h-5 w-5" />
                                           {formatCurrency(
                                             (getAmountByCurrency(totalPrices) || 0) *
                                               (searchParams?.passengers || 1),
                                           )}
+                                        </div>
+                                        <div className="text-base text-text-gray flex items-center justify-end gap-1">
+                                          <User className="h-4 w-4" />
+                                          <span>x{searchParams?.passengers || 1}</span>
+                                          {formatCurrency(getAmountByCurrency(totalPrices))}
                                         </div>
                                       </div>
 

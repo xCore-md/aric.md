@@ -143,11 +143,53 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
     booking?.trip?.route_departure?.route?.stations?.[
       (booking?.trip?.route_departure?.route?.stations?.length || 1) - 1
     ];
+  const returnStationFrom =
+    booking?.return_trip?.route?.stations?.[0] || booking?.station_to;
+  const returnStationTo =
+    booking?.return_trip?.route?.stations?.[
+      (booking?.return_trip?.route?.stations?.length || 1) - 1
+    ] || booking?.station_from;
 
   const passengerCounts = watch("passengerCounts");
   const paymentMethod = watch("payment.method");
-
   const [existingCounts, setExistingCounts] = React.useState({ adult: 0, child: 0 });
+
+  const passengersTotal =
+    passengerCounts.adult + passengerCounts.child + existingCounts.adult + existingCounts.child;
+
+  const returnRoutePriceInfo = React.useMemo(() => {
+    return (
+      booking?.return_trip?.route?.route_prices?.find(
+        (p) =>
+          p.from_station_id === booking?.station_to?.id &&
+          p.to_station_id === booking?.station_from?.id,
+      ) || null
+    );
+  }, [booking]);
+
+  const departurePrices = React.useMemo(
+    () => ({
+      price_mdl: (booking?.trip?.prices?.price_mdl || 0) * passengersTotal,
+      price_uah: (booking?.trip?.prices?.price_uah || 0) * passengersTotal,
+    }),
+    [booking?.trip?.prices, passengersTotal],
+  );
+
+  const returnPrices = React.useMemo(
+    () => ({
+      price_mdl: (returnRoutePriceInfo?.price_mdl || 0) * passengersTotal,
+      price_uah: (returnRoutePriceInfo?.price_uah || 0) * passengersTotal,
+    }),
+    [returnRoutePriceInfo, passengersTotal],
+  );
+
+  const totalBasePrices = React.useMemo(
+    () => ({
+      price_mdl: departurePrices.price_mdl + returnPrices.price_mdl,
+      price_uah: departurePrices.price_uah + returnPrices.price_uah,
+    }),
+    [departurePrices, returnPrices],
+  );
 
   const handleExistingChange = React.useCallback((passengers: Passenger[]) => {
     const today = new Date();
@@ -177,6 +219,10 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
     bookingId: id,
     passengerCounts: passengerCountsForPrice,
   });
+
+  const finalTotalPrice = getAmountByCurrency(
+    recalculatedPrices || totalBasePrices,
+  );
 
   const { push } = useRouter();
 
@@ -412,6 +458,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
               <TicketDetailsCollapsible
                 data={booking?.trip!}
                 route={booking?.trip?.route_departure!}
+                returnRoute={booking?.return_trip as any}
               />
             </CardContent>
           </Card>
@@ -493,18 +540,107 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
 
                 <div className="border-blue bg-back flex items-center justify-between gap-2 rounded-full border font-semibold">
                   <div className="py-4 pl-6">{t("$Preț total")}:</div>
-                  {isRecalculatingPrice ? (
+                  {isRecalculatingPrice && !booking?.return_trip ? (
                     <div className="skeleton mr-2 h-10 w-32 rounded-full" />
                   ) : (
                     <div className="pr-6">
                       {formatCurrency(
-                        getAmountByCurrency(
-                          recalculatedPrices || booking?.trip?.prices,
-                        ),
+                        booking?.return_trip
+                          ? getAmountByCurrency(departurePrices)
+                          : finalTotalPrice || 0,
                       )}
                     </div>
                   )}
                 </div>
+
+                {booking?.return_trip && (
+                  <>
+                    <div className="bg-back grid grid-cols-2 rounded-3xl px-6 py-4">
+                      <div className="">
+                        <div className="font-semibold">
+                          {t("booking.return_date")}:
+                        </div>
+                        <div className="text-text-gray">
+                          {
+                            formatUTC(booking?.return_trip?.departure_datetime!, {
+                              dateFormat: "d MMMM yyyy",
+                            }).date
+                          }, {formatUTC(booking?.return_trip?.departure_datetime!)?.time}
+                        </div>
+                      </div>
+
+                      <div className="text-right">
+                        <div className="font-semibold">{t("$Data sosirii")}:</div>
+                        <div className="text-text-gray">
+                          {
+                            formatUTC(booking?.return_trip?.arrival_datetime!, {
+                              dateFormat: "d MMMM yyyy",
+                            }).date
+                          }, {formatUTC(booking?.return_trip?.arrival_datetime!)?.time}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-back rounded-3xl px-6 py-4">
+                      <div className="font-semibold">{t("$Stații")}:</div>
+                      <div className="mt-4 flex items-center justify-between gap-10">
+                        <div className="">
+                          <div className="flex items-center">
+                            <div className="w-5 text-lg font-semibold">⚲</div>
+                            <div className="text-lg font-medium">
+                              {getLocalizedField(returnStationFrom!, "name", locale)}
+                            </div>
+                          </div>
+
+                          <div className="text-text-gray ml-5">
+                            {getLocalizedField(returnStationFrom!, "address", locale)}
+                          </div>
+                        </div>
+
+                        <div className="font-semibold">
+                          {formatUTC(booking?.return_trip?.departure_datetime!)?.time}
+                        </div>
+                      </div>
+
+                      <div className="mt-4 flex items-center justify-between gap-10">
+                        <div className="">
+                          <div className="flex items-center">
+                            <div className="w-5 text-lg font-semibold">⚲</div>
+                            <div className="text-lg font-medium">
+                              {getLocalizedField(returnStationTo!, "name", locale)}
+                            </div>
+                          </div>
+
+                          <div className="text-text-gray ml-5">
+                            {getLocalizedField(returnStationTo!, "address", locale)}
+                          </div>
+                        </div>
+
+                        <div className="font-semibold">
+                          {formatUTC(booking?.return_trip?.arrival_datetime!)?.time}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-blue bg-back flex items-center justify-between gap-2 rounded-full border font-semibold">
+                      <div className="py-4 pl-6">{t("$Preț total")}:</div>
+                      <div className="pr-6">
+                        {formatCurrency(getAmountByCurrency(returnPrices))}
+                      </div>
+                    </div>
+
+                    <div className="border-blue bg-back flex items-center justify-between gap-2 rounded-full border font-semibold">
+                      <div className="py-4 pl-6">{t("booking.total_price")}:</div>
+                      {isRecalculatingPrice ? (
+                        <div className="skeleton mr-2 h-10 w-32 rounded-full" />
+                      ) : (
+                        <div className="pr-6">
+                          {formatCurrency(finalTotalPrice || 0)}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
 
                 <FormField
                   control={form.control}

@@ -46,7 +46,9 @@
     "arrival_city": "Orașul de sosire",
     "departure_date": "Data plecării",
     "return_date": "Data retur",
-    "passengers": "Pasageri"
+    "passengers": "Pasageri",
+    "return_route": "Ruta de întoarcere",
+    "total_price": "Preț total"
   },
   "planning": {
     "title": "Planifică-ți călătoria perfectă!",

@@ -46,7 +46,9 @@
     "arrival_city": "Город прибытия",
     "departure_date": "Дата отправления",
     "return_date": "Дата возвращения",
-    "passengers": "Пассажиры"
+    "passengers": "Пассажиры",
+    "return_route": "Обратный маршрут",
+    "total_price": "Итоговая цена"
   },
   "planning": {
     "title": "Спланируйте свое идеальное путешествие!",

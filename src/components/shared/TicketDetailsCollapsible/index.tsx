@@ -19,7 +19,8 @@ import { useCurrency } from "@/hooks/useCurrency";
 export const TicketDetailsCollapsible: React.FC<{
   data: TripItem;
   route: TripSegment;
-}> = ({ data, route: routeData }) => {
+  returnRoute?: TripSegment | null;
+}> = ({ data, route: routeData, returnRoute }) => {
   const locale = useLocale();
   const t = useTranslations();
   const { currency } = useCurrency();
@@ -116,6 +117,67 @@ export const TicketDetailsCollapsible: React.FC<{
                 </div>
               ))}
             </div>
+
+            {returnRoute && (
+              <>
+                <div className="pt-4">{t("booking.return_route")}</div>
+                <div className="border-platinum ml-4 space-y-4 border-l pl-4 md:ml-8 md:pl-8">
+                  {returnRoute?.route?.stations?.map((station, index) => (
+                    <div
+                      key={station?.id}
+                      className="relative flex flex-col gap-2 md:flex-row"
+                    >
+                      <div className="mr-4 -ml-5 flex w-44 items-center gap-4 md:mr-8 md:-ml-9 md:gap-8">
+                        <div
+                          className={cn(
+                            "border-blue bg-blue size-2 flex-none rounded-full border",
+                            index === 0 && "bg-white",
+                          )}
+                        />
+                        {index === 0 && (
+                          <div className="bg-back absolute top-0 hidden h-[calc(50%_-_theme(spacing.1))] w-2 md:block" />
+                        )}
+
+                        <div
+                          className={cn(
+                            (index === 0 ||
+                              index === returnRoute?.route?.stations?.length - 1) &&
+                              "font-semibold",
+                          )}
+                        >
+                          {getLocalizedField(station, "name", locale)}
+                        </div>
+
+                        {index === returnRoute?.route?.stations?.length - 1 && (
+                          <div className="bg-back absolute bottom-0 hidden h-[calc(50%_-_theme(spacing.1))] w-2 md:block" />
+                        )}
+                      </div>
+
+                      <div className="flex flex-col items-start md:flex-row md:items-center md:gap-6">
+                        <div className="text-text-gray">
+                          {getLocalizedField(station, "address", locale)}
+                        </div>
+
+                        <Button
+                          size="sm"
+                          variant="link"
+                          className="text-text-gray h-auto flex-none !px-0 text-xs text-nowrap"
+                          asChild
+                        >
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer nofollow"
+                            href={`https://www.google.com/maps?q=${station?.latitude},${station?.longitude}`}
+                          >
+                            {t("$Vezi pe hartă")}
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           <div className="space-y-4">
