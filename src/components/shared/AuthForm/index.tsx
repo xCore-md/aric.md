@@ -28,7 +28,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useLocale, useTranslations } from "next-intl";
-import { signIn } from "next-auth/react";
 import { profileService } from "@/services/profile.service";
 import { useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
@@ -52,8 +51,6 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
   const t = useTranslations();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
-
-  console.log(callbackUrl);
 
   const [timer, setTimer] = React.useState(SECONDS);
   const [canResend, setCanResend] = React.useState(false);
@@ -94,13 +91,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
   const mutationVerifyCode = useMutation({
     mutationFn: (data: VerifyCodePayload) => authService.verify(data),
     onSuccess: async (res) => {
-      const response = await signIn("credentials", {
-        token: JSON.stringify(res?.data?.token),
-        user: JSON.stringify(res?.data?.user),
-        redirect: false,
-      });
-
-      if (response.ok && !res?.data?.user?.email) {
+      if (res?.data?.user && !res?.data?.user?.email) {
         setStep("email");
       } else {
         push(callbackUrl || "/booking");

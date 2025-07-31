@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -18,11 +19,8 @@ import {
 } from "@/components/ui/popover";
 import { ChevronDown, LogOut } from "lucide-react";
 import { CallButtonList } from "../CallButtonList";
-import { useSession } from "next-auth/react";
-import { LogoutAlert } from "../logout-alert";
-import { useProfile } from "@/hooks/profile";
-
 import { useRouter } from "next/navigation";
+import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 
 import {
   Dialog,
@@ -37,16 +35,12 @@ import {
   CURRENCIES,
   NAV_LINKS,
   PRIVATE_LINKS,
+  API_URL,
 } from "@/utils/constants";
 import { CurrencyEnum, LanguageEnum } from "@/types";
 import { useCurrency } from "@/hooks/useCurrency";
 
-const languages: {
-  key: string;
-  alt: string;
-  label: string;
-  flag: { src: string; width: number; height: number };
-}[] = [
+const languages = [
   {
     key: LanguageEnum.RO,
     flag: roFlag,
@@ -77,28 +71,20 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
 
   return (
     <header className="sticky top-0 z-50">
-      <div
-        className={cn("mt-5 hidden sm:block", !isHomePage && "mt-0 bg-white")}
-      >
+      <div className={cn("mt-5 hidden sm:block", !isHomePage && "mt-0 bg-white")}>
         <div className="container">
           <div
             className={cn(
               "flex items-center gap-8 py-3 text-sm font-medium",
-              isHomePage && "rounded-full bg-white px-8",
+              isHomePage && "rounded-full bg-white px-8"
             )}
           >
-            <a
-              href={`mailto:${CONTACTS.email}`}
-              className="flex items-center gap-1"
-            >
+            <a href={`mailto:${CONTACTS.email}`} className="flex items-center gap-1">
               <span>📩</span>
               <span>{CONTACTS.email}</span>
             </a>
 
-            <a
-              href={`tel:${CONTACTS.phone}`}
-              className="flex items-center gap-1"
-            >
+            <a href={`tel:${CONTACTS.phone}`} className="flex items-center gap-1">
               <span>📞</span>
               <span>{CONTACTS.phone}</span>
             </a>
@@ -115,21 +101,12 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
         <div className="container">
           <nav className="flex items-center justify-between py-6">
             <Link href="/" className="flex w-20 sm:w-24">
-              <Image
-                src={logo.src}
-                alt="Aric.md"
-                width={logo.width}
-                height={logo.height}
-              />
+              <Image src={logo.src} alt="Aric.md" width={logo.width} height={logo.height} />
             </Link>
 
             <div className="hidden items-center gap-8 text-white lg:flex">
               {NAV_LINKS?.map((link, index) => (
-                <Link
-                  key={index}
-                  href={link.path}
-                  className="hover:text-blue transition"
-                >
+                <Link key={index} href={link.path} className="hover:text-blue transition">
                   {t(link.label)}
                 </Link>
               ))}
@@ -137,7 +114,6 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
 
             <div className="flex items-center gap-4">
               <LanguagePopover />
-
               <CurrencyPopover />
 
               <div className="flex gap-4">
@@ -167,7 +143,6 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
                         </div>
 
                         <LanguagePopover />
-
                         <CurrencyPopover />
                       </div>
 
@@ -175,18 +150,12 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
                         className="bg-blue/10 grid gap-2 rounded-xl px-2 py-1 text-white"
                         onClick={() => setOpenMenu(false)}
                       >
-                        <a
-                          href={`mailto:${CONTACTS.email}`}
-                          className="flex items-center gap-1"
-                        >
+                        <a href={`mailto:${CONTACTS.email}`} className="flex items-center gap-1">
                           <span>📩</span>
                           <span>{CONTACTS.email}</span>
                         </a>
 
-                        <a
-                          href={`tel:${CONTACTS.phone}`}
-                          className="flex items-center gap-1"
-                        >
+                        <a href={`tel:${CONTACTS.phone}`} className="flex items-center gap-1">
                           <span>📞</span>
                           <span>{CONTACTS.phone}</span>
                         </a>
@@ -258,14 +227,12 @@ const LanguagePopover = () => {
             size="sm"
             className={cn(
               "flex justify-start gap-2 rounded-lg text-left font-semibold",
-              key === locale && "pointer-events-none opacity-50 grayscale",
+              key === locale && "pointer-events-none opacity-50 grayscale"
             )}
             asChild
           >
             <Link
-              href={
-                `${pathname}` + (searchParams.size ? `?${searchParams}` : "")
-              }
+              href={`${pathname}${searchParams.size ? `?${searchParams}` : ""}`}
               locale={key}
             >
               <Image
@@ -287,57 +254,63 @@ const LanguagePopover = () => {
 const AccountButton = () => {
   const t = useTranslations();
   const pathname = usePathname();
-  const { status } = useSession();
-  const { isLoadingProfileData } = useProfile();
+  const { isLoading, isAuthenticated } = useCustomerAuth();
 
-  return (
-    <>
-      {status === "loading" || isLoadingProfileData ? (
-        <div className="skeleton dark h-12 w-44 flex-none rounded-full" />
-      ) : (
-        <>
-          {status === "authenticated" ? (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="white" className="max-w-44 ring-0">
-                  <span className="truncate">{t("nav.profile")}</span>{" "}
-                  <ChevronDown />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="end" className="w-50 p-2">
-                {PRIVATE_LINKS?.map((link, index) => (
-                  <Link
-                    href={link.path}
-                    key={index}
-                    className={cn(
-                      "hover:text-blue flex w-full p-2 text-left transition",
-                      pathname === link.path && "text-blue",
-                    )}
-                  >
-                    {t(link.label)}
-                  </Link>
-                ))}
+  if (isLoading) {
+    return <div className="skeleton dark h-12 w-44 flex-none rounded-full" />;
+  }
 
-                <LogoutAlert>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-destructive flex w-full justify-start p-2 font-normal transition"
-                  >
-                    <LogOut />
-                    {t("logout")}
-                  </Button>
-                </LogoutAlert>
-              </PopoverContent>
-            </Popover>
-          ) : (
-            <Button variant="white" asChild>
-              <Link href="/login">{t("nav.login")}</Link>
-            </Button>
-          )}
-        </>
-      )}
-    </>
+  return isAuthenticated ? (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="white" className="max-w-44 ring-0">
+          <span className="truncate">{t("nav.profile")}</span> <ChevronDown />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-50 p-2">
+        {PRIVATE_LINKS?.map((link, index) => (
+          <Link
+            href={link.path}
+            key={index}
+            className={cn(
+              "hover:text-blue flex w-full p-2 text-left transition",
+              pathname === link.path && "text-blue"
+            )}
+          >
+            {t(link.label)}
+          </Link>
+        ))}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-destructive flex w-full justify-start p-2 font-normal transition"
+          onClick={async () => {
+            try {
+              await fetch(`${API_URL}customer/logout`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                },
+              });
+            } catch (e) {
+              console.error("Logout error:", e);
+            }
+            document.cookie =
+              "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/";
+          }}
+        >
+          <LogOut />
+          {t("logout")}
+        </Button>
+      </PopoverContent>
+    </Popover>
+  ) : (
+    <Button variant="white" asChild>
+      <Link href="/login">{t("nav.login")}</Link>
+    </Button>
   );
 };
 
@@ -350,7 +323,8 @@ export const CurrencyPopover = () => {
     router.refresh();
   };
 
-  if (!currency) return <div className="skeleton dark h-8 w-18 rounded-full" />;
+  if (!currency)
+    return <div className="skeleton dark h-8 w-18 rounded-full" />;
 
   return (
     <Popover>
@@ -372,8 +346,7 @@ export const CurrencyPopover = () => {
             size="sm"
             className={cn(
               "w-full justify-start rounded-lg font-semibold",
-              currencyItem === currency &&
-                "pointer-events-none opacity-50 grayscale",
+              currencyItem === currency && "pointer-events-none opacity-50 grayscale"
             )}
             onClick={() => handleChange(currencyItem)}
           >

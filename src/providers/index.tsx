@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import {
   MutationCache,
@@ -11,7 +12,6 @@ import { ProgressProvider } from "@bprogress/next/app";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { HTTPError } from "ky";
-import { SessionProvider } from "next-auth/react";
 import { CurrencyProvider } from "./contexts/CurrencyContext";
 
 function handleApiError(error: unknown) {
@@ -52,17 +52,15 @@ export const Providers: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <SessionProvider>
-      <QueryClientProvider client={queryClient}>
-        <NuqsAdapter>
-          <ProgressProvider height="4px" color="#00C9FF" shallowRouting>
-            <CurrencyProvider>
-              {children}
-              <Toaster richColors />
-            </CurrencyProvider>
-          </ProgressProvider>
-        </NuqsAdapter>
-      </QueryClientProvider>
-    </SessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <NuqsAdapter>
+        <ProgressProvider height="4px" color="#00C9FF" shallowRouting>
+          <CurrencyProvider>
+            {children}
+            <Toaster richColors />
+          </CurrencyProvider>
+        </ProgressProvider>
+      </NuqsAdapter>
+    </QueryClientProvider>
   );
 };

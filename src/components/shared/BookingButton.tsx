@@ -4,7 +4,6 @@ import React from "react";
 import { flushSync } from "react-dom";
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "@/i18n/navigation";
-import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
 import { useBookingDraft } from "@/hooks/useBookingDraft";
@@ -14,6 +13,8 @@ import { DraftBookingPayload } from "@/types";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@/i18n/navigation";
 
+import { API_URL } from "@/utils/constants";
+
 export const BookingButton: React.FC<DraftBookingPayload> = ({
   trip_id,
   from_station_id,
@@ -22,7 +23,6 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
   draft_booking_id,
 }) => {
   const t = useTranslations();
-  const { status } = useSession();
   const { push } = useRouter();
   const { saveBookingDraft } = useBookingDraft();
 
@@ -41,10 +41,11 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
     },
   });
 
-  const handleClick = () => {
+  const handleClick = async () => {
     const payload = { trip_id, from_station_id, to_station_id, return_trip_id };
+    const isAuthenticated = await checkCustomerAuth();
 
-    if (status !== "authenticated") {
+    if (!isAuthenticated) {
       saveBookingDraft(payload);
       push(`/login?callbackUrl=${encodeURIComponent("/booking/init")}`);
       return;
@@ -72,3 +73,13 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
     </Button>
   );
 };
+
+export async function checkCustomerAuth() {
+  const res = await fetch(`${API_URL}customer/profile`, {
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  return res.ok;
+}

@@ -1,5 +1,4 @@
 import ky from "ky";
-import { signIn, signOut } from "next-auth/react";
 import { API_URL } from "@/utils/constants";
 import type {
   ApiResponse,
@@ -25,7 +24,7 @@ class AuthService {
   };
 
   /**
-   * Verify customer code and sync session with NextAuth.
+   * Verify customer code.
    * @param data
    */
   async verify(data: VerifyCodePayload) {
@@ -33,26 +32,26 @@ class AuthService {
       .post("verify", { json: data })
       .json<ApiResponse<TokenResponseData>>();
 
-    // Данные пользователя и токен получаем из ответа backend
-    const { user, token } = response.data || {};
-
-    // Синхронизируем с next-auth, если есть user и token
-    if (user && token) {
-      await signIn("credentials", {
-        redirect: false,
-        token: JSON.stringify(token),
-        user: JSON.stringify(user),
-      });
+    const token = response.data?.token;
+    if (token) {
+      document.cookie = `token=${token}; path=/; Secure; SameSite=Lax;`;
     }
 
     return response;
   }
 
+
   /**
-   * Logout customer from NextAuth.
+   * Logout customer.
    */
   async logout() {
-    await signOut({ redirectTo: "/", redirect: true });
+    await this.authApi.post("logout", {
+      headers: { Accept: "application/json" },
+      credentials: "include",
+    });
+
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    window.location.href = "/";
   }
 }
 

@@ -5,6 +5,8 @@ class ProfileService {
   private clientApi = apiInstance;
 
   get() {
+    console.log("Fetching profile data");
+
     return this.clientApi.get("customer/profile").json<ApiResponse<User>>();
   }
 
