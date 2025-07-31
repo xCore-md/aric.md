@@ -91,56 +91,56 @@ export const Footer: React.FC = () => {
                 <ul className="divide-text-gray -mb-6 space-y-6 divide-y">
                   {isNearestTripsLoading
                     ? Array.from({ length: 3 }).map((_, index) => (
-                        <li key={index} className="pb-6">
-                          <div className="flex items-center justify-between gap-4 text-white">
-                            <div className="skeleton h-6 w-1/2 rounded-full" />
-                            <div className="skeleton h-6 w-12 rounded-full" />
-                            <ChevronRightIcon className="6" />
-                          </div>
-                        </li>
-                      ))
+                      <li key={index} className="pb-6">
+                        <div className="flex items-center justify-between gap-4 text-white">
+                          <div className="skeleton h-6 w-1/2 rounded-full" />
+                          <div className="skeleton h-6 w-12 rounded-full" />
+                          <ChevronRightIcon className="6" />
+                        </div>
+                      </li>
+                    ))
                     : nearestTrips?.data && nearestTrips.data.length > 0 && !isNearestTripsError
                       ? nearestTrips.data.map((trip, index) => {
-                          const stations = trip.route_departure.route.stations;
-                          const fromId = stations[0]?.id;
-                          const toId = stations[stations.length - 1]?.id;
-                          const departureDate = format(
-                            parseISO(trip.route_departure.departure_datetime),
-                            "dd.MM.yyyy",
-                          );
-                          const params = new URLSearchParams({
-                            from_station_id: String(fromId),
-                            to_station_id: String(toId),
-                            departure_date: departureDate,
-                            passengers: "1",
-                          });
-                          const href = `/search?${params.toString()}`;
+                        const stations = trip.route_departure.route.stations;
+                        const fromId = stations[0]?.id;
+                        const toId = stations[stations.length - 1]?.id;
+                        const departureDate = format(
+                          parseISO(trip.route_departure.departure_datetime),
+                          "dd.MM.yyyy",
+                        );
+                        const params = new URLSearchParams({
+                          from_station_id: String(fromId),
+                          to_station_id: String(toId),
+                          departure_date: departureDate,
+                          passengers: "1",
+                        });
+                        const href = `/search?${params.toString()}`;
 
-                          return (
-                            <li key={index} className="pb-6">
-                              <Link
-                                href={href}
-                                className="flex items-center justify-between gap-4 text-white"
-                              >
-                                <div>
-                                  {getLocalizedField(
-                                    trip.route_departure.route,
-                                    "name",
-                                    locale,
-                                  )}
-                                </div>
-                                <div className="text-mentol">
-                                  {
-                                    formatUTC(trip.route_departure.departure_datetime, {
-                                      dateFormat: "dd.MM.yyyy, HH:mm",
-                                    })?.date
-                                  }
-                                </div>
-                                <ChevronRightIcon className="6" />
-                              </Link>
-                            </li>
-                          );
-                        })
+                        return (
+                          <li key={index} className="pb-6">
+                            <Link
+                              href={href}
+                              className="flex items-center justify-between gap-4 text-white"
+                            >
+                              <div>
+                                {getLocalizedField(
+                                  trip.route_departure.route,
+                                  "name",
+                                  locale,
+                                )}
+                              </div>
+                              <div className="text-mentol">
+                                {
+                                  formatUTC(trip.route_departure.departure_datetime, {
+                                    dateFormat: "dd.MM.yyyy, HH:mm",
+                                  })?.date
+                                }
+                              </div>
+                              <ChevronRightIcon className="6" />
+                            </Link>
+                          </li>
+                        );
+                      })
                       : (
                         <li className="pb-6 text-center text-white">
                           {t("general.no_nearest_trips")}
@@ -209,6 +209,7 @@ export const Footer: React.FC = () => {
 };
 
 const TermsAndSocial = () => {
+  const locale = useLocale();
   const t = useTranslations();
   const socialIcons = [
     {
@@ -265,12 +266,14 @@ const TermsAndSocial = () => {
         <div className="flex flex-col sm:items-end">
           <Link
             href={t("legal_links.terms")}
+            locale={locale}
             className="text-blue inline-block text-sm underline-offset-2 transition hover:underline"
           >
             {t("legal_info.terms")}
           </Link>
           <Link
             href={t("legal_links.privacy")}
+            locale={locale}
             className="text-blue inline-block text-sm underline-offset-2 transition hover:underline"
           >
             {t("legal_info.privacy")}
