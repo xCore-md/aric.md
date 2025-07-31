@@ -15,6 +15,8 @@ import { useRouter } from "@/i18n/navigation";
 
 import { API_URL } from "@/utils/constants";
 
+import { getCookie } from "cookies-next";
+
 export const BookingButton: React.FC<DraftBookingPayload> = ({
   trip_id,
   from_station_id,
@@ -74,12 +76,16 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
   );
 };
 
-export async function checkCustomerAuth() {
-  const res = await fetch(`${API_URL}customer/profile`, {
-    credentials: "include",
+async function checkCustomerAuth(): Promise<boolean> {
+  const token = getCookie("token")?.toString() || "";
+  if (!token) return false;
+
+  const res = await fetch(`${API_URL}/customer/profile`, {
     headers: {
+      Authorization: `Bearer ${token}`,
       Accept: "application/json",
     },
+    credentials: "include",
   });
   return res.ok;
 }
