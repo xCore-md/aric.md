@@ -117,8 +117,8 @@
     "copyright": "Все права защищены"
   },
   "legal_links": {
-    "terms": "/ru/legal/terms",
-    "privacy": "/ru/legal/privacy"
+    "terms": "/legal/terms",
+    "privacy": "/legal/privacy"
   },
   "legal_pages": {
     "terms": {
@@ -316,14 +316,14 @@
   "$Întrebări și răspunsuri": "Вопросы и ответы",
   "$Se salvează": "Сохранение...",
   "$Salvează modificările": "Сохранить изменения",
-  "$Salvează": "Сохранить"
-  ,"$Plata dumneavoastră a fost efectuată cu succes!": "Ваш платеж прошёл успешно!"
-  ,"$Plata dumneavoastră a eșuat": "Платёж не прошёл."
-  ,"$Vă rugăm să încercați din nou": "Пожалуйста, попробуйте ещё раз."
-  ,"$Vă rugăm să verificați datele introduse sau să încercați din nou Dacă problema persistă, contactați-ne pentru asistență": "Пожалуйста, проверьте введённые данные или попробуйте снова. Если проблема сохранится, свяжитесь с нами для получения помощи."
-  ,"$Pagina principală": "Главная страница"
-  ,"$Vezi biletele": "Перейти к билетам"
-  ,"$Website": "Website",
+  "$Salvează": "Сохранить",
+  "$Plata dumneavoastră a fost efectuată cu succes!": "Ваш платеж прошёл успешно!",
+  "$Plata dumneavoastră a eșuat": "Платёж не прошёл.",
+  "$Vă rugăm să încercați din nou": "Пожалуйста, попробуйте ещё раз.",
+  "$Vă rugăm să verificați datele introduse sau să încercați din nou Dacă problema persistă, contactați-ne pentru asistență": "Пожалуйста, проверьте введённые данные или попробуйте снова. Если проблема сохранится, свяжитесь с нами для получения помощи.",
+  "$Pagina principală": "Главная страница",
+  "$Vezi biletele": "Перейти к билетам",
+  "$Website": "Website",
   "$Comerciant": "Коммерсант",
   "$Descriere": "Описание"
 }

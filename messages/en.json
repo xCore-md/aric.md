@@ -117,8 +117,8 @@
     "copyright": "All rights reserved"
   },
   "legal_links": {
-    "terms": "/en/legal/terms",
-    "privacy": "/en/legal/privacy"
+    "terms": "/legal/terms",
+    "privacy": "/legal/privacy"
   },
   "legal_pages": {
     "terms": {
@@ -316,14 +316,14 @@
   "$Întrebări și răspunsuri": "FAQ",
   "$Se salvează": "Saving...",
   "$Salvează modificările": "Save changes",
-  "$Salvează": "Save"
-  ,"$Plata dumneavoastră a fost efectuată cu succes!": "Your payment was successful!"
-  ,"$Plata dumneavoastră a eșuat": "Your payment failed."
-  ,"$Vă rugăm să încercați din nou": "Please try again."
-  ,"$Vă rugăm să verificați datele introduse sau să încercați din nou Dacă problema persistă, contactați-ne pentru asistență": "Please check the entered data or try again. If the problem persists, contact us for assistance."
-  ,"$Pagina principală": "Home page"
-  ,"$Vezi biletele": "Go to tickets"
-  ,"$Website": "Website",
+  "$Salvează": "Save",
+  "$Plata dumneavoastră a fost efectuată cu succes!": "Your payment was successful!",
+  "$Plata dumneavoastră a eșuat": "Your payment failed.",
+  "$Vă rugăm să încercați din nou": "Please try again.",
+  "$Vă rugăm să verificați datele introduse sau să încercați din nou Dacă problema persistă, contactați-ne pentru asistență": "Please check the entered data or try again. If the problem persists, contact us for assistance.",
+  "$Pagina principală": "Home page",
+  "$Vezi biletele": "Go to tickets",
+  "$Website": "Website",
   "$Comerciant": "Merchant",
   "$Descriere": "Description"
 }
