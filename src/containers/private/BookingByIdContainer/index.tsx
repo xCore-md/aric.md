@@ -141,13 +141,13 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
   const stationTo =
     booking?.station_to ||
     booking?.trip?.route_departure?.route?.stations?.[
-      (booking?.trip?.route_departure?.route?.stations?.length || 1) - 1
+    (booking?.trip?.route_departure?.route?.stations?.length || 1) - 1
     ];
   const returnStationFrom =
     booking?.return_trip?.route?.stations?.[0] || booking?.station_to;
   const returnStationTo =
     booking?.return_trip?.route?.stations?.[
-      (booking?.return_trip?.route?.stations?.length || 1) - 1
+    (booking?.return_trip?.route?.stations?.length || 1) - 1
     ] || booking?.station_from;
 
   const passengerCounts = watch("passengerCounts");
@@ -215,10 +215,16 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
     [passengerCounts, existingCounts],
   );
 
-  const { recalculatedPrices, isRecalculatingPrice } = useBookingPrice({
+  const { recalculatedPrices, isRecalculatingPrice, refetchRecalculatePrices } = useBookingPrice({
     bookingId: id,
     passengerCounts: passengerCountsForPrice,
   });
+
+  React.useEffect(() => {
+    if (booking && !isLoading) {
+      refetchRecalculatePrices();
+    }
+  }, [booking, isLoading, refetchRecalculatePrices]);
 
   const finalTotalPrice = getAmountByCurrency(
     recalculatedPrices || totalBasePrices,
@@ -303,7 +309,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                 availableSeats={
                   booking?.trip?.route_departure?.seats_available || 0
                 }
-                
+
                 existingCounts={existingCounts}
                 onExistingChange={handleExistingChange}
               />
@@ -538,21 +544,6 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                   </div>
                 </div>
 
-                <div className="border-blue bg-back flex items-center justify-between gap-2 rounded-full border font-semibold">
-                  <div className="py-4 pl-6">{t("$Preț total")}:</div>
-                  {isRecalculatingPrice && !booking?.return_trip ? (
-                    <div className="skeleton mr-2 h-10 w-32 rounded-full" />
-                  ) : (
-                    <div className="pr-6">
-                      {formatCurrency(
-                        booking?.return_trip
-                          ? getAmountByCurrency(departurePrices)
-                          : finalTotalPrice || 0,
-                      )}
-                    </div>
-                  )}
-                </div>
-
                 {booking?.return_trip && (
                   <>
                     <div className="bg-back grid grid-cols-2 rounded-3xl px-6 py-4">
@@ -619,13 +610,6 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                         <div className="font-semibold">
                           {formatUTC(booking?.return_trip?.arrival_datetime!)?.time}
                         </div>
-                      </div>
-                    </div>
-
-                    <div className="border-blue bg-back flex items-center justify-between gap-2 rounded-full border font-semibold">
-                      <div className="py-4 pl-6">{t("$Preț total")}:</div>
-                      <div className="pr-6">
-                        {formatCurrency(getAmountByCurrency(returnPrices))}
                       </div>
                     </div>
 
