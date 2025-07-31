@@ -56,10 +56,12 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
     bookingInit.mutate(payload);
   };
 
+  const labelKey = return_trip_id ? "action.book_tickets" : "action.book_now";
+
   return draft_booking_id ? (
     <Button variant="reverse" className="col-span-full" asChild>
       <Link href={"/booking/" + draft_booking_id}>
-        {t("action.book_now")}
+        {t(labelKey)}
       </Link>
     </Button>
   ) : (
@@ -71,7 +73,7 @@ export const BookingButton: React.FC<DraftBookingPayload> = ({
     >
       {bookingInit.isPending || isCompleted
         ? t("action.processing") + "..."
-        : t("action.book_now")}
+        : t(labelKey)}
     </Button>
   );
 };

@@ -8,7 +8,12 @@ import { TripRouteDetails } from "@/components/shared/TripRouteDetails";
 import { SearchTicketForm } from "@/components/shared/SearchTicketForm";
 import { useTicketForm } from "@/hooks/useTicketForm";
 
-import type { SearchResponse, TicketFormValues } from "@/types";
+import type {
+  SearchResponse,
+  TicketFormValues,
+  Prices,
+  TripRouteDetailsData,
+} from "@/types";
 import { searchService } from "@/services/search.service";
 import { TicketDetailsCollapsible } from "@/components/shared/TicketDetailsCollapsible";
 import { toApiDate } from "@/utils/format-date";
@@ -22,7 +27,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { Label } from "@/components/ui/label";
 import { BookingButton } from "@/components/shared/BookingButton";
 import { localTimeToUtc, utcTimeToLocal } from "@/utils/timezone";
-import { parse } from "date-fns";
+import { parse, differenceInMinutes } from "date-fns";
 
 export const SearchContainer: React.FC = () => {
   const locale = useLocale();
@@ -159,7 +164,16 @@ export const SearchContainer: React.FC = () => {
                         prices,
                         duration_minutes,
                         type,
+                        routes_return = [],
                       } = item;
+
+                      const reversedMeta: TripRouteDetailsData = {
+                        data: searchData?.data || [],
+                        metadata: {
+                          from_station: searchData?.metadata?.to_station!,
+                          to_station: searchData?.metadata?.from_station!,
+                        },
+                      };
 
                       return (
                         <li
@@ -184,25 +198,35 @@ export const SearchContainer: React.FC = () => {
                               </div>
                             </div>
 
-                            <div className="sm:ml-auto">
-                              <div className="text-2xl font-medium">
-                                {formatCurrency(getAmountByCurrency(prices))}
-                              </div>
-                            </div>
+                            {!routes_return.length && (
+                              <>
+                                <div className="sm:ml-auto text-right">
+                                  <div className="text-2xl font-medium">
+                                    {formatCurrency(getAmountByCurrency(prices))}
+                                  </div>
+                                  <div className="text-base text-text-gray">
+                                    {formatCurrency(
+                                      (getAmountByCurrency(prices) || 0) *
+                                        (searchParams?.passengers || 1),
+                                    )}
+                                  </div>
+                                </div>
 
-                            <BookingButton
-                              trip_id={route_departure?.id}
-                              from_station_id={
-                                searchData?.metadata?.from_station?.id
-                              }
-                              to_station_id={
-                                searchData?.metadata?.to_station?.id
-                              }
-                              return_trip_id={null}
-                              draft_booking_id={
-                                route_departure?.draft_booking_id
-                              }
-                            />
+                                <BookingButton
+                                  trip_id={route_departure?.id}
+                                  from_station_id={
+                                    searchData?.metadata?.from_station?.id
+                                  }
+                                  to_station_id={
+                                    searchData?.metadata?.to_station?.id
+                                  }
+                                  return_trip_id={null}
+                                  draft_booking_id={
+                                    route_departure?.draft_booking_id
+                                  }
+                                />
+                              </>
+                            )}
                           </div>
 
                           <div className="my-6 w-full border-b border-dashed" />
@@ -217,6 +241,94 @@ export const SearchContainer: React.FC = () => {
                             data={item}
                             route={route_departure}
                           />
+
+                          {routes_return.length > 0 && (
+                            <div className="mt-6 space-y-6">
+                              {routes_return.map((r, rIndex) => {
+                                const priceInfo = r.route?.route_prices?.find(
+                                  (p) =>
+                                    p.from_station_id ===
+                                      searchData?.metadata?.to_station?.id &&
+                                    p.to_station_id ===
+                                      searchData?.metadata?.from_station?.id,
+                                );
+
+                                const totalPrices: Prices = {
+                                  price_mdl:
+                                    (prices?.price_mdl || 0) +
+                                    (priceInfo?.price_mdl || 0),
+                                  price_uah:
+                                    (prices?.price_uah || 0) +
+                                    (priceInfo?.price_uah || 0),
+                                };
+
+                                const rDuration = differenceInMinutes(
+                                  new Date(r.arrival_datetime),
+                                  new Date(r.departure_datetime),
+                                );
+
+                                return (
+                                  <div
+                                    key={rIndex}
+                                    className="border-platinum rounded-xl border bg-white p-4 md:p-6"
+                                  >
+                                    <div className="grid grid-cols-1 items-center justify-between gap-x-8 gap-y-2 sm:grid-cols-2 md:flex">
+                                      <div className="space-y-1">
+                                        <div className="text-text-gray bg-back flex max-w-max items-center gap-2 rounded-full px-3 py-1 text-sm">
+                                          <div className="text-text-gray">
+                                            {r?.seats_total} {t("$pasageri")}
+                                          </div>
+                                          <div className="text-green">
+                                            / {r?.seats_available}
+                                            {t("$rămase")}
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div className="sm:ml-auto text-right">
+                                        <div className="text-2xl font-medium">
+                                          {formatCurrency(
+                                            getAmountByCurrency(totalPrices),
+                                          )}
+                                        </div>
+                                        <div className="text-base text-text-gray">
+                                          {formatCurrency(
+                                            (getAmountByCurrency(totalPrices) || 0) *
+                                              (searchParams?.passengers || 1),
+                                          )}
+                                        </div>
+                                      </div>
+
+                                      <BookingButton
+                                        trip_id={route_departure?.id}
+                                        from_station_id={
+                                          searchData?.metadata?.from_station?.id
+                                        }
+                                        to_station_id={
+                                          searchData?.metadata?.to_station?.id
+                                        }
+                                        return_trip_id={r?.id}
+                                        draft_booking_id={r?.draft_booking_id}
+                                      />
+                                    </div>
+
+                                    <div className="my-6 w-full border-b border-dashed" />
+
+                                    <TripRouteDetails
+                                      data={reversedMeta}
+                                      route={r}
+                                      duration={rDuration}
+                                    />
+
+                                    <TicketDetailsCollapsible
+                                      data={{ ...item, prices: totalPrices }}
+                                      route={r}
+                                    />
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
                         </li>
                       );
                     })}
