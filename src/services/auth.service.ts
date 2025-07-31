@@ -17,7 +17,7 @@ class AuthService {
 
   sendVerificationCode = (data: SendCodePayload) => {
     return this.authApi
-      .post("verification-code", { json: data })
+      .post("verification-code", { json: data,  timeout: 60000 })
       .json<ApiResponse<ExpiresInResponseData>>();
   };
 
