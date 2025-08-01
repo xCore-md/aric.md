@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, TriangleAlert } from "lucide-react";
 import React from "react";
 import { useLocale, useTranslations } from "use-intl";
+import { isPast, parseISO } from "date-fns";
 
 export const BookingContainer: React.FC<{
   message: string;
@@ -150,11 +151,16 @@ export const BookingContainer: React.FC<{
                     ))
                   ) : (
                     <>
-                      {drafts?.data?.map((draft) => (
-                        <tr
-                          key={draft?.id}
-                          className="mb-4 block rounded-xl lg:table-row lg:rounded-none"
-                        >
+                      {drafts?.data?.map((draft) => {
+                        const isExpired = isPast(
+                          parseISO(draft.departure_datetime),
+                        );
+
+                        return (
+                          <tr
+                            key={draft?.id}
+                            className="mb-4 block rounded-xl lg:table-row lg:rounded-none"
+                          >
                           <td className="flex flex-col justify-between px-4 lg:table-cell lg:px-0">
                             <span className="text-text-gray w-full max-w-36 text-sm font-normal lg:hidden">
                               {t("booking.departure_city")}
@@ -212,15 +218,22 @@ export const BookingContainer: React.FC<{
                           </td>
 
                           <td className="px-4 text-right lg:table-cell">
-                            <Button variant="reverse" asChild>
-                              <Link href={`/booking/${draft.id}`}>
-                                {t("$Continuă rezervarea")}
-                                <ArrowRight />
-                              </Link>
-                            </Button>
+                            {isExpired ? (
+                              <div className="text-text-gray">
+                                {t("$Cursa nu mai este actuală")}
+                              </div>
+                            ) : (
+                              <Button variant="reverse" asChild>
+                                <Link href={`/booking/${draft.id}`}>
+                                  {t("$Continuă rezervarea")}
+                                  <ArrowRight />
+                                </Link>
+                              </Button>
+                            )}
                           </td>
                         </tr>
-                      ))}
+                        );
+                      })}
                     </>
                   )}
                 </tbody>

@@ -32,7 +32,6 @@ export const PaymentContainer: React.FC = () => {
             <thead className="thead">
               <tr>
                 <th>ID</th>
-                <th>{t("$Ruta")}</th>
                 <th>{t("$Data tranzacției")}</th>
                 <th>{t("$Suma")}</th>
                 <th>{t("$Statut")}</th>
@@ -43,14 +42,13 @@ export const PaymentContainer: React.FC = () => {
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, index) => (
                   <tr key={index} className="h-12">
-                    <td colSpan={6} className="skeleton" />
+                    <td colSpan={5} className="skeleton" />
                   </tr>
                 ))
               ) : payments?.data?.length ? (
                 payments.data.map((payment) => (
                   <tr key={payment.id}>
                     <td>{payment.id}</td>
-                    <td>-</td>
                     <td>
                       {formatUTC(payment.paid_at || payment.created_at, {
                         dateFormat: "dd/MM/yyyy",
@@ -75,7 +73,7 @@ export const PaymentContainer: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="py-6 text-center text-lg">
+                  <td colSpan={5} className="py-6 text-center text-lg">
                     {t("$Nu există plăți")}
                   </td>
                 </tr>
