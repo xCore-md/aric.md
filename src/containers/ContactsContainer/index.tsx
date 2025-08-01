@@ -183,8 +183,8 @@ export const ContactsContainer: React.FC = () => {
 
                 <Button disabled={feedbackMutation.isPending}>
                   {feedbackMutation.isPending
-                    ? t("contacts.submit") + "..."
-                    : t("contacts.submit")}
+                    ? t("contacts.send") + "..."
+                    : t("contacts.send")}
                 </Button>
               </form>
             </Form>

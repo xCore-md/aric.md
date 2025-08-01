@@ -181,7 +181,8 @@
     "email_label": "Email address",
     "phone_label": "Phone",
     "comment_placeholder": "Comment",
-    "submit": "Subscribe"
+    "submit": "Subscribe",
+    "send": "Send"
   },
   "call": {
     "telegram": "Telegram",

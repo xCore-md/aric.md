@@ -181,7 +181,8 @@
     "email_label": "Электронная почта",
     "phone_label": "Телефон",
     "comment_placeholder": "Комментарий",
-    "submit": "Подписаться"
+    "submit": "Подписаться",
+    "send": "Отправить"
   },
   "call": {
     "telegram": "Telegram",

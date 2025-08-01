@@ -181,7 +181,8 @@
     "email_label": "Adresa de email",
     "phone_label": "Telefon",
     "comment_placeholder": "Comentariu",
-    "submit": "Abonează-te"
+    "submit": "Abonează-te",
+    "send": "Trimite"
   },
   "call": {
     "telegram": "Telegram",
