@@ -4,6 +4,7 @@ export interface Ticket extends Timestamps {
   id: number;
   ticket_code: string;
   passenger_name: string;
+  direction: "forward" | "return";
   status: BookingStatusEnum;
   price_mdl: string;
   price_uah: string;

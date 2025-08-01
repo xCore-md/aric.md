@@ -44,6 +44,8 @@
     "additional_info": "Регулярные рейсы, комфортабельные микроавтобусы и гибкое расписание!",
     "departure_city": "Город отправления",
     "arrival_city": "Город прибытия",
+    "departure_city_placeholder": "Город отправления (минимум 3 символа)",
+    "arrival_city_placeholder": "Город прибытия (минимум 3 символа)",
     "departure_date": "Дата отправления",
     "return_date": "Дата возвращения",
     "passengers": "Пассажиры",
@@ -331,6 +333,10 @@
   "$Website": "Website",
   "$Comerciant": "Коммерсант",
   "$Descriere": "Описание",
+  "$Bilete dus": "Билеты прямого рейса",
+  "$Bilete retur": "Билеты обратного рейса",
+  "$You are logged out": "Вы разлогинены",
+  "$Doriți să anulați biletele?": "Вы хотите отменить билеты?",
   "cookies": {
     "message": "Этот сайт использует файлы cookie для улучшения работы.",
     "ok": "OK"

@@ -43,6 +43,7 @@ interface SelectCityProps extends IProps {
     value: string;
     label: string;
   }[];
+  onSearch?: (value: string) => void;
 }
 
 export const SearchTicketForm: React.FC<{
@@ -64,6 +65,9 @@ export const SearchTicketForm: React.FC<{
     canSearch,
   } = useTicketForm();
 
+  const [fromStationSearch, setFromStationSearch] = React.useState("");
+  const [toStationSearch, setToStationSearch] = React.useState("");
+
   const handleSubmit = () => {
     if (!canSearch) return;
     onSubmit({
@@ -76,8 +80,14 @@ export const SearchTicketForm: React.FC<{
   };
 
   const { data: stations, isFetching: isStationsLoading } = useQuery({
-    queryKey: [QUERY_KEYS.searchStations],
-    queryFn: () => searchService.getStations(),
+    queryKey: [QUERY_KEYS.searchStations, fromStationSearch],
+    queryFn: () =>
+      searchService.getStations({
+        limit: 10,
+        ...(fromStationSearch.length >= 3
+          ? { search: fromStationSearch }
+          : {}),
+      }),
     refetchOnWindowFocus: false,
   });
 
@@ -86,10 +96,16 @@ export const SearchTicketForm: React.FC<{
     refetch: refetchStationsDestinations,
     isFetching: isStationsDestinationsLoading,
   } = useQuery({
-    queryKey: [QUERY_KEYS.searchStationsDestinations, fromStationId],
+    queryKey: [
+      QUERY_KEYS.searchStationsDestinations,
+      fromStationId,
+      toStationSearch,
+    ],
     queryFn: () =>
       searchService.getStationsDestinations({
         from_station_id: Number(fromStationId),
+        limit: 5,
+        ...(toStationSearch.length >= 3 ? { search: toStationSearch } : {}),
       }),
     enabled: !!fromStationId,
     refetchOnWindowFocus: false,
@@ -132,6 +148,7 @@ export const SearchTicketForm: React.FC<{
 
   React.useEffect(() => {
     if (fromStationId) {
+      setToStationSearch("");
       refetchStationsDestinations();
     }
   }, [fromStationId]);
@@ -159,7 +176,7 @@ export const SearchTicketForm: React.FC<{
       <CardContent className="">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <SelectCity
-            placeholder={t("booking.departure_city")}
+            placeholder={t("booking.departure_city_placeholder")}
             value={String(fromStationId)}
             setValue={(value) => setFromStationId(+value)}
             data={
@@ -169,10 +186,11 @@ export const SearchTicketForm: React.FC<{
               })) || []
             }
             loading={isStationsLoading}
+            onSearch={setFromStationSearch}
           />
 
           <SelectCity
-            placeholder={t("booking.arrival_city")}
+            placeholder={t("booking.arrival_city_placeholder")}
             value={String(toStationId)}
             setValue={(value) => setToStationId(+value)}
             data={
@@ -183,6 +201,7 @@ export const SearchTicketForm: React.FC<{
             }
             disabled={!fromStationId}
             loading={isStationsDestinationsLoading}
+            onSearch={setToStationSearch}
           />
 
           <SelectDate
@@ -232,6 +251,7 @@ const SelectCity: React.FC<SelectCityProps> = ({
   data,
   disabled,
   loading,
+  onSearch,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -273,7 +293,11 @@ const SelectCity: React.FC<SelectCityProps> = ({
             <div>📍</div>
             <input
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setInputValue(val);
+                onSearch?.(val);
+              }}
               ref={inputRef}
               type="text"
               placeholder={placeholder}
@@ -303,7 +327,9 @@ const SelectCity: React.FC<SelectCityProps> = ({
               key={index}
               onClick={() => {
                 setValue(String(item?.value));
+                setInputValue(item?.label);
                 setIsOpen(false);
+                onSearch?.("");
               }}
               type="button"
               className="hover:text-blue flex w-full p-2 text-left transition"

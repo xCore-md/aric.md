@@ -44,6 +44,8 @@
     "additional_info": "Curse regulate, microbuze confortabile și orare flexibile!",
     "departure_city": "Orașul de pornire",
     "arrival_city": "Orașul de sosire",
+    "departure_city_placeholder": "Orașul de pornire (minim 3 caractere)",
+    "arrival_city_placeholder": "Orașul de sosire (minim 3 caractere)",
     "departure_date": "Data plecării",
     "return_date": "Data retur",
     "passengers": "Pasageri",
@@ -331,6 +333,10 @@
   "$Website": "Website",
   "$Comerciant": "Comerciant",
   "$Descriere": "Descriere",
+  "$Bilete dus": "Bilete dus",
+  "$Bilete retur": "Bilete retur",
+  "$You are logged out": "Sunteți deconectat",
+  "$Doriți să anulați biletele?": "Doriți să anulați biletele?",
   "cookies": {
     "message": "Acest site utilizează cookie-uri pentru a vă îmbunătăți experiența.",
     "ok": "OK"

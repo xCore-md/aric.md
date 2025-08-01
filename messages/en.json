@@ -44,6 +44,8 @@
     "additional_info": "Regular trips, comfortable minibuses, and flexible schedules!",
     "departure_city": "Departure city",
     "arrival_city": "Arrival city",
+    "departure_city_placeholder": "Departure city (min 3 characters)",
+    "arrival_city_placeholder": "Arrival city (min 3 characters)",
     "departure_date": "Departure date",
     "return_date": "Return date",
     "passengers": "Passengers",
@@ -331,6 +333,10 @@
   "$Website": "Website",
   "$Comerciant": "Merchant",
   "$Descriere": "Description",
+  "$Bilete dus": "Outbound tickets",
+  "$Bilete retur": "Return tickets",
+  "$You are logged out": "You are logged out",
+  "$Doriți să anulați biletele?": "Do you want to cancel the tickets?",
   "cookies": {
     "message": "This website uses cookies to enhance your experience.",
     "ok": "OK"

@@ -31,7 +31,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { profileService } from "@/services/profile.service";
 import { useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
-import { MOLDOVA_PHONE_CODE } from "@/utils/constants";
+import { MOLDOVA_PHONE_CODE, AUTH_SUCCESS_EVENT } from "@/utils/constants";
 import { formatTime } from "@/utils";
 import { cn } from "@/lib/utils";
 
@@ -91,6 +91,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
   const mutationVerifyCode = useMutation({
     mutationFn: (data: VerifyCodePayload) => authService.verify(data),
     onSuccess: async (res) => {
+      window.dispatchEvent(new Event(AUTH_SUCCESS_EVENT));
       if (res?.data?.user && !res?.data?.user?.email) {
         setStep("email");
       } else {

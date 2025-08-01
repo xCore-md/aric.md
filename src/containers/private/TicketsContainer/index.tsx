@@ -188,329 +188,372 @@ export const TicketsContainer: React.FC = () => {
         ? Array.from({ length: 5 }).map((_, index) => (
             <div key={index} className="skeleton h-40" />
           ))
-        : bookings?.data?.map(
-            (booking) =>
-              booking?.status !== BookingStatusEnum.Draft && (
-                <div key={booking.id} className="mb-16">
-                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                    <div className="border-platinum bg-card -mb-px flex h-full items-center gap-4 rounded-t-xl border-x border-t p-4 text-lg lg:max-w-max">
-                      <div className="font-semibold">
-                        <div>
-                          {getLocalizedField(
-                            booking?.station_from!,
-                            "name",
-                            locale,
-                          )}
-                        </div>
+        : bookings?.data?.map((booking) => {
+            if (booking?.status === BookingStatusEnum.Draft) return null;
 
-                        <div className="text-text-gray text-base font-normal">
-                          {
-                            formatUTC(booking?.departure_datetime, {
-                              dateFormat: "d MMMM yyyy, HH:mm",
-                            })?.date
-                          }
-                        </div>
-                      </div>
+             const forwardTickets =
+               booking.tickets?.filter((t) => t.direction === "forward") || [];
+             const returnTickets =
+               booking.tickets?.filter((t) => t.direction === "return") || [];
 
-                      <MoveRight className="text-blue flex-none" />
+             const forwardSegment = {
+               from: booking?.station_from!,
+               to: booking?.station_to!,
+               departure: booking?.departure_datetime,
+               arrival: booking?.arrival_datetime,
+             };
 
-                      <div className="font-semibold">
-                        <div>
-                          {getLocalizedField(
-                            booking?.station_to!,
-                            "name",
-                            locale,
-                          )}
-                        </div>
+             let returnSegment: typeof forwardSegment | undefined;
+             if (booking?.return_trip && returnTickets.length) {
+               const stations = booking.return_trip.route?.stations;
+               returnSegment = {
+                 from: stations?.[0],
+                 to: stations?.[stations.length - 1],
+                 departure: booking.return_trip.departure_datetime,
+                 arrival: booking.return_trip.arrival_datetime,
+               };
+             }
 
-                        <div className="text-text-gray text-base font-normal">
-                          {
-                            formatUTC(booking?.arrival_datetime, {
-                              dateFormat: "d MMMM yyyy, HH:mm",
-                            })?.date
-                          }
-                        </div>
-                      </div>
-                    </div>
+               const showPayActions = booking?.tickets?.some(
+                 (t) => t.status === BookingStatusEnum.Reserved,
+               );
 
-                    {booking?.tickets?.some((t) => t.status === BookingStatusEnum.Reserved) && (
-                      <div className="border-platinum bg-card flex flex-wrap gap-4 border-x border-t p-4 lg:flex-row-reverse lg:border-none lg:bg-transparent lg:p-0">
-                        <Dialog
-                          open={payBookingId === booking.id}
-                          onOpenChange={(o) => setPayBookingId(o ? booking.id : null)}
-                        >
-                          <DialogTrigger asChild>
-                            <Button onClick={() => setPayBookingId(booking.id)}>
-                              {t("$Achită toate")}
-                              <ChevronRightIcon />
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader className="sr-only">
-                              <DialogTitle />
-                              <DialogDescription />
-                            </DialogHeader>
-                            <PayForm
-                              id={booking.id}
-                              mode={booking.tickets.every((t) => t.status === BookingStatusEnum.Reserved) ? "booking" : "unpaid"}
-                              onClose={() => setPayBookingId(null)}
-                            />
-                          </DialogContent>
-                        </Dialog>
+               const renderTicket = (ticket: any) => (
+                 <div key={ticket.id} className="space-y-4">
+                   <div className="bg-back flex flex-wrap items-center justify-between gap-6 rounded-xl p-4 lg:flex-nowrap">
+                     <div className="space-y-1">
+                       <div className="text-text-gray text-sm">
+                         ID #{ticket?.ticket_code}
+                       </div>
+                       <TicketStatusBadge status={ticket?.status} />
+                     </div>
 
-                        <DownloadTicketButton
-                          mode="booking"
-                          variant="reverse"
-                          bookingId={booking?.id}
-                        />
+                     <Separator
+                       orientation="vertical"
+                       className="hidden !h-14 md:block"
+                     />
 
-                        <Dialog
-                          open={openBookingId === booking.id}
-                          onOpenChange={(o) =>
-                            setOpenBookingId(o ? booking.id : null)
-                          }
-                        >
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="link"
-                              onClick={() => setOpenBookingId(booking.id)}
-                            >
-                              {t("$Anulează biletele")}
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader className="sr-only">
-                              <DialogTitle />
-                              <DialogDescription />
-                            </DialogHeader>
+                     <div className="xs:flex-row flex flex-col gap-2 sm:gap-8">
+                       <div className="flex flex-none gap-4">
+                         <div className="flex size-9 items-center justify-center rounded-md border bg-white">
+                           <User />
+                         </div>
+                         <div>
+                           <div className="text-text-gray text-xs">
+                             {t("$Pasager")}
+                           </div>
+                           <div className="-mt-1 text-lg font-semibold">
+                             {ticket?.passenger_name}
+                           </div>
+                         </div>
+                       </div>
 
-                            <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
-                              <Image
-                                src={logo.src}
-                                alt="Aric.md"
-                                width={logo.width}
-                                height={logo.height}
-                                className="mb-12 w-24"
-                              />
+                       <div className="flex flex-none gap-4">
+                         <div className="flex size-9 items-center justify-center rounded-md border bg-white">
+                           <Wallet />
+                         </div>
+                         <div>
+                           <div className="text-text-gray text-xs">
+                             {t("$Preț")}
+                           </div>
+                           <div className="-mt-1 text-lg font-semibold">
+                             {formatCurrency(getAmountByCurrency(ticket))}
+                           </div>
+                         </div>
+                       </div>
+                     </div>
 
-                              <div className="h2">{t("$Doriți să anulați biletul?")}</div>
+                     <div className="ml-auto flex flex-wrap gap-4 sm:flex-nowrap lg:flex-col xl:flex-row">
+                       <Dialog
+                         open={openTicketId === ticket.id}
+                         onOpenChange={(o) =>
+                           setOpenTicketId(o ? ticket.id : null)
+                         }
+                       >
+                         <DialogTrigger asChild>
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={() => setOpenTicketId(ticket.id)}
+                           >
+                             <Ban />
+                             {t("$Anulează")}
+                           </Button>
+                         </DialogTrigger>
+                         <DialogContent>
+                           <DialogHeader className="sr-only">
+                             <DialogTitle />
+                             <DialogDescription />
+                           </DialogHeader>
 
-                              <div className="text-text-gray mb-12 text-lg">
-                                {t(
-                                  "$În funcție de timpul rămas până la plecare, există o taxă de reținere pentru bilet – o sumă care este reținută de la pasager în cazul returnării biletului"
-                                )}
-                              </div>
+                           <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
+                             <Image
+                               src={logo.src}
+                               alt="Aric.md"
+                               width={logo.width}
+                               height={logo.height}
+                               className="mb-12 w-24"
+                             />
 
-                              <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
-                                <div className="text-left">
-                                  <div className="font-semibold">
-                                    {t("$Nr Invoice")}
-                                  </div>
-                                  <div className="text-text-gray">
-                                    {booking?.payment?.external_id || booking.id}
-                                  </div>
-                                </div>
+                             <div className="h2">
+                               {t("$Doriți să anulați biletul?")}
+                             </div>
 
-                                <div className="text-right">
-                                  <div className="font-semibold">
-                                    {t("$Metoda de plată")}
-                                  </div>
-                                  <div className="text-text-gray">
-                                    {booking?.payment?.method?.toUpperCase()}
-                                  </div>
-                                </div>
-                              </div>
+                             <div className="text-text-gray mb-12 text-lg">
+                               {t(
+                                 "$În funcție de timpul rămas până la plecare, există o taxă de reținere pentru bilet – o sumă care este reținută de la pasager în cazul returnării biletului",
+                               )}
+                             </div>
 
-                              <Button
-                                size="lg"
-                                className="w-full"
-                                onClick={() => bookingRefund.mutate(booking.id)}
-                                disabled={bookingRefund.isPending}
-                              >
-                                {bookingRefund.isPending ? (
-                                  <LoadingSpinner />
-                                ) : (
-                                  <>
-                                    {t("$Anulează biletul")}
-                                    <ChevronRightIcon />
-                                  </>
-                                )}
-                              </Button>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      </div>
-                    )}
-                  </div>
+                             <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
+                               <div className="text-left">
+                                 <div className="font-semibold">
+                                   {t("$Nr Invoice")}
+                                 </div>
+                                 <div className="text-text-gray">
+                                   {ticket?.booking?.payment?.external_id || ticket.id}
+                                 </div>
+                               </div>
 
-                  <Card className="ring-platinum rounded-tl-none rounded-tr-none ring ring-inset lg:rounded-tr-xl">
-                    <CardContent className="space-y-4">
-                      {booking?.tickets?.map((ticket) => (
-                        <div key={ticket.id} className="space-y-4">
-                          <div className="bg-back flex flex-wrap items-center justify-between gap-6 rounded-xl p-4 lg:flex-nowrap">
-                            <div className="space-y-1">
-                              <div className="text-text-gray text-sm">
-                                ID #{ticket?.ticket_code}
-                              </div>
-                              <TicketStatusBadge status={ticket?.status} />
-                            </div>
+                               <div className="text-right">
+                                 <div className="font-semibold">
+                                   {t("$Metoda de plată")}
+                                 </div>
+                                 <div className="text-text-gray">
+                                   {ticket?.booking?.payment?.method?.toUpperCase()}
+                                 </div>
+                               </div>
+                             </div>
 
-                            <Separator
-                              orientation="vertical"
-                              className="hidden !h-14 md:block"
-                            />
+                             <Button
+                               size="lg"
+                               className="w-full"
+                               onClick={() => ticketRefund.mutate(ticket.id)}
+                               disabled={ticketRefund.isPending}
+                             >
+                               {ticketRefund.isPending ? (
+                                 <LoadingSpinner />
+                               ) : (
+                                 <>
+                                   {t("$Anulează biletul")}
+                                   <ChevronRightIcon />
+                                 </>
+                               )}
+                             </Button>
+                           </div>
+                         </DialogContent>
+                       </Dialog>
 
-                            <div className="xs:flex-row flex flex-col gap-2 sm:gap-8">
-                              <div className="flex flex-none gap-4">
-                                <div className="flex size-9 items-center justify-center rounded-md border bg-white">
-                                  <User />
-                                </div>
-                                <div>
-                                  <div className="text-text-gray text-xs">
-                                    {t("$Pasager")}
-                                  </div>
-                                  <div className="-mt-1 text-lg font-semibold">
-                                    {ticket?.passenger_name}
-                                  </div>
-                                </div>
-                              </div>
+                       <DownloadTicketButton
+                         mode="ticket"
+                         ticketId={ticket.id}
+                         size="sm"
+                         variant="outline"
+                       />
 
-                              <div className="flex flex-none gap-4">
-                                <div className="flex size-9 items-center justify-center rounded-md border bg-white">
-                                  <Wallet />
-                                </div>
-                                <div>
-                                  <div className="text-text-gray text-xs">
-                                    {t("$Preț")}
-                                  </div>
-                                  <div className="-mt-1 text-lg font-semibold">
-                                    {formatCurrency(
-                                      getAmountByCurrency(ticket),
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
+                       {ticket.status === BookingStatusEnum.Reserved && (
+                         <Dialog
+                           open={payTicketId === ticket.id}
+                           onOpenChange={(o) =>
+                             setPayTicketId(o ? ticket.id : null)
+                           }
+                         >
+                           <DialogTrigger asChild>
+                             <Button
+                               size="sm"
+                               variant="reverse"
+                               onClick={() => setPayTicketId(ticket.id)}
+                             >
+                               {t("$Achită")}
+                               <ChevronRightIcon />
+                             </Button>
+                           </DialogTrigger>
+                           <DialogContent>
+                             <DialogHeader className="sr-only">
+                               <DialogTitle />
+                               <DialogDescription />
+                             </DialogHeader>
+                             <PayForm
+                               id={ticket.id}
+                               mode="ticket"
+                               onClose={() => setPayTicketId(null)}
+                             />
+                           </DialogContent>
+                         </Dialog>
+                       )}
+                     </div>
+                   </div>
+                 </div>
+               );
 
-                            <div className="ml-auto flex flex-wrap gap-4 sm:flex-nowrap lg:flex-col xl:flex-row">
-                              <Dialog
-                                open={openTicketId === ticket.id}
-                                onOpenChange={(o) =>
-                                  setOpenTicketId(o ? ticket.id : null)
-                                }
-                              >
-                                <DialogTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => setOpenTicketId(ticket.id)}
-                                  >
-                                    <Ban />
-                                    {t("$Anulează")}
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                  <DialogHeader className="sr-only">
-                                    <DialogTitle />
-                                    <DialogDescription />
-                                  </DialogHeader>
+               return (
+                 <div key={booking.id} className="mb-16 space-y-16">
+                   {forwardTickets.length > 0 && (
+                     <div>
+                       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                         <div>
+                           <div className="font-semibold mb-4">{t("$Bilete dus")}</div>
+                           <div className="border-platinum bg-card flex h-full items-center gap-4 border-x border-t p-4 text-lg lg:max-w-max rounded-t-xl -mb-px">
+                             <div className="font-semibold">
+                               <div>{getLocalizedField(forwardSegment.from!, "name", locale)}</div>
+                               <div className="text-text-gray text-base font-normal">
+                                 {formatUTC(forwardSegment.departure, { dateFormat: "d MMMM yyyy, HH:mm" })?.date}
+                               </div>
+                             </div>
+                             <MoveRight className="text-blue flex-none" />
+                             <div className="font-semibold">
+                               <div>{getLocalizedField(forwardSegment.to!, "name", locale)}</div>
+                               <div className="text-text-gray text-base font-normal">
+                                 {formatUTC(forwardSegment.arrival, { dateFormat: "d MMMM yyyy, HH:mm" })?.date}
+                               </div>
+                             </div>
+                           </div>
+                         </div>
 
-                                  <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
-                                    <Image
-                                      src={logo.src}
-                                      alt="Aric.md"
-                                      width={logo.width}
-                                      height={logo.height}
-                                      className="mb-12 w-24"
-                                    />
+                         {showPayActions && (
+                           <div className="border-platinum bg-card flex flex-wrap gap-4 border-x border-t p-4 lg:flex-row-reverse lg:border-none lg:bg-transparent lg:p-0">
+                             <Dialog
+                               open={payBookingId === booking.id}
+                               onOpenChange={(o) => setPayBookingId(o ? booking.id : null)}
+                             >
+                               <DialogTrigger asChild>
+                                 <Button onClick={() => setPayBookingId(booking.id)}>
+                                   {t("$Achită toate")}
+                                   <ChevronRightIcon />
+                                 </Button>
+                               </DialogTrigger>
+                               <DialogContent>
+                                 <DialogHeader className="sr-only">
+                                   <DialogTitle />
+                                   <DialogDescription />
+                                 </DialogHeader>
+                                 <PayForm
+                                   id={booking.id}
+                                   mode={booking.tickets.every((t) => t.status === BookingStatusEnum.Reserved) ? "booking" : "unpaid"}
+                                   onClose={() => setPayBookingId(null)}
+                                 />
+                               </DialogContent>
+                             </Dialog>
 
-                                    <div className="h2">
-                                      {t("$Doriți să anulați biletul?")}
-                                    </div>
+                             <DownloadTicketButton
+                               mode="booking"
+                               variant="reverse"
+                               bookingId={booking?.id}
+                             />
 
-                                    <div className="text-text-gray mb-12 text-lg">
-                                      {t(
-                                        "$În funcție de timpul rămas până la plecare, există o taxă de reținere pentru bilet – o sumă care este reținută de la pasager în cazul returnării biletului"
-                                      )}
-                                    </div>
+                             <Dialog
+                               open={openBookingId === booking.id}
+                               onOpenChange={(o) => setOpenBookingId(o ? booking.id : null)}
+                             >
+                               <DialogTrigger asChild>
+                                 <Button
+                                   variant="link"
+                                   onClick={() => setOpenBookingId(booking.id)}
+                                 >
+                                   {t("$Anulează biletele")}
+                                 </Button>
+                               </DialogTrigger>
+                               <DialogContent>
+                                 <DialogHeader className="sr-only">
+                                   <DialogTitle />
+                                   <DialogDescription />
+                                 </DialogHeader>
 
-                                    <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
-                                      <div className="text-left">
-                                        <div className="font-semibold">
-                                          {t("$Nr Invoice")}
-                                        </div>
-                                        <div className="text-text-gray">
-                                          {ticket?.booking?.payment?.external_id || ticket.id}
-                                        </div>
-                                      </div>
+                                 <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
+                                   <Image
+                                     src={logo.src}
+                                     alt="Aric.md"
+                                     width={logo.width}
+                                     height={logo.height}
+                                     className="mb-12 w-24"
+                                   />
 
-                                      <div className="text-right">
-                                        <div className="font-semibold">
-                                          {t("$Metoda de plată")}
-                                        </div>
-                                        <div className="text-text-gray">
-                                          {ticket?.booking?.payment?.method?.toUpperCase()}
-                                        </div>
-                                      </div>
-                                    </div>
+                                   <div className="h2">{t("$Doriți să anulați biletele?")}</div>
 
-                                    <Button
-                                      size="lg"
-                                      className="w-full"
-                                      onClick={() => ticketRefund.mutate(ticket.id)}
-                                      disabled={ticketRefund.isPending}
-                                    >
-                                      {ticketRefund.isPending ? (
-                                        <LoadingSpinner />
-                                      ) : (
-                                        <>
-                                          {t("$Anulează biletul")}
-                                          <ChevronRightIcon />
-                                        </>
-                                      )}
-                                    </Button>
-                                  </div>
-                                </DialogContent>
-                              </Dialog>
+                                   <div className="text-text-gray mb-12 text-lg">
+                                     {t(
+                                       "$În funcție de timpul rămas până la plecare, există o taxă de reținere pentru bilet – o sumă care este reținută de la pasager în cazul returnării biletului",
+                                     )}
+                                   </div>
 
-                              <DownloadTicketButton
-                                mode="ticket"
-                                ticketId={ticket.id}
-                                size="sm"
-                                variant="outline"
-                              />
+                                   <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
+                                     <div className="text-left">
+                                       <div className="font-semibold">{t("$Nr Invoice")}</div>
+                                       <div className="text-text-gray">
+                                         {booking?.payment?.external_id || booking.id}
+                                       </div>
+                                     </div>
 
-                              {ticket.status === BookingStatusEnum.Reserved && (
-                                <Dialog
-                                  open={payTicketId === ticket.id}
-                                  onOpenChange={(o) => setPayTicketId(o ? ticket.id : null)}
-                                >
-                                  <DialogTrigger asChild>
-                                    <Button size="sm" variant="reverse" onClick={() => setPayTicketId(ticket.id)}>
-                                      {t("$Achită")}
-                                      <ChevronRightIcon />
-                                    </Button>
-                                  </DialogTrigger>
-                                  <DialogContent>
-                                    <DialogHeader className="sr-only">
-                                      <DialogTitle />
-                                      <DialogDescription />
-                                    </DialogHeader>
-                                    <PayForm id={ticket.id} mode="ticket" onClose={() => setPayTicketId(null)} />
-                                  </DialogContent>
-                                </Dialog>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-                </div>
-              ),
-          )}
+                                     <div className="text-right">
+                                       <div className="font-semibold">{t("$Metoda de plată")}</div>
+                                       <div className="text-text-gray">
+                                         {booking?.payment?.method?.toUpperCase()}
+                                       </div>
+                                     </div>
+                                   </div>
 
-      <PaginationUI
+                                   <Button
+                                     size="lg"
+                                     className="w-full"
+                                     onClick={() => bookingRefund.mutate(booking.id)}
+                                     disabled={bookingRefund.isPending}
+                                   >
+                                     {bookingRefund.isPending ? (
+                                       <LoadingSpinner />
+                                     ) : (
+                                       <>
+                                         {t("$Anulează biletul")}
+                                         <ChevronRightIcon />
+                                       </>
+                                     )}
+                                   </Button>
+                                 </div>
+                               </DialogContent>
+                             </Dialog>
+                           </div>
+                         )}
+                       </div>
+
+                       <Card className="ring-platinum rounded-tl-none rounded-tr-none ring ring-inset lg:rounded-tr-xl">
+                         <CardContent className="space-y-4">
+                           {forwardTickets.map(renderTicket)}
+                         </CardContent>
+                       </Card>
+                     </div>
+                   )}
+
+                   {returnTickets.length > 0 && returnSegment && (
+                     <div>
+                       <div className="font-semibold mb-4">{t("$Bilete retur")}</div>
+                       <div className="border-platinum bg-card flex h-full items-center gap-4 border-x border-t p-4 text-lg lg:max-w-max rounded-t-xl -mb-px">
+                         <div className="font-semibold">
+                           <div>{getLocalizedField(returnSegment.from!, "name", locale)}</div>
+                           <div className="text-text-gray text-base font-normal">
+                             {formatUTC(returnSegment.departure, { dateFormat: "d MMMM yyyy, HH:mm" })?.date}
+                           </div>
+                         </div>
+                         <MoveRight className="text-blue flex-none" />
+                         <div className="font-semibold">
+                           <div>{getLocalizedField(returnSegment.to!, "name", locale)}</div>
+                           <div className="text-text-gray text-base font-normal">
+                             {formatUTC(returnSegment.arrival, { dateFormat: "d MMMM yyyy, HH:mm" })?.date}
+                           </div>
+                         </div>
+                       </div>
+
+                       <Card className="ring-platinum rounded-tl-none rounded-tr-none ring ring-inset lg:rounded-tr-xl">
+                         <CardContent className="space-y-4">
+                           {returnTickets.map(renderTicket)}
+                         </CardContent>
+                       </Card>
+                     </div>
+                   )}
+                 </div>
+               );
+                })
+        }
+
+        <PaginationUI
         totalItems={bookings?.meta?.total}
         page={page}
         perPage={per_page}
@@ -521,153 +564,3 @@ export const TicketsContainer: React.FC = () => {
   );
 };
 
-{
-  /* <div key={ticket.id} className="space-y-4">
-<div className="bg-back flex flex-wrap items-center justify-between gap-6 rounded-xl p-6 lg:flex-nowrap">
-  <div>
-    <div className="text-text-gray text-sm">
-      ID #{ticket?.ticket_code}
-    </div>
-    <TicketStatusBadge status={ticket?.status} />
-  </div>
-
-  <Separator
-    orientation="vertical"
-    className="hidden !h-8 sm:block md:!h-14"
-  />
-
-  <div className="space-y-4">
-    <div className="flex items-center gap-4">
-      <div>
-        <div className="text-text-gray mb-2">Chișinău</div>
-        <div className="font-semibold">02 Mai 2025</div>
-        <div>12:00 pm</div>
-      </div>
-
-      <MoveRight />
-
-      <div>
-        <div className="text-text-gray mb-2">Chișinău</div>
-        <div className="font-semibold">02 Mai 2025</div>
-        <div>12:00 pm</div>
-      </div>
-    </div>
-
-    <div className="flex items-center gap-4">
-      <div>
-        <div className="font-semibold">02 Mai 2025</div>
-        <div>12:00 pm</div>
-      </div>
-
-      <MoveRight />
-
-      <div>
-        <div className="font-semibold">02 Mai 2025</div>
-        <div>12:00 pm</div>
-      </div>
-    </div>
-  </div>
-
-  <Separator
-    orientation="vertical"
-    className="hidden !h-14 lg:block"
-  />
-
-  <div className="xs:flex-row flex flex-col gap-2 sm:gap-8">
-    <div className="flex flex-none gap-4">
-      <div className="flex size-9 items-center justify-center rounded-md border bg-white">
-        <User />
-      </div>
-      <div>
-        <div className="text-text-gray text-xs">
-          Pasageri
-        </div>
-        <div className="-mt-1 text-lg font-semibold">1</div>
-      </div>
-    </div>
-
-    <div className="flex flex-none gap-4">
-      <div className="flex size-9 items-center justify-center rounded-md border bg-white">
-        <Wallet />
-      </div>
-      <div>
-        <div className="text-text-gray text-xs">Preț</div>
-        <div className="-mt-1 text-lg font-semibold">
-          {formatCurrency(getAmountByCurrency(ticket))}
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <Separator
-    orientation="vertical"
-    className="hidden !h-14 md:block"
-  />
-
-  <div className="flex flex-wrap gap-4 sm:flex-nowrap lg:flex-col xl:flex-row">
-    <Button variant="reverse">Descarcă bilet</Button>
-
-    <Button>
-      {t("$Achită")}
-      <ChevronRightIcon />
-    </Button>
-
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="link">{t("$Anulează")}</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader className="sr-only">
-          <DialogTitle />
-          <DialogDescription />
-        </DialogHeader>
-
-        <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
-          <Image
-            src={logo.src}
-            alt="Aric.md"
-            width={logo.width}
-            height={logo.height}
-            className="mb-12 w-24"
-          />
-
-          <div className="h2">
-            Doriți să anulați biletul?
-          </div>
-
-          <div className="text-text-gray mb-12 text-lg">
-            În funcție de timpul rămas până la plecare,
-            există o taxă de reținere pentru bilet – o sumă
-            care este reținută de la pasager în cazul
-            returnării biletului.
-          </div>
-
-          <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
-            <div className="text-left">
-              <div className="font-semibold">
-                Nr. Invoice
-              </div>
-              <div className="text-text-gray">
-                INV567489240UI
-              </div>
-            </div>
-
-            <div className="text-right">
-              <div className="font-semibold">
-                Metoda de plată
-              </div>
-              <div className="text-text-gray">MAIB</div>
-            </div>
-          </div>
-
-          <Button size="lg" className="w-full">
-            Anulează biletul
-            <ChevronRightIcon />
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  </div>
-</div>
-</div> */
-}

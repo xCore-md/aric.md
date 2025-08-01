@@ -116,3 +116,5 @@ export const CONTACTS = {
 export const AVAILABLE_CURRENCIES = Object.values(CurrencyEnum);
 export const AVAILABLE_LANGUAGES = Object.values(LanguageEnum);
 export const CURRENCIES = Object.values(CurrencyEnum);
+
+export const AUTH_SUCCESS_EVENT = "authSuccess";

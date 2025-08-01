@@ -4,6 +4,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTranslations } from "use-intl";
 import { cn } from "@/lib/utils";
+import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 
 export default function PrivateLayout({
   children,
@@ -12,6 +13,17 @@ export default function PrivateLayout({
 }) {
   const t = useTranslations();
   const pathname = usePathname();
+  const { isLoading, isAuthenticated } = useCustomerAuth();
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="container mt-4 mb-20">{t("$You are logged out")}</div>
+    );
+  }
 
   return (
     <div className="container mt-4 mb-20">
