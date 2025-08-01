@@ -328,5 +328,9 @@
   "$Vezi biletele": "Mergi la bilete",
   "$Website": "Website",
   "$Comerciant": "Comerciant",
-  "$Descriere": "Descriere"
+  "$Descriere": "Descriere",
+  "cookies": {
+    "message": "Acest site utilizează cookie-uri pentru a vă îmbunătăți experiența.",
+    "ok": "OK"
+  }
 }

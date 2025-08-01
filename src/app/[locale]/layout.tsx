@@ -7,6 +7,7 @@ import { Footer } from "@/components/shared/Footer";
 import "@/assets/styles/globals.css";
 import { Header } from "@/components/shared/Header";
 import { Providers } from "@/providers";
+import { CookieConsent } from "@/components/shared/CookieConsent";
 
 
 export const metadata: Metadata = {
@@ -55,6 +56,7 @@ export default async function LocaleLayout({
                 {modal}
               </main>
               <Footer />
+              <CookieConsent />
             </div>
           </Providers>
         </NextIntlClientProvider>

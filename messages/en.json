@@ -328,5 +328,9 @@
   "$Vezi biletele": "Go to tickets",
   "$Website": "Website",
   "$Comerciant": "Merchant",
-  "$Descriere": "Description"
+  "$Descriere": "Description",
+  "cookies": {
+    "message": "This website uses cookies to enhance your experience.",
+    "ok": "OK"
+  }
 }

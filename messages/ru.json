@@ -328,5 +328,9 @@
   "$Vezi biletele": "Перейти к билетам",
   "$Website": "Website",
   "$Comerciant": "Коммерсант",
-  "$Descriere": "Описание"
+  "$Descriere": "Описание",
+  "cookies": {
+    "message": "Этот сайт использует файлы cookie для улучшения работы.",
+    "ok": "OK"
+  }
 }
