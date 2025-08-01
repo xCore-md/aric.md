@@ -256,14 +256,15 @@ const SelectCity: React.FC<SelectCityProps> = ({
   const [isOpen, setIsOpen] = React.useState(false);
 
   React.useEffect(() => {
-    if (loading || disabled) {
+    if (disabled) {
       setIsOpen(false);
     }
-  }, [loading, disabled]);
+  }, [disabled]);
   const [inputValue, setInputValue] = React.useState(
     data?.find((item) => item.value === value)?.label || "",
   );
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [searchValue, setSearchValue] = React.useState("");
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (value) {
@@ -275,8 +276,12 @@ const SelectCity: React.FC<SelectCityProps> = ({
     <Popover
       open={isOpen}
       onOpenChange={(open) => {
-        if (!loading && !disabled) {
+        if (!disabled) {
           setIsOpen(open);
+          if (!open) {
+            setSearchValue("");
+            onSearch?.("");
+          }
         }
       }}
     >
@@ -293,15 +298,10 @@ const SelectCity: React.FC<SelectCityProps> = ({
             <div>📍</div>
             <input
               value={inputValue}
-              onChange={(e) => {
-                const val = e.target.value;
-                setInputValue(val);
-                onSearch?.(val);
-              }}
-              ref={inputRef}
+              readOnly
               type="text"
               placeholder={placeholder}
-              className="focus:placeholder:text-platinum placeholder:text-text-gray h-full w-full text-black focus:outline-none"
+              className="focus:placeholder:text-platinum placeholder:text-text-gray h-full w-full cursor-pointer text-black focus:outline-none"
             />
             {!loading && <ChevronRightIcon className="size-5 flex-none" />}
             {loading && <LoadingSpinner className="ml-2" />}
@@ -314,9 +314,21 @@ const SelectCity: React.FC<SelectCityProps> = ({
         className="p-2"
         onOpenAutoFocus={(event) => {
           event.preventDefault();
-          inputRef.current?.focus();
+          searchInputRef.current?.focus();
         }}
       >
+        <input
+          ref={searchInputRef}
+          value={searchValue}
+          onChange={(e) => {
+            const val = e.target.value;
+            setSearchValue(val);
+            onSearch?.(val);
+          }}
+          type="text"
+          placeholder={placeholder}
+          className="mb-2 w-full rounded-md border px-2 py-1 text-sm focus:outline-none"
+        />
         {loading ? (
           <div className="flex justify-center p-2">
             <LoadingSpinner />
@@ -329,6 +341,7 @@ const SelectCity: React.FC<SelectCityProps> = ({
                 setValue(String(item?.value));
                 setInputValue(item?.label);
                 setIsOpen(false);
+                setSearchValue("");
                 onSearch?.("");
               }}
               type="button"
