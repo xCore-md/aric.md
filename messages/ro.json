@@ -208,7 +208,8 @@
     "title_add_email": "Adaugă adresa de e-mail",
     "title_sign_in": "Conectează-te",
     "phone_prompt": "Pentru autentificare îți vom trimite o parolă de unică folosință pe numărul tău de telefon mobil",
-    "send_otp": "Trimite OTP"
+    "send_otp": "Trimite OTP",
+    "input_otp_phone": "Introduceți codul OTP trimis la"
   },
   "duration": {
     "hoursMinutes": "Durata {hours} ore {minutes} min",

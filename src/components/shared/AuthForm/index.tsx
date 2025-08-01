@@ -219,7 +219,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
             {step === "code" && (
               <>
                 <p className="text-text-gray mb-10">
-                  Introduceți codul OTP trimis la{" "}
+                  {t("auth.input_otp_phone")}{" "}
                   <span className="font-semibold text-black">
                     {MOLDOVA_PHONE_CODE + " " + phone}
                   </span>

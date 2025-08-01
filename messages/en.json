@@ -208,7 +208,8 @@
     "title_add_email": "Add email address",
     "title_sign_in": "Sign in",
     "phone_prompt": "We will send a one-time password to your mobile number",
-    "send_otp": "Send OTP"
+    "send_otp": "Send OTP",
+    "input_otp_phone": "Enter the OTP code sent to"
   },
   "duration": {
     "hoursMinutes": "Duration {hours} hours {minutes} min",

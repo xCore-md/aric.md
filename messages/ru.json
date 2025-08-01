@@ -208,7 +208,8 @@
     "title_add_email": "Добавить email",
     "title_sign_in": "Войти",
     "phone_prompt": "Для входа мы отправим одноразовый пароль на ваш номер телефона",
-    "send_otp": "Отправить OTP"
+    "send_otp": "Отправить OTP",
+    "input_otp_phone": "Введите код OTP, отправленный на"
   },
   "duration": {
     "hoursMinutes": "Длительность {hours} ч {minutes} мин",

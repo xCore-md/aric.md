@@ -612,19 +612,19 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                         </div>
                       </div>
                     </div>
-
-                    <div className="border-blue bg-back flex items-center justify-between gap-2 rounded-full border font-semibold">
-                      <div className="py-4 pl-6">{t("booking.total_price")}:</div>
-                      {isRecalculatingPrice ? (
-                        <div className="skeleton mr-2 h-10 w-32 rounded-full" />
-                      ) : (
-                        <div className="pr-6">
-                          {formatCurrency(finalTotalPrice || 0)}
-                        </div>
-                      )}
-                    </div>
                   </>
                 )}
+
+                <div className="border-blue bg-back flex items-center justify-between gap-2 rounded-full border font-semibold">
+                  <div className="py-4 pl-6">{t("booking.total_price")}:</div>
+                  {isRecalculatingPrice ? (
+                    <div className="skeleton mr-2 h-10 w-32 rounded-full" />
+                  ) : (
+                    <div className="pr-6">
+                      {formatCurrency(finalTotalPrice || 0)}
+                    </div>
+                  )}
+                </div>
 
                 <FormField
                   control={form.control}
