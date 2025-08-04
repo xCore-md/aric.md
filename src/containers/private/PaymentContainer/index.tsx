@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useTranslations } from "use-intl";
+import { useQueryState, parseAsString } from "nuqs";
 import { PRIVATE_LINK, QUERY_KEYS } from "@/utils/constants";
 import { Card, CardContent } from "@/components/ui/card";
 import { DownloadPaymentButton } from "@/components/shared/DownloadPaymentButton";
@@ -9,16 +10,37 @@ import { paymentService } from "@/services/payment.service";
 import { usePagination } from "@/hooks/usePagination";
 import { PaginationUI } from "@/components/shared/pagination-ui";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const PaymentContainer: React.FC = () => {
   const t = useTranslations();
-  const { per_page, page, updateLimit, updatePage } = usePagination();
+  const tPaymentStatus = useTranslations("payment_status");
+  const { per_page, page, updateLimit, updatePage } = usePagination({
+    defaultLimit: 5,
+  });
   const { formatUTC } = useFormatUTCToLocal();
+  const [status, setStatus] = useQueryState(
+    "status",
+    parseAsString.withDefault("")
+  );
 
   const { data: payments, isLoading } = useQuery({
-    queryKey: [QUERY_KEYS.payments, page, per_page],
-    queryFn: () => paymentService.getAll({ page, per_page }),
+    queryKey: [QUERY_KEYS.payments, page, per_page, status],
+    queryFn: () =>
+      paymentService.getAll({
+        page,
+        per_page,
+        ...(status ? { status } : {}),
+      }),
   });
+
+  const totalPayments = payments?.meta?.total ?? payments?.total;
 
   return (
     <>
@@ -28,6 +50,28 @@ export const PaymentContainer: React.FC = () => {
 
       <Card className="ring-platinum ring ring-inset">
         <CardContent>
+          <div className="mb-4 flex justify-end">
+            <Select
+              value={status || "all"}
+              onValueChange={(v) => setStatus(v === "all" ? null : v)}
+            >
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder={tPaymentStatus("all") || undefined} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{tPaymentStatus("all")}</SelectItem>
+                <SelectItem value="success">
+                  {tPaymentStatus("success")}
+                </SelectItem>
+                <SelectItem value="pending">
+                  {tPaymentStatus("pending")}
+                </SelectItem>
+                <SelectItem value="failed">
+                  {tPaymentStatus("failed")}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <table className="table">
             <thead className="thead">
               <tr>
@@ -57,11 +101,7 @@ export const PaymentContainer: React.FC = () => {
                     <td>
                       {payment.amount} {payment.currency.toUpperCase()}
                     </td>
-                    <td>
-                      {payment.status === "pending"
-                        ? t("$Se procesează")
-                        : payment.status}
-                    </td>
+                    <td>{tPaymentStatus(payment.status as any)}</td>
                     <td>
                       <DownloadPaymentButton
                         paymentId={payment.id}
@@ -83,14 +123,16 @@ export const PaymentContainer: React.FC = () => {
         </CardContent>
       </Card>
 
-      {payments?.meta?.total ? (
+      {totalPayments ? (
         <div className="mt-6">
           <PaginationUI
-            totalItems={payments.meta.total}
+            totalItems={totalPayments}
             page={page}
             perPage={per_page}
             onPageChange={updatePage}
             onPageSizeChange={updateLimit}
+            pageSizeOptions={[5, 10, 15]}
+            showPageSize
           />
         </div>
       ) : null}

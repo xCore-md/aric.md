@@ -29,6 +29,7 @@ export const PaginationUI = ({
   onPageChange,
   onPageSizeChange,
   pageSizeOptions = [10, 20, 50, 100],
+  showPageSize = false,
   maxPageButtons = 5,
 }: PaginationUIProps) => {
   const totalPages = totalItems
@@ -54,7 +55,7 @@ export const PaginationUI = ({
   };
 
   return (
-    <div className="flex">
+    <div className="relative flex w-full items-center justify-center">
       {/* Pagination buttons */}
       <Pagination>
         <PaginationContent className="flex flex-wrap items-center gap-2">
@@ -115,25 +116,25 @@ export const PaginationUI = ({
       </Pagination>
 
       {/* Page size selector */}
-      <div className="text-muted-foreground hidden flex-none items-center gap-2 text-sm">
-        <span>Показать</span>
-        <Select
-          value={String(perPage)}
-          onValueChange={(v) => onPageSizeChange(1, parseInt(v))}
-        >
-          <SelectTrigger className="h-8 w-[80px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {pageSizeOptions.map((size) => (
-              <SelectItem key={size} value={String(size)}>
-                {size}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <span>на странице</span>
-      </div>
+      {showPageSize && (
+        <div className="absolute right-0">
+          <Select
+            value={String(perPage)}
+            onValueChange={(v) => onPageSizeChange(1, parseInt(v))}
+          >
+            <SelectTrigger className="h-8 w-[80px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {pageSizeOptions.map((size) => (
+                <SelectItem key={size} value={String(size)}>
+                  {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
     </div>
   );
 };

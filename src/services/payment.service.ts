@@ -10,7 +10,7 @@ type PaymentResponse = {
 class PaymentService {
   private clientApi = apiInstance;
 
-  getAll(params?: PaginationParams) {
+  getAll(params?: PaginationParams & { status?: string }) {
     return this.clientApi
       .get("customer/payments", { searchParams: { ...params } })
       .json<PaginatedResponse<Payment>>();

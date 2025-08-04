@@ -229,6 +229,13 @@
     "paid": "Оплачено",
     "cancelled": "Отменено"
   },
+  "payment_status": {
+    "all": "Все",
+    "pending": "Обработка",
+    "success": "Успешно",
+    "failed": "Ошибка",
+    "paid": "Оплачено"
+  },
   "trip_type": {
     "one-way": "В одну сторону",
     "round-trip": "Туда и обратно"
@@ -338,6 +345,9 @@
   "$Bilete retur": "Билеты обратного рейса",
   "$You are logged out": "Вы разлогинены",
   "$Doriți să anulați biletele?": "Вы хотите отменить билеты?",
+  "$Toți": "Все",
+  "$Adulți": "Взрослые",
+  "$Copii": "Дети",
   "cookies": {
     "message": "Этот сайт использует файлы cookie для улучшения работы.",
     "ok": "OK"

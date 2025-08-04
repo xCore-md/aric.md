@@ -1,6 +1,6 @@
 import { CurrencyEnum } from "./common.types";
 
-export type PaymentStatus = "pending" | "paid" | "failed";
+export type PaymentStatus = "pending" | "paid" | "failed" | "success";
 
 export enum PaymentMethodEnum {
   Cash = "cash",

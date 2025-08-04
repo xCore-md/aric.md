@@ -42,7 +42,9 @@ export const TicketsContainer: React.FC = () => {
   const locale = useLocale();
   const { formatUTC } = useFormatUTCToLocal();
   const { formatCurrency } = useCurrency();
-  const { per_page, page, updateLimit, updatePage } = usePagination();
+  const { per_page, page, updateLimit, updatePage } = usePagination({
+    defaultLimit: 5,
+  });
   const queryClient = useQueryClient();
 
   const [openBookingId, setOpenBookingId] = React.useState<number | null>(null);
@@ -214,9 +216,12 @@ export const TicketsContainer: React.FC = () => {
                };
              }
 
-               const showPayActions = booking?.tickets?.some(
-                 (t) => t.status === BookingStatusEnum.Reserved,
-               );
+              const showPayActions = booking?.tickets?.some(
+                (t) => t.status === BookingStatusEnum.Reserved,
+              );
+              const hasCancelledTicket = booking?.tickets?.some(
+                (t) => t.status === BookingStatusEnum.Cancelled,
+              );
 
                const renderTicket = (ticket: any) => (
                  <div key={ticket.id} className="space-y-4">
@@ -264,85 +269,87 @@ export const TicketsContainer: React.FC = () => {
                      </div>
 
                      <div className="ml-auto flex flex-wrap gap-4 sm:flex-nowrap lg:flex-col xl:flex-row">
-                       <Dialog
-                         open={openTicketId === ticket.id}
-                         onOpenChange={(o) =>
-                           setOpenTicketId(o ? ticket.id : null)
-                         }
-                       >
-                         <DialogTrigger asChild>
-                           <Button
-                             variant="ghost"
-                             size="sm"
-                             onClick={() => setOpenTicketId(ticket.id)}
-                           >
-                             <Ban />
-                             {t("$Anulează")}
-                           </Button>
-                         </DialogTrigger>
-                         <DialogContent>
-                           <DialogHeader className="sr-only">
-                             <DialogTitle />
-                             <DialogDescription />
-                           </DialogHeader>
-
-                           <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
-                             <Image
-                               src={logo.src}
-                               alt="Aric.md"
-                               width={logo.width}
-                               height={logo.height}
-                               className="mb-12 w-24"
-                             />
-
-                             <div className="h2">
-                               {t("$Doriți să anulați biletul?")}
-                             </div>
-
-                             <div className="text-text-gray mb-12 text-lg">
-                               {t(
-                                 "$În funcție de timpul rămas până la plecare, există o taxă de reținere pentru bilet – o sumă care este reținută de la pasager în cazul returnării biletului",
-                               )}
-                             </div>
-
-                             <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
-                               <div className="text-left">
-                                 <div className="font-semibold">
-                                   {t("$Nr Invoice")}
-                                 </div>
-                                 <div className="text-text-gray">
-                                   {ticket?.booking?.payment?.external_id || ticket.id}
-                                 </div>
-                               </div>
-
-                               <div className="text-right">
-                                 <div className="font-semibold">
-                                   {t("$Metoda de plată")}
-                                 </div>
-                                 <div className="text-text-gray">
-                                   {ticket?.booking?.payment?.method?.toUpperCase()}
-                                 </div>
-                               </div>
-                             </div>
-
+                       {ticket.status !== BookingStatusEnum.Cancelled && (
+                         <Dialog
+                           open={openTicketId === ticket.id}
+                           onOpenChange={(o) =>
+                             setOpenTicketId(o ? ticket.id : null)
+                           }
+                         >
+                           <DialogTrigger asChild>
                              <Button
-                               size="lg"
-                               className="w-full"
-                               onClick={() => ticketRefund.mutate(ticket.id)}
-                               disabled={ticketRefund.isPending}
+                               variant="ghost"
+                               size="sm"
+                               onClick={() => setOpenTicketId(ticket.id)}
                              >
-                               {ticketRefund.isPending ? (
-                                 <LoadingSpinner />
-                               ) : (
-                                 <>
-                                   {t("$Anulează biletul")}
-                                   <ChevronRightIcon />
-                                 </>
-                               )}
+                               <Ban />
+                               {t("$Anulează")}
                              </Button>
-                           </div>
-                         </DialogContent>
-                       </Dialog>
+                           </DialogTrigger>
+                           <DialogContent>
+                             <DialogHeader className="sr-only">
+                               <DialogTitle />
+                               <DialogDescription />
+                             </DialogHeader>
+
+                             <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
+                               <Image
+                                 src={logo.src}
+                                 alt="Aric.md"
+                                 width={logo.width}
+                                 height={logo.height}
+                                 className="mb-12 w-24"
+                               />
+
+                               <div className="h2">
+                                 {t("$Doriți să anulați biletul?")}
+                               </div>
+
+                               <div className="text-text-gray mb-12 text-lg">
+                                 {t(
+                                   "$În funcție de timpul rămas până la plecare, există o taxă de reținere pentru bilet – o sumă care este reținută de la pasager în cazul returnării biletului",
+                                 )}
+                               </div>
+
+                               <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
+                                 <div className="text-left">
+                                   <div className="font-semibold">
+                                     {t("$Nr Invoice")}
+                                   </div>
+                                   <div className="text-text-gray">
+                                     {ticket?.booking?.payment?.external_id || ticket.id}
+                                   </div>
+                                 </div>
+
+                                 <div className="text-right">
+                                   <div className="font-semibold">
+                                     {t("$Metoda de plată")}
+                                   </div>
+                                   <div className="text-text-gray">
+                                     {ticket?.booking?.payment?.method?.toUpperCase()}
+                                   </div>
+                                 </div>
+                               </div>
+
+                               <Button
+                                 size="lg"
+                                 className="w-full"
+                                 onClick={() => ticketRefund.mutate(ticket.id)}
+                                 disabled={ticketRefund.isPending}
+                               >
+                                 {ticketRefund.isPending ? (
+                                   <LoadingSpinner />
+                                 ) : (
+                                   <>
+                                     {t("$Anulează biletul")}
+                                     <ChevronRightIcon />
+                                   </>
+                                 )}
+                               </Button>
+                             </div>
+                           </DialogContent>
+                         </Dialog>
+                       )}
 
                        <DownloadTicketButton
                          mode="ticket"
@@ -441,23 +448,24 @@ export const TicketsContainer: React.FC = () => {
                                bookingId={booking?.id}
                              />
 
-                             <Dialog
-                               open={openBookingId === booking.id}
-                               onOpenChange={(o) => setOpenBookingId(o ? booking.id : null)}
-                             >
-                               <DialogTrigger asChild>
-                                 <Button
-                                   variant="link"
-                                   onClick={() => setOpenBookingId(booking.id)}
-                                 >
-                                   {t("$Anulează biletele")}
-                                 </Button>
-                               </DialogTrigger>
-                               <DialogContent>
-                                 <DialogHeader className="sr-only">
-                                   <DialogTitle />
-                                   <DialogDescription />
-                                 </DialogHeader>
+                             {!hasCancelledTicket && (
+                               <Dialog
+                                 open={openBookingId === booking.id}
+                                 onOpenChange={(o) => setOpenBookingId(o ? booking.id : null)}
+                               >
+                                 <DialogTrigger asChild>
+                                   <Button
+                                     variant="link"
+                                     onClick={() => setOpenBookingId(booking.id)}
+                                   >
+                                     {t("$Anulează biletele")}
+                                   </Button>
+                                 </DialogTrigger>
+                                 <DialogContent>
+                                   <DialogHeader className="sr-only">
+                                     <DialogTitle />
+                                     <DialogDescription />
+                                   </DialogHeader>
 
                                  <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
                                    <Image
@@ -510,6 +518,7 @@ export const TicketsContainer: React.FC = () => {
                                  </div>
                                </DialogContent>
                              </Dialog>
+                           )}
                            </div>
                          )}
                        </div>
@@ -554,12 +563,14 @@ export const TicketsContainer: React.FC = () => {
         }
 
         <PaginationUI
-        totalItems={bookings?.meta?.total}
-        page={page}
-        perPage={per_page}
-        onPageChange={updatePage}
-        onPageSizeChange={updateLimit}
-      />
+          totalItems={bookings?.meta?.total}
+          page={page}
+          perPage={per_page}
+          onPageChange={updatePage}
+          onPageSizeChange={updateLimit}
+          pageSizeOptions={[5, 10, 15]}
+          showPageSize
+        />
     </>
   );
 };

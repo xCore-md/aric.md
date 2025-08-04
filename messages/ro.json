@@ -229,6 +229,13 @@
     "paid": "Achitat",
     "cancelled": "Anulat"
   },
+  "payment_status": {
+    "all": "Toate",
+    "pending": "Se procesează",
+    "success": "Succes",
+    "failed": "Eșuat",
+    "paid": "Achitat"
+  },
   "trip_type": {
     "one-way": "Dus",
     "round-trip": "Dus-întors"
@@ -338,6 +345,9 @@
   "$Bilete retur": "Bilete retur",
   "$You are logged out": "Sunteți deconectat",
   "$Doriți să anulați biletele?": "Doriți să anulați biletele?",
+  "$Toți": "Toți",
+  "$Adulți": "Adulți",
+  "$Copii": "Copii",
   "cookies": {
     "message": "Acest site utilizează cookie-uri pentru a vă îmbunătăți experiența.",
     "ok": "OK"

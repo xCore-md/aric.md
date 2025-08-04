@@ -229,6 +229,13 @@
     "paid": "Paid",
     "cancelled": "Cancelled"
   },
+  "payment_status": {
+    "all": "All",
+    "pending": "Processing",
+    "success": "Success",
+    "failed": "Failed",
+    "paid": "Paid"
+  },
   "trip_type": {
     "one-way": "One way",
     "round-trip": "Round trip"
@@ -338,6 +345,9 @@
   "$Bilete retur": "Return tickets",
   "$You are logged out": "You are logged out",
   "$Doriți să anulați biletele?": "Do you want to cancel the tickets?",
+  "$Toți": "All",
+  "$Adulți": "Adults",
+  "$Copii": "Children",
   "cookies": {
     "message": "This website uses cookies to enhance your experience.",
     "ok": "OK"

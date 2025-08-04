@@ -192,5 +192,6 @@ export interface PaginationUIProps {
   onPageChange: (newPage: number) => void;
   onPageSizeChange: (page: number, newLimit: number) => void;
   pageSizeOptions?: number[];
+  showPageSize?: boolean;
   maxPageButtons?: number;
 }

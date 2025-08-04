@@ -29,15 +29,59 @@ import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { isValid } from "date-fns/isValid";
 import { formatISO } from "date-fns/formatISO";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PaginationUI } from "@/components/shared/pagination-ui";
+import { usePagination } from "@/hooks/usePagination";
+import { parseAsString, useQueryState } from "nuqs";
 
 export const PassengersContainer: React.FC = () => {
   const queryClient = useQueryClient();
   const t = useTranslations();
+  const { per_page, page, updateLimit, updatePage } = usePagination({
+    defaultLimit: 5,
+  });
+  const [type, setType] = useQueryState(
+    "type",
+    parseAsString.withDefault("")
+  );
+
+  const cleanParams = (obj: Record<string, any>) => {
+    const res: Record<string, any> = {};
+    Object.entries(obj).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        value !== "all" &&
+        value !== "undefined" &&
+        value !== "null"
+      ) {
+        res[key] = value;
+      }
+    });
+    return res;
+  };
 
   const { data: passengers, isLoading } = useQuery({
-    queryKey: [QUERY_KEYS.passengers],
-    queryFn: () => passengerService.getAll(),
+    queryKey: [QUERY_KEYS.passengers, page, per_page, type],
+    queryFn: () =>
+      passengerService.getAll(
+        cleanParams({ page, per_page, type })
+      ),
   });
+
+  const totalPassengers = passengers?.meta?.total ?? passengers?.total;
+
+  const handleTypeChange = (value: string) => {
+    setType(value === "all" ? "" : value);
+    updatePage(1);
+  };
 
   const updatePassenger = useMutation({
     mutationFn: passengerService.update,
@@ -57,6 +101,19 @@ export const PassengersContainer: React.FC = () => {
 
       <Card className="ring-platinum ring ring-inset">
         <CardContent className="">
+          <div className="mb-4 flex justify-end">
+            <Select value={type || "all"} onValueChange={handleTypeChange}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder={t("$Toți")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("$Toți")}</SelectItem>
+                <SelectItem value="adult">{t("$Adulți")}</SelectItem>
+                <SelectItem value="child">{t("$Copii")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <table className="table">
             <thead className="thead hidden lg:table-header-group [&_th]:last:text-right">
               <tr>
@@ -94,6 +151,20 @@ export const PassengersContainer: React.FC = () => {
           </table>
         </CardContent>
       </Card>
+
+      {totalPassengers ? (
+        <div className="mt-6">
+          <PaginationUI
+            totalItems={totalPassengers}
+            page={page}
+            perPage={per_page}
+            onPageChange={updatePage}
+            onPageSizeChange={updateLimit}
+            pageSizeOptions={[5, 10, 15]}
+            showPageSize
+          />
+        </div>
+      ) : null}
     </>
   );
 };
