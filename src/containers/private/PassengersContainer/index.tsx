@@ -2,7 +2,7 @@
 import React from "react";
 import { useTranslations } from "use-intl";
 import {
-  MOLDOVA_PHONE_CODE,
+  //MOLDOVA_PHONE_CODE,
   PRIVATE_LINK,
   QUERY_KEYS,
 } from "@/utils/constants";
@@ -193,7 +193,7 @@ const PassengerRow: React.FC<{
       first_name,
       last_name,
       birth_date: formatISO(birth_date),
-      phone: MOLDOVA_PHONE_CODE + phone.replace(/\s+/g, ""),
+      phone: phone.replace(/\s+/g, ""),
     });
     setEdit(false);
   };
@@ -296,7 +296,7 @@ const PassengerRow: React.FC<{
             className="h-11 w-full max-w-56 rounded-full border bg-white"
           />
         ) : (
-          <span>{phone ? MOLDOVA_PHONE_CODE + phone : ""}</span>
+          <span>{phone ? phone : ""}</span>
         )}
       </td>
 
