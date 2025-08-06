@@ -29,6 +29,7 @@ import { BookingButton } from "@/components/shared/BookingButton";
 import { localTimeToUtc, utcTimeToLocal } from "@/utils/timezone";
 import { User, Wallet } from "lucide-react";
 import { parse, differenceInMinutes } from "date-fns";
+import { calculateTripPrices } from "@/utils/calculate-trip-prices";
 
 export const SearchContainer: React.FC = () => {
   const locale = useLocale();
@@ -162,11 +163,16 @@ export const SearchContainer: React.FC = () => {
                     {searchData?.data?.map((item, index) => {
                       const {
                         route_departure,
-                        prices,
                         duration_minutes,
                         type,
                         routes_return = [],
                       } = item;
+
+                      const departurePrices = calculateTripPrices(
+                        route_departure?.route,
+                        searchData?.metadata?.from_station?.id || 0,
+                        searchData?.metadata?.to_station?.id || 0,
+                      );
 
                       const reversedMeta: TripRouteDetailsData = {
                         data: searchData?.data || [],
@@ -199,37 +205,35 @@ export const SearchContainer: React.FC = () => {
                               </div>
                             </div>
 
-                            {!routes_return.length && (
-                              <>
-                                <div className="sm:ml-auto text-right">
-                                  <div className="text-2xl font-medium flex items-center justify-end gap-1">
-                                    <Wallet className="h-5 w-5" />
-                                    {formatCurrency(
-                                      (getAmountByCurrency(prices) || 0) *
-                                        (searchParams?.passengers || 1),
-                                    )}
-                                  </div>
-                                  <div className="text-base text-text-gray flex items-center justify-end gap-1">
-                                    <User className="h-4 w-4" />
-                                    <span>x{searchParams?.passengers || 1}</span>
-                                    {formatCurrency(getAmountByCurrency(prices))}
-                                  </div>
-                                </div>
+                            <div className="sm:ml-auto text-right">
+                              <div className="text-2xl font-medium flex items-center justify-end gap-1">
+                                <Wallet className="h-5 w-5" />
+                                {formatCurrency(
+                                  (getAmountByCurrency(departurePrices) || 0) *
+                                    (searchParams?.passengers || 1),
+                                )}
+                              </div>
+                              <div className="text-base text-text-gray flex items-center justify-end gap-1">
+                                <User className="h-4 w-4" />
+                                <span>x{searchParams?.passengers || 1}</span>
+                                {formatCurrency(getAmountByCurrency(departurePrices))}
+                              </div>
+                            </div>
 
-                                <BookingButton
-                                  trip_id={route_departure?.id}
-                                  from_station_id={
-                                    searchData?.metadata?.from_station?.id
-                                  }
-                                  to_station_id={
-                                    searchData?.metadata?.to_station?.id
-                                  }
-                                  return_trip_id={null}
-                                  draft_booking_id={
-                                    route_departure?.draft_booking_id
-                                  }
-                                />
-                              </>
+                            {!routes_return.length && (
+                              <BookingButton
+                                trip_id={route_departure?.id}
+                                from_station_id={
+                                  searchData?.metadata?.from_station?.id
+                                }
+                                to_station_id={
+                                  searchData?.metadata?.to_station?.id
+                                }
+                                return_trip_id={null}
+                                draft_booking_id={
+                                  route_departure?.draft_booking_id
+                                }
+                              />
                             )}
                           </div>
 
@@ -242,28 +246,41 @@ export const SearchContainer: React.FC = () => {
                           />
 
                           <TicketDetailsCollapsible
-                            data={item}
+                            data={{ ...item, prices: departurePrices }}
                             route={route_departure}
                           />
 
                           {routes_return.length > 0 && (
                             <div className="mt-6 space-y-6">
                               {routes_return.map((r, rIndex) => {
-                                const priceInfo = r.route?.route_prices?.find(
-                                  (p) =>
-                                    p.from_station_id ===
-                                      searchData?.metadata?.to_station?.id &&
-                                    p.to_station_id ===
-                                      searchData?.metadata?.from_station?.id,
+                                const rRoute = {
+                                  ...r,
+                                  route: {
+                                    ...r.route,
+                                    stations:
+                                      r.route?.stations?.length
+                                        ? r.route.stations
+                                        : [
+                                            ...(
+                                              route_departure?.route?.stations || []
+                                            ),
+                                          ].reverse(),
+                                  },
+                                };
+
+                                const returnPrices = calculateTripPrices(
+                                  rRoute.route,
+                                  searchData?.metadata?.to_station?.id || 0,
+                                  searchData?.metadata?.from_station?.id || 0,
                                 );
 
                                 const totalPrices: Prices = {
                                   price_mdl:
-                                    (prices?.price_mdl || 0) +
-                                    (priceInfo?.price_mdl || 0),
+                                    (departurePrices.price_mdl ?? 0) +
+                                    (returnPrices.price_mdl ?? 0),
                                   price_uah:
-                                    (prices?.price_uah || 0) +
-                                    (priceInfo?.price_uah || 0),
+                                    (departurePrices.price_uah ?? 0) +
+                                    (returnPrices.price_uah ?? 0),
                                 };
 
                                 const rDuration = differenceInMinutes(
@@ -321,13 +338,13 @@ export const SearchContainer: React.FC = () => {
 
                                     <TripRouteDetails
                                       data={reversedMeta}
-                                      route={r}
+                                      route={rRoute}
                                       duration={rDuration}
                                     />
 
                                     <TicketDetailsCollapsible
                                       data={{ ...item, prices: totalPrices }}
-                                      route={r}
+                                      route={rRoute}
                                     />
                                   </div>
                                 );
