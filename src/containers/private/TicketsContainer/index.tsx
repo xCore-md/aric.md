@@ -417,110 +417,110 @@ export const TicketsContainer: React.FC = () => {
                            </div>
                          </div>
 
-                         {showPayActions && (
-                           <div className="border-platinum bg-card flex flex-wrap gap-4 border-x border-t p-4 lg:flex-row-reverse lg:border-none lg:bg-transparent lg:p-0">
-                             <Dialog
-                               open={payBookingId === booking.id}
-                               onOpenChange={(o) => setPayBookingId(o ? booking.id : null)}
-                             >
-                               <DialogTrigger asChild>
-                                 <Button onClick={() => setPayBookingId(booking.id)}>
-                                   {t("$Achită toate")}
-                                   <ChevronRightIcon />
-                                 </Button>
-                               </DialogTrigger>
-                               <DialogContent>
-                                 <DialogHeader className="sr-only">
-                                   <DialogTitle />
-                                   <DialogDescription />
-                                 </DialogHeader>
-                                 <PayForm
-                                   id={booking.id}
-                                   mode={booking.tickets.every((t) => t.status === BookingStatusEnum.Reserved) ? "booking" : "unpaid"}
-                                   onClose={() => setPayBookingId(null)}
-                                 />
-                               </DialogContent>
-                             </Dialog>
+                        <div className="border-platinum bg-card flex flex-wrap gap-4 border-x border-t p-4 lg:flex-row-reverse lg:border-none lg:bg-transparent lg:p-0">
+                          {showPayActions && (
+                            <Dialog
+                              open={payBookingId === booking.id}
+                              onOpenChange={(o) => setPayBookingId(o ? booking.id : null)}
+                            >
+                              <DialogTrigger asChild>
+                                <Button onClick={() => setPayBookingId(booking.id)}>
+                                  {t("$Achită toate")}
+                                  <ChevronRightIcon />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader className="sr-only">
+                                  <DialogTitle />
+                                  <DialogDescription />
+                                </DialogHeader>
+                                <PayForm
+                                  id={booking.id}
+                                  mode={booking.tickets.every((t) => t.status === BookingStatusEnum.Reserved) ? "booking" : "unpaid"}
+                                  onClose={() => setPayBookingId(null)}
+                                />
+                              </DialogContent>
+                            </Dialog>
+                          )}
 
-                             <DownloadTicketButton
-                               mode="booking"
-                               variant="reverse"
-                               bookingId={booking?.id}
-                             />
+                          <DownloadTicketButton
+                            mode="booking"
+                            variant="reverse"
+                            bookingId={booking?.id}
+                          />
 
-                             {!hasCancelledTicket && (
-                               <Dialog
-                                 open={openBookingId === booking.id}
-                                 onOpenChange={(o) => setOpenBookingId(o ? booking.id : null)}
-                               >
-                                 <DialogTrigger asChild>
-                                   <Button
-                                     variant="link"
-                                     onClick={() => setOpenBookingId(booking.id)}
-                                   >
-                                     {t("$Anulează biletele")}
-                                   </Button>
-                                 </DialogTrigger>
-                                 <DialogContent>
-                                   <DialogHeader className="sr-only">
-                                     <DialogTitle />
-                                     <DialogDescription />
-                                   </DialogHeader>
+                          {!hasCancelledTicket && (
+                            <Dialog
+                              open={openBookingId === booking.id}
+                              onOpenChange={(o) => setOpenBookingId(o ? booking.id : null)}
+                            >
+                              <DialogTrigger asChild>
+                                <Button
+                                  variant="link"
+                                  onClick={() => setOpenBookingId(booking.id)}
+                                >
+                                  {t("$Anulează biletele")}
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader className="sr-only">
+                                  <DialogTitle />
+                                  <DialogDescription />
+                                </DialogHeader>
 
-                                 <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
-                                   <Image
-                                     src={logo.src}
-                                     alt="Aric.md"
-                                     width={logo.width}
-                                     height={logo.height}
-                                     className="mb-12 w-24"
-                                   />
+                                <div className="mx-auto flex max-w-3xl flex-col items-center text-center md:p-16">
+                                  <Image
+                                    src={logo.src}
+                                    alt="Aric.md"
+                                    width={logo.width}
+                                    height={logo.height}
+                                    className="mb-12 w-24"
+                                  />
 
-                                   <div className="h2">{t("$Doriți să anulați biletele?")}</div>
+                                  <div className="h2">{t("$Doriți să anulați biletele?")}</div>
 
-                                   <div className="text-text-gray mb-12 text-lg">
-                                     {t(
-                                       "$În funcție de timpul rămas până la plecare, există o taxă de reținere pentru bilet – o sumă care este reținută de la pasager în cazul returnării biletului",
-                                     )}
-                                   </div>
+                                  <div className="text-text-gray mb-12 text-lg">
+                                    {t(
+                                      "$În funcție de timpul rămas până la plecare, există o taxă de reținere pentru bilet – o sumă care este reținută de la pasager în cazul returnării biletului",
+                                    )}
+                                  </div>
 
-                                   <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
-                                     <div className="text-left">
-                                       <div className="font-semibold">{t("$Nr Invoice")}</div>
-                                       <div className="text-text-gray">
-                                         {booking?.payment?.external_id || booking.id}
-                                       </div>
-                                     </div>
+                                  <div className="bg-back mb-6 grid w-full grid-cols-2 rounded-3xl px-6 py-4">
+                                    <div className="text-left">
+                                      <div className="font-semibold">{t("$Nr Invoice")}</div>
+                                      <div className="text-text-gray">
+                                        {booking?.payment?.external_id || booking.id}
+                                      </div>
+                                    </div>
 
-                                     <div className="text-right">
-                                       <div className="font-semibold">{t("$Metoda de plată")}</div>
-                                       <div className="text-text-gray">
-                                         {booking?.payment?.method?.toUpperCase()}
-                                       </div>
-                                     </div>
-                                   </div>
+                                    <div className="text-right">
+                                      <div className="font-semibold">{t("$Metoda de plată")}</div>
+                                      <div className="text-text-gray">
+                                        {booking?.payment?.method?.toUpperCase()}
+                                      </div>
+                                    </div>
+                                  </div>
 
-                                   <Button
-                                     size="lg"
-                                     className="w-full"
-                                     onClick={() => bookingRefund.mutate(booking.id)}
-                                     disabled={bookingRefund.isPending}
-                                   >
-                                     {bookingRefund.isPending ? (
-                                       <LoadingSpinner />
-                                     ) : (
-                                       <>
-                                         {t("$Anulează biletul")}
-                                         <ChevronRightIcon />
-                                       </>
-                                     )}
-                                   </Button>
-                                 </div>
-                               </DialogContent>
-                             </Dialog>
-                           )}
-                           </div>
-                         )}
+                                  <Button
+                                    size="lg"
+                                    className="w-full"
+                                    onClick={() => bookingRefund.mutate(booking.id)}
+                                    disabled={bookingRefund.isPending}
+                                  >
+                                    {bookingRefund.isPending ? (
+                                      <LoadingSpinner />
+                                    ) : (
+                                      <>
+                                        {t("$Anulează biletul")}
+                                        <ChevronRightIcon />
+                                      </>
+                                    )}
+                                  </Button>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                          )}
+                        </div>
                        </div>
 
                        <Card className="ring-platinum rounded-tl-none rounded-tr-none ring ring-inset lg:rounded-tr-xl">
