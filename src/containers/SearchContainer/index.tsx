@@ -253,18 +253,24 @@ export const SearchContainer: React.FC = () => {
                           {routes_return.length > 0 && (
                             <div className="mt-6 space-y-6">
                               {routes_return.map((r, rIndex) => {
+                                // Только реальные станции
+                                const rStations = r.route?.stations || [];
+                                if (!rStations.length) {
+                                  return (
+                                    <div
+                                      key={rIndex}
+                                      className="border border-red-200 rounded-xl bg-red-50 p-4 md:p-6 text-red-700"
+                                    >
+                                      {t("$Для данного обратного рейса не удалось получить список станций")}
+                                    </div>
+                                  );
+                                }
+
                                 const rRoute = {
                                   ...r,
                                   route: {
                                     ...r.route,
-                                    stations:
-                                      r.route?.stations?.length
-                                        ? r.route.stations
-                                        : [
-                                            ...(
-                                              route_departure?.route?.stations || []
-                                            ),
-                                          ].reverse(),
+                                    stations: rStations,
                                   },
                                 };
 
@@ -275,12 +281,8 @@ export const SearchContainer: React.FC = () => {
                                 );
 
                                 const totalPrices: Prices = {
-                                  price_mdl:
-                                    (departurePrices.price_mdl ?? 0) +
-                                    (returnPrices.price_mdl ?? 0),
-                                  price_uah:
-                                    (departurePrices.price_uah ?? 0) +
-                                    (returnPrices.price_uah ?? 0),
+                                  price_mdl: (departurePrices.price_mdl ?? 0) + (returnPrices.price_mdl ?? 0),
+                                  price_uah: (departurePrices.price_uah ?? 0) + (returnPrices.price_uah ?? 0),
                                 };
 
                                 const rDuration = differenceInMinutes(
@@ -306,29 +308,29 @@ export const SearchContainer: React.FC = () => {
                                         </div>
                                       </div>
 
+                                      {/* Итоговая цена туда-обратно */}
                                       <div className="sm:ml-auto text-right">
                                         <div className="text-2xl font-medium flex items-center justify-end gap-1">
                                           <Wallet className="h-5 w-5" />
                                           {formatCurrency(
                                             (getAmountByCurrency(totalPrices) || 0) *
-                                              (searchParams?.passengers || 1),
+                                            (searchParams?.passengers || 1)
                                           )}
                                         </div>
+                                        {/* Цена только за обратный рейс на человека xN */}
                                         <div className="text-base text-text-gray flex items-center justify-end gap-1">
                                           <User className="h-4 w-4" />
                                           <span>x{searchParams?.passengers || 1}</span>
-                                          {formatCurrency(getAmountByCurrency(totalPrices))}
+                                          {formatCurrency(
+                                            (getAmountByCurrency(returnPrices) || 0)
+                                          )}
                                         </div>
                                       </div>
 
                                       <BookingButton
                                         trip_id={route_departure?.id}
-                                        from_station_id={
-                                          searchData?.metadata?.from_station?.id
-                                        }
-                                        to_station_id={
-                                          searchData?.metadata?.to_station?.id
-                                        }
+                                        from_station_id={searchData?.metadata?.from_station?.id}
+                                        to_station_id={searchData?.metadata?.to_station?.id}
                                         return_trip_id={r?.id}
                                         draft_booking_id={r?.draft_booking_id}
                                       />
