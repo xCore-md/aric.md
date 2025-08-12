@@ -296,7 +296,7 @@ const PassengerRow: React.FC<{
             className="h-11 w-full max-w-56 rounded-full border bg-white"
           />
         ) : (
-          <span>{phone ? phone : ""}</span>
+          <span>{phone ? "+373 " + phone : ""}</span>
         )}
       </td>
 
