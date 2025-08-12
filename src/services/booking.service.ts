@@ -51,6 +51,12 @@ class BookingService {
       .post(`customer/bookings/${booking_id}/complete`, { json: data })
       .json<BookingCompleteResponse>();
   };
+
+  cleanup = () => {
+    return this.clientApi
+      .delete("customer/bookings/cleanup")
+      .json<{ deleted: number }>();
+  };
 }
 
 export const bookingService = new BookingService();

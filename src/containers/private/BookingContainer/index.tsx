@@ -8,11 +8,12 @@ import { Link } from "@/i18n/navigation";
 import { bookingService } from "@/services/booking.service";
 import { QUERY_KEYS } from "@/utils/constants";
 import { getLocalizedField } from "@/utils/getLocalizedField";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ArrowRight, TriangleAlert } from "lucide-react";
 import React from "react";
 import { useLocale, useTranslations } from "use-intl";
 import { isPast, parseISO } from "date-fns";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
 export const BookingContainer: React.FC<{
   message: string;
@@ -22,9 +23,16 @@ export const BookingContainer: React.FC<{
   const { formatUTC } = useFormatUTCToLocal();
   const { per_page, page, updateLimit, updatePage } = usePagination();
 
-  const { data: drafts, isLoading } = useQuery({
+  const { data: drafts, isLoading, refetch } = useQuery({
     queryKey: [QUERY_KEYS.drafts, page, per_page],
     queryFn: () => bookingService.getDrafts({ page, per_page }),
+  });
+
+  const cleanupMutation = useMutation({
+    mutationFn: () => bookingService.cleanup(),
+    onSuccess: () => {
+      refetch();
+    },
   });
 
   if (message === "success") {
@@ -124,8 +132,18 @@ export const BookingContainer: React.FC<{
         </Card>
       ) : (
         <>
-          <div className="py-8">
+          <div className="py-8 flex items-center justify-between gap-4">
             <h3 className="h3 !mb-0">{t("$Rezervări nefinalizate")}</h3>
+            <Button
+              variant="outline"
+              onClick={() => cleanupMutation.mutate()}
+              disabled={cleanupMutation.isPending}
+            >
+              {cleanupMutation.isPending && (
+                <LoadingSpinner className="!scale-50" />
+              )}
+              {t("$Șterge cursele neactuale")}
+            </Button>
           </div>
 
           <Card className="ring-platinum p-1 ring ring-inset sm:py-4">
