@@ -137,6 +137,7 @@ export interface User {
   first_name: string | null;
   last_name: string | null;
   language: string;
+  timezone: string | null;
   created_at: string;
   updated_at: string;
 }

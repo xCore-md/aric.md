@@ -10,6 +10,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MoldovaPhoneInput } from "@/components/shared/MoldovaPhoneInput";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +26,7 @@ import {
   FormItem,
   Form,
   FormControl,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -31,12 +39,30 @@ const formSchema = z.object({
   email: z.string(),
   first_name: z.string(),
   last_name: z.string(),
+  timezone: z.string(),
 });
 
 export const SettingContainer: React.FC = () => {
   const queryClient = useQueryClient();
   const t = useTranslations();
   const locale = useLocale();
+  const timezones = React.useMemo(
+    () => Intl.supportedValuesOf("timeZone"),
+    []
+  );
+  const defaultTimezone = React.useMemo(
+    () => Intl.DateTimeFormat().resolvedOptions().timeZone,
+    []
+  );
+
+  const [search, setSearch] = React.useState("");
+  const filteredTimezones = React.useMemo(
+    () =>
+      timezones.filter((tz) =>
+        tz.toLowerCase().includes(search.toLowerCase())
+      ),
+    [timezones, search]
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,6 +71,7 @@ export const SettingContainer: React.FC = () => {
       email: "",
       first_name: "",
       last_name: "",
+      timezone: defaultTimezone,
     },
   });
 
@@ -82,6 +109,7 @@ export const SettingContainer: React.FC = () => {
         last_name: data.last_name || "",
         phone: removeMoldovaPrefix(data.phone) || "",
         email: data.email || "",
+        timezone: data.timezone || defaultTimezone,
       });
     }
   }, [profileData]);
@@ -176,6 +204,45 @@ export const SettingContainer: React.FC = () => {
                                 {...field}
                               />
                             </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={control}
+                        name="timezone"
+                        render={({ field }) => (
+                          <FormItem className="sm:col-span-2">
+                            <FormLabel>{t("$Fus orar")}</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                              onOpenChange={(open) => !open && setSearch("")}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="h-16 w-full rounded-full border bg-white px-5 py-1 data-[size=default]:h-16 data-[size=sm]:h-16">
+                                  <SelectValue
+                                    placeholder={t("$Fus orar")}
+                                  />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="max-h-64">
+                                <div className="sticky top-0 z-10 bg-white p-2">
+                                  <Input
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder={t("action.search")}
+                                    className="h-10"
+                                  />
+                                </div>
+                                {filteredTimezones.map((tz) => (
+                                  <SelectItem key={tz} value={tz}>
+                                    {tz}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                             <FormMessage />
                           </FormItem>
                         )}
