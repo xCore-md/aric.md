@@ -25,6 +25,7 @@ export const PaymentContainer: React.FC = () => {
     defaultLimit: 5,
   });
   const { formatUTC } = useFormatUTCToLocal();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [status, setStatus] = useQueryState(
     "status",
     parseAsString.withDefault("")
@@ -46,6 +47,9 @@ export const PaymentContainer: React.FC = () => {
     <>
       <div className="py-8">
         <h3 className="h3 !mb-0">{t(PRIVATE_LINK.payments.label)}</h3>
+        <p className="mt-1 text-sm text-text-gray">
+          {t("timezone_notice", { timeZone })}
+        </p>
       </div>
 
       <Card className="ring-platinum ring ring-inset">

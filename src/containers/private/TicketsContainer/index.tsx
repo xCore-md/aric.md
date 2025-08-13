@@ -42,6 +42,7 @@ export const TicketsContainer: React.FC = () => {
   const locale = useLocale();
   const { formatUTC } = useFormatUTCToLocal();
   const { formatCurrency } = useCurrency();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const { per_page, page, updateLimit, updatePage } = usePagination({
     defaultLimit: 5,
   });
@@ -184,6 +185,9 @@ export const TicketsContainer: React.FC = () => {
     <>
       <div className="py-8">
         <h3 className="h3 !mb-0">{t(PRIVATE_LINK.tickets.label)}</h3>
+        <p className="mt-1 text-sm text-text-gray">
+          {t("timezone_notice", { timeZone })}
+        </p>
       </div>
 
       {isLoading

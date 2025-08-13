@@ -350,6 +350,7 @@
   "$Adulți": "Adulți",
   "$Copii": "Copii",
   "$Fus orar": "Fus orar",
+  "timezone_notice": "Toate orele sunt afișate în fusul dvs. orar ({timeZone}).",
   "cookies": {
     "message": "Acest site utilizează cookie-uri pentru a vă îmbunătăți experiența.",
     "ok": "OK"

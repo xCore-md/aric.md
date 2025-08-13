@@ -117,6 +117,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
   const t = useTranslations();
   const locale = useLocale();
   const { formatUTC } = useFormatUTCToLocal();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const { formatCurrency, setCurrency, currency } = useCurrency();
 
   const form = useForm<PassengerFormInput, undefined, PassengerFormSchema>({
@@ -294,6 +295,9 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="py-8">
           <h3 className="h3 !mb-0">{t(PRIVATE_LINK.booking.label)}</h3>
+          <p className="mt-1 text-sm text-text-gray">
+            {t("timezone_notice", { timeZone })}
+          </p>
         </div>
 
         <div className="flex grid-cols-3 flex-col gap-8 lg:grid">

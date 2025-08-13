@@ -35,6 +35,7 @@ export const SearchContainer: React.FC = () => {
   const locale = useLocale();
   const t = useTranslations();
   const { formatCurrency } = useCurrency();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const { updateTicketSearchParams } = useTicketForm();
 
   const [searchData, setSearchData] = React.useState<SearchResponse>();
@@ -133,20 +134,25 @@ export const SearchContainer: React.FC = () => {
             <>
               {searchData && (
                 <div className="items-center justify-between gap-6 sm:flex">
-                  <h1 className="h3">
-                    {[
-                      getLocalizedField(
-                        searchData?.metadata?.from_station,
-                        "name",
-                        locale,
-                      ),
-                      getLocalizedField(
-                        searchData?.metadata?.to_station,
-                        "name",
-                        locale,
-                      ),
-                    ].join(" - ")}
-                  </h1>
+                  <div>
+                    <h1 className="h3">
+                      {[
+                        getLocalizedField(
+                          searchData?.metadata?.from_station,
+                          "name",
+                          locale,
+                        ),
+                        getLocalizedField(
+                          searchData?.metadata?.to_station,
+                          "name",
+                          locale,
+                        ),
+                      ].join(" - ")}
+                    </h1>
+                    <p className="mt-1 text-sm text-text-gray">
+                      {t("timezone_notice", { timeZone })}
+                    </p>
+                  </div>
 
                   <div className="flex items-center justify-between gap-4">
                     <div className="text-text-gray">{t("$Au fost găsite")}</div>

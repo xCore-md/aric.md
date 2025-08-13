@@ -21,6 +21,7 @@ export const BookingContainer: React.FC<{
   const t = useTranslations();
   const locale = useLocale();
   const { formatUTC } = useFormatUTCToLocal();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const { per_page, page, updateLimit, updatePage } = usePagination();
 
   const { data: drafts, isLoading, refetch } = useQuery({
@@ -133,7 +134,12 @@ export const BookingContainer: React.FC<{
       ) : (
         <>
           <div className="py-8 flex items-center justify-between gap-4">
-            <h3 className="h3 !mb-0">{t("$Rezervări nefinalizate")}</h3>
+            <div>
+              <h3 className="h3 !mb-0">{t("$Rezervări nefinalizate")}</h3>
+              <p className="mt-1 text-sm text-text-gray">
+                {t("timezone_notice", { timeZone })}
+              </p>
+            </div>
             <Button
               variant="outline"
               onClick={() => cleanupMutation.mutate()}
