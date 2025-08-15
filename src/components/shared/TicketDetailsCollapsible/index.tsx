@@ -20,7 +20,19 @@ export const TicketDetailsCollapsible: React.FC<{
   data: TripItem;
   route: TripSegment;
   returnRoute?: TripSegment | null;
-}> = ({ data, route: routeData, returnRoute }) => {
+  fromStationId?: number;
+  toStationId?: number;
+  returnFromStationId?: number;
+  returnToStationId?: number;
+}> = ({
+  data,
+  route: routeData,
+  returnRoute,
+  fromStationId,
+  toStationId,
+  returnFromStationId,
+  returnToStationId,
+}) => {
   const locale = useLocale();
   const t = useTranslations();
   const { currency } = useCurrency();
@@ -84,9 +96,14 @@ export const TicketDetailsCollapsible: React.FC<{
 
                     <div
                       className={cn(
-                        (index === 0 ||
-                          index === routeData?.route?.stations?.length - 1) &&
-                          "font-semibold",
+                        (
+                          fromStationId && toStationId
+                            ? station?.id === fromStationId ||
+                              station?.id === toStationId
+                            : index === 0 ||
+                              index ===
+                                routeData?.route?.stations?.length - 1
+                        ) && "font-semibold",
                       )}
                     >
                       {getLocalizedField(station, "name", locale)}
@@ -144,9 +161,14 @@ export const TicketDetailsCollapsible: React.FC<{
 
                       <div
                         className={cn(
-                          (index === 0 ||
-                            index === returnRoute?.route?.stations?.length - 1) &&
-                            "font-semibold",
+                          (
+                            returnFromStationId && returnToStationId
+                              ? station?.id === returnFromStationId ||
+                                station?.id === returnToStationId
+                              : index === 0 ||
+                                index ===
+                                  returnRoute?.route?.stations?.length - 1
+                          ) && "font-semibold",
                         )}
                       >
                         {getLocalizedField(station, "name", locale)}

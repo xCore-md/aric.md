@@ -254,6 +254,8 @@ export const SearchContainer: React.FC = () => {
                           <TicketDetailsCollapsible
                             data={{ ...item, prices: departurePrices }}
                             route={route_departure}
+                            fromStationId={searchData?.metadata?.from_station?.id}
+                            toStationId={searchData?.metadata?.to_station?.id}
                           />
 
                           {routes_return.length > 0 && (
@@ -353,6 +355,8 @@ export const SearchContainer: React.FC = () => {
                                     <TicketDetailsCollapsible
                                       data={{ ...item, prices: totalPrices }}
                                       route={rRoute}
+                                      fromStationId={searchData?.metadata?.to_station?.id}
+                                      toStationId={searchData?.metadata?.from_station?.id}
                                     />
                                   </div>
                                 );

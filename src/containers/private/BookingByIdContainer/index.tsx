@@ -138,18 +138,32 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
 
   const stationFrom =
     booking?.station_from ||
+    booking?.trip?.route_departure?.route?.stations?.find(
+      (s) => s.id === booking?.station_from_id,
+    ) ||
     booking?.trip?.route_departure?.route?.stations?.[0];
   const stationTo =
     booking?.station_to ||
+    booking?.trip?.route_departure?.route?.stations?.find(
+      (s) => s.id === booking?.station_to_id,
+    ) ||
     booking?.trip?.route_departure?.route?.stations?.[
-    (booking?.trip?.route_departure?.route?.stations?.length || 1) - 1
+      (booking?.trip?.route_departure?.route?.stations?.length || 1) - 1
     ];
   const returnStationFrom =
-    booking?.return_trip?.route?.stations?.[0] || booking?.station_to;
+    booking?.return_trip?.route?.stations?.find(
+      (s) => s.id === booking?.station_to_id,
+    ) ||
+    booking?.station_to ||
+    booking?.return_trip?.route?.stations?.[0];
   const returnStationTo =
+    booking?.return_trip?.route?.stations?.find(
+      (s) => s.id === booking?.station_from_id,
+    ) ||
+    booking?.station_from ||
     booking?.return_trip?.route?.stations?.[
-    (booking?.return_trip?.route?.stations?.length || 1) - 1
-    ] || booking?.station_from;
+      (booking?.return_trip?.route?.stations?.length || 1) - 1
+    ];
 
   const passengerCounts = watch("passengerCounts");
   const paymentMethod = watch("payment.method");
@@ -469,6 +483,10 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                 data={booking?.trip!}
                 route={booking?.trip?.route_departure!}
                 returnRoute={booking?.return_trip as any}
+                fromStationId={booking?.station_from_id || undefined}
+                toStationId={booking?.station_to_id || undefined}
+                returnFromStationId={booking?.station_to_id || undefined}
+                returnToStationId={booking?.station_from_id || undefined}
               />
             </CardContent>
           </Card>
