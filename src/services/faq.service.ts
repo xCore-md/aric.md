@@ -4,10 +4,11 @@ import type { FaqItem, LanguageEnum } from "@/types";
 class FAQService {
   private clientApi = apiInstance;
 
-  getAll(language: LanguageEnum) {
-    return this.clientApi
+  async getAll(language: LanguageEnum) {
+    const response = await this.clientApi
       .get("faq", { headers: { "X-language": language } })
-      .json<FaqItem[]>();
+      .json<{ data: FaqItem[] }>();
+    return response.data;
   }
 }
 
