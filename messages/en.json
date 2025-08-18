@@ -37,7 +37,13 @@
     "feature3": {
       "title": "Real support when you need it",
       "description": "Whether you have a question or made a mistake in a booking, our support team responds promptly!"
-    }
+    },
+    "call_now": "Call now!"
+  },
+  "company": {
+    "phone": "+373 79 435 990",
+    "email": "info@aric.md",
+    "address": "mun. Chişinău, sec. Botanica, Dacia bd. 49/1, ap.(of.) 72"
   },
   "booking": {
     "buy_ticket_slogan": "Buy a bus ticket online easily!",
@@ -150,30 +156,35 @@
       }
     },
     "privacy": {
-      "title": "Privacy Policy",
+      "title": "TERMS AND CONDITIONS",
+      "intro": "Dear E-Commerce partner. These terms and conditions are presented as a template for providing informational support in the process of connecting the e-commerce service from maib. Please use this pro-forma and, if necessary, modify the specific details for your business case. These Terms and Conditions for using the online store www.example.md apply to orders for purchasing the products/services offered by ARIC S.R.L. through the site. To use the site properly, we recommend carefully familiarizing yourself with these Terms and Conditions. We reserve the right to make changes to these provisions without prior notice.",
       "section1": {
-        "title": "1. Data collection",
-        "text": "We collect personal information submitted through forms, such as name and email."
+        "title": "1. GENERAL PROVISIONS",
+        "text": "This site is owned by ARIC S.R.L. By placing an order in the online store, the Buyer accepts the Terms and Conditions for the sale of goods/products and/or provision of services based on the legislation of the Republic of Moldova (hereinafter – Terms and Conditions) presented below. Using the website implies acceptance of the Terms and Conditions proposed by ARIC S.R.L., in accordance with Law no.284/2004 on Electronic Commerce. Relations between the client and the seller are established based on Law no.105/2003 on Consumer Protection and other normative acts adopted in accordance with it. The Seller reserves the right to modify these Terms and Conditions, and the Buyer is obliged to monitor the changes."
       },
       "section2": {
-        "title": "2. Data use",
-        "text": "The data is used to contact you, send offers and improve our services."
+        "title": "2. DATA PROTECTION",
+        "text": "By using the www.example.md site, you automatically agree to the collection and processing of personal data necessary for processing/confirming/executing orders. Personal data is processed only for legitimate purposes, such as providing the products you order, promotions, Google Analytics, cookies, and notifications/newsletters. All information containing personal data is stored and used only for the period necessary to achieve the purposes for which it was collected and in accordance with Law no.133/2011 on the protection of personal data. We use commercial security measures to prevent unauthorized access, maintain data accuracy and ensure proper use of information on the site. Transmitting data over the internet or through a wireless network cannot be fully secured. Therefore, like other companies, we cannot guarantee the security of the information you provide, so you do so at your own risk."
       },
       "section3": {
-        "title": "3. Data security",
-        "text": "We implement measures to protect personal data from unauthorized access."
+        "title": "3. ORDER REGISTRATION AND PAYMENT",
+        "text": "Payment of orders is possible with a payment card – upon receiving the order you will receive a fiscal receipt confirming the payment. Online payment is made under maximum security conditions using the payment card as an instrument that allows online transactions. After payment you will receive a payment confirmation at your email address. The payment processor uses a secure system based on the latest version of the 3D-Secure security standard, which means a new global approach to authenticating buyers in secure online transactions. This safety measure involves redirecting the user at the moment of payment to a secure maib page where each cardholder is authenticated by assigning a one-time code for each online transaction. Refunds are made only to the payment card used for purchase. To make a payment, you will need to enter your card details. The transfer of this information is carried out in accordance with all necessary security measures. The information is transmitted in encrypted form and stored only on a specialized server of the payment system. To process the payment the following data will be requested: Card number (16 digits) Expiration date (month and year) CVC or CVV code (3 digits) Name and surname on the card. If the currency of the card differs from the transaction currency (MDL), the conditions of the issuing bank will apply when converting the amount withdrawn from the card account."
       },
       "section4": {
-        "title": "4. User rights",
-        "text": "You can request to access or delete your personal data at any time."
+        "title": "4. DELIVERY OF PRODUCTS / GOODS / SERVICES",
+        "text": "After registering the order, the buyer is informed about the estimated date of dispatch by couriers/delivery service. Delivery within Chişinău municipality is carried out within X hours from order confirmation by our operators. Delivery is performed from hour X to hour X and is free for orders of at least X MDL; for lower value orders a delivery fee of X MDL is charged (which will be included in the total transaction/order amount). Delivery within the territory of the Republic of Moldova is carried out within X hours from order confirmation by our operators. Delivery is performed from hour X to hour X and is free for orders of at least X MDL; for lower value orders a delivery fee of X MDL is charged (which will be included in the total transaction/order amount). No deliveries are made on Sundays or national holidays. Delivery time may be extended in certain isolated situations (e.g.: unfavorable weather conditions, holidays, unforeseen technical issues etc.). We will notify you in advance if we encounter one of these isolated situations. You can choose any delivery address – home, office or any other address without additional charges. We accept only one delivery address per order. If you need delivery to different addresses, please register separate orders for each address. Upon receiving the products, please check in the presence of the courier the integrity of the package and the presence of the fiscal receipt. Any subsequent claims regarding these aspects will not be accepted."
       },
       "section5": {
-        "title": "5. Cookies",
-        "text": "We use cookies to enhance your experience. Continuing navigation implies acceptance."
+        "title": "5. RIGHT OF RETURN",
+        "text": "According to the provisions of Law no.105-XV of March 13, 2013 on consumer protection, the Buyer has the right to return the purchased product/goods for certain reasons within 14 days from the date of payment. The funds are returned to the card used for purchase. Sample articles cannot be exchanged or returned, in accordance with Annex no.2 of Government Decision No1465 of 08.12.2003 (MO248-253/19.12.2003), as amended by Government Decision No1188 of 02.11.2007 (MO175/09.11.2007). Company contact for returns: +373 79 435 990 Return request processing time: X days Return conditions: XXXXXXXXX."
       },
       "section6": {
-        "title": "6. Changes",
-        "text": "We may update this policy from time to time. Changes will be posted here."
+        "title": "6. PRIVACY POLICY",
+        "text": "In accordance with the provisions of Law No.133/2011 on the protection of personal data, the service provider processes personal data. Personal data is processed in good faith and based on and in accordance with legal provisions. Processing of personal data is carried out by mixed means (automated and manual), complying with legal requirements and in conditions that ensure security, confidentiality and respect for the rights of the persons concerned. The provider collects and processes only the personal data provided by consumers when placing the order: name, surname, phone number, address, postal address. Personal data is used exclusively for site administration, to allow access to special information, for order delivery or to contact the consumer for delivery execution. Through this information, users and consumers are aware that their personal data (name, surname, phone number, address, postal address) will be processed and used. The service provider processes the personal data of users and consumers provided through navigation, use and registration on the www.example.md site. Any information provided by users and consumers of the www.example.md site will be considered and will represent the express consent for the personal data to be used by the Provider. The provider will not disclose any of the data held to a third party without the consent of the persons concerned and will not commercialize, exchange or disclose this data to other persons, except as provided by law (upon request of state public institutions, law enforcement, courts, also authorized to process personal data). Personal data may also be processed and used by the Provider for statistical and further promotion purposes. The service provider meets the requirements of personal data security and ensures the protection of consumer data, protecting them from being lost, destroyed, distorted/falsified or disclosed to third parties. Service provider employees are obliged to maintain the confidentiality of consumers' personal data. Processing of personal data will be carried out by the person authorized by the Provider. The Provider uses security methods and technologies in accordance with legal provisions in force. The Provider does not collect information regarding transactions such as card number, expiration date, country of origin. For more details and information any interested person can contact via email at example@mail.com or by phone at +373 XX XXX XXX."
+      },
+      "section7": {
+        "title": "7. CONTACT DETAILS",
+        "text": "Legal name of the company: ARIC S.R.L. IDNO: 1004600045345 Status: Active Registration date: 2 February 1995 Physical address: str. Costiujeni, 1, Chișinău, MD2019 Legal address: mun. Chişinău, sec. Botanica, Dacia bd. 49/1, ap.(of.) 72 Number of employees: 20 Contact email: info@aric.md Contact phone: +373 79 435 990"
       }
     }
   },
@@ -193,7 +204,7 @@
   },
   "footer": {
     "title": "Book your seat easily and enjoy a safe and comfortable journey. Modern minibuses, flexible schedules, and fast online booking – everything you need for a smooth trip.",
-    "address": "Republic of Moldova, mun. Chișinău, Calea Basarabiei 26"
+    "address": "Republic of Moldova, mun. Chişinău, sec. Botanica, Dacia bd. 49/1, ap.(of.) 72"
   },
   "email_subscription": {
     "title": "Receive discount notifications!",

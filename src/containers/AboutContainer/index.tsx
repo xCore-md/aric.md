@@ -18,6 +18,7 @@ import { DiscountSection } from "@/components/sections/Discount";
 
 export const AboutContainer: React.FC = () => {
   const t = useTranslations();
+  const tc = useTranslations("company");
   return (
     <>
       <div className="section mt-12">
@@ -83,7 +84,7 @@ export const AboutContainer: React.FC = () => {
             <div className="">
               <div className="bg-mentol mb-6 max-w-max space-x-2 rounded-full px-4 py-2 text-sm font-semibold">
                 <span>🔥</span>
-                <span>Sună acum! +37379435990</span>
+                <span>{t("about.call_now")} {tc("phone")}</span>
               </div>
               <h2 className="h2 !mb-16">{t("about.features_title")}</h2>
 

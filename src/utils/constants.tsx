@@ -108,11 +108,6 @@ export const PRIVATE_LINK = {
 
 export const PRIVATE_LINKS = Object.values(PRIVATE_LINK);
 
-export const CONTACTS = {
-  email: "contact@aric.md",
-  phone: "+373 79 435 990",
-};
-
 export const AVAILABLE_CURRENCIES = Object.values(CurrencyEnum);
 export const AVAILABLE_LANGUAGES = Object.values(LanguageEnum);
 export const CURRENCIES = Object.values(CurrencyEnum);

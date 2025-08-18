@@ -9,12 +9,7 @@ import payment from "@/assets/images/payment.webp";
 import { Button } from "@/components/ui/button";
 import { ChevronRightIcon, Facebook, Instagram } from "lucide-react";
 
-import {
-  CONTACTS,
-  NAV_LINK,
-  NAV_LINKS,
-  QUERY_KEYS,
-} from "@/utils/constants";
+import { NAV_LINK, NAV_LINKS, QUERY_KEYS } from "@/utils/constants";
 
 import { useTranslations, useLocale } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
@@ -25,6 +20,7 @@ import { format, parseISO } from "date-fns";
 
 export const Footer: React.FC = () => {
   const t = useTranslations();
+  const tc = useTranslations("company");
   const locale = useLocale();
   const { formatUTC } = useFormatUTCToLocal();
   const pathname = usePathname();
@@ -157,15 +153,15 @@ export const Footer: React.FC = () => {
                     </div>
                     <a
                       className="text-text-gray text-sm"
-                      href={`tel:${CONTACTS.phone}`}
+                      href={`tel:${tc("phone").replace(/\s/g, "")}`}
                     >
-                      {CONTACTS.phone}
+                      {tc("phone")}
                     </a>
                     <a
                       className="text-text-gray text-sm"
-                      href={`mailto:${CONTACTS.email}`}
+                      href={`mailto:${tc("email")}`}
                     >
-                      {CONTACTS.email}
+                      {tc("email")}
                     </a>
                   </div>
 

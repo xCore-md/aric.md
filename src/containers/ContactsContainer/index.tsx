@@ -37,6 +37,7 @@ const schema = z.object({
 
 export const ContactsContainer: React.FC = () => {
   const t = useTranslations();
+  const tc = useTranslations("company");
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -225,10 +226,10 @@ export const ContactsContainer: React.FC = () => {
                 {t("contacts.email_label")}
               </div>
               <a
-                href={`mailto:${123}`}
+                href={`mailto:${tc("email")}`}
                 className="hover:text-blue max-w-max text-2xl underline-offset-4 transition hover:underline md:text-3xl"
               >
-                contact@aric.md
+                {tc("email")}
               </a>
             </div>
 
@@ -237,10 +238,10 @@ export const ContactsContainer: React.FC = () => {
                 {t("contacts.phone_label")}
               </div>
               <a
-                href={`tel:${123}`}
+                href={`tel:${tc("phone").replace(/\s/g, "")}`}
                 className="hover:text-blue max-w-max text-2xl underline-offset-4 transition hover:underline md:text-3xl"
               >
-                +373 79 435 990
+                {tc("phone")}
               </a>
             </div>
           </div>

@@ -30,13 +30,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  CONTACTS,
-  CURRENCIES,
-  NAV_LINKS,
-  PRIVATE_LINKS,
-  API_URL,
-} from "@/utils/constants";
+import { CURRENCIES, NAV_LINKS, PRIVATE_LINKS, API_URL } from "@/utils/constants";
 import { CurrencyEnum, LanguageEnum } from "@/types";
 import { useCurrency } from "@/hooks/useCurrency";
 
@@ -64,6 +58,7 @@ const languages = [
 export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
   const [openMenu, setOpenMenu] = React.useState(false);
   const t = useTranslations();
+  const tc = useTranslations("company");
   const pathname = usePathname();
 
   if ((isHomePage && pathname !== "/") || (!isHomePage && pathname === "/"))
@@ -79,14 +74,14 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
               isHomePage && "rounded-full bg-white px-8"
             )}
           >
-            <a href={`mailto:${CONTACTS.email}`} className="flex items-center gap-1">
+            <a href={`mailto:${tc("email")}`} className="flex items-center gap-1">
               <span>📩</span>
-              <span>{CONTACTS.email}</span>
+              <span>{tc("email")}</span>
             </a>
 
-            <a href={`tel:${CONTACTS.phone}`} className="flex items-center gap-1">
+            <a href={`tel:${tc("phone").replace(/\s/g, "")}`} className="flex items-center gap-1">
               <span>📞</span>
-              <span>{CONTACTS.phone}</span>
+              <span>{tc("phone")}</span>
             </a>
 
             <div className="ml-auto flex items-center gap-1">
@@ -150,14 +145,14 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
                         className="bg-blue/10 grid gap-2 rounded-xl px-2 py-1 text-white"
                         onClick={() => setOpenMenu(false)}
                       >
-                        <a href={`mailto:${CONTACTS.email}`} className="flex items-center gap-1">
+                        <a href={`mailto:${tc("email")}`} className="flex items-center gap-1">
                           <span>📩</span>
-                          <span>{CONTACTS.email}</span>
+                          <span>{tc("email")}</span>
                         </a>
 
-                        <a href={`tel:${CONTACTS.phone}`} className="flex items-center gap-1">
+                        <a href={`tel:${tc("phone").replace(/\s/g, "")}`} className="flex items-center gap-1">
                           <span>📞</span>
-                          <span>{CONTACTS.phone}</span>
+                          <span>{tc("phone")}</span>
                         </a>
                       </div>
 
