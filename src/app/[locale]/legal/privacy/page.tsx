@@ -7,11 +7,11 @@ export default function Page() {
   return (
     <div className="html container py-12">
       <h1>{t("title")}</h1>
-      <p>{t("intro")}</p>
+      <p className="whitespace-pre-line">{t("intro")}</p>
       {sections.map((n) => (
         <section key={n}>
           <h2>{t(`section${n}.title`)}</h2>
-          <p>{t(`section${n}.text`)}</p>
+          <p className="whitespace-pre-line">{t(`section${n}.text`)}</p>
         </section>
       ))}
     </div>
