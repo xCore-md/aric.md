@@ -3,15 +3,34 @@ import React from "react";
 import { useTranslations } from "use-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 import type { PaymentRedirect } from "@/types";
 
-export const BookingResultContainer: React.FC<{ type: "success" | "error" }> = ({ type }) => {
+export const BookingResultContainer: React.FC<{
+  type: "success" | "error";
+  ticketDelay?: number;
+}> = ({ type, ticketDelay }) => {
   const t = useTranslations();
   const searchParams = useSearchParams();
   const { formatUTC } = useFormatUTCToLocal();
+  const { push } = useRouter();
+  const [delay, setDelay] = React.useState(ticketDelay ?? 0);
+
+  React.useEffect(() => {
+    if (!ticketDelay) return;
+    const timer = setInterval(() => {
+      setDelay((d) => {
+        if (d <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return d - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [ticketDelay]);
 
   const payment: PaymentRedirect = {
     id: Number(searchParams.get("id") || 0),
@@ -78,8 +97,8 @@ export const BookingResultContainer: React.FC<{ type: "success" | "error" }> = (
                   </div>
                 </div>
                 <div className="flex items-center justify-between gap-10 border-t pt-6">
-                  <Button asChild>
-                    <Link href="/tickets">{t("$Vezi biletele")}</Link>
+                  <Button disabled={delay > 0} onClick={() => push("/tickets")}>
+                    {t("$Vezi biletele")} {delay > 0 ? `(${delay})` : ""}
                   </Button>
                   <Button asChild variant="outline">
                     <Link href="/">{t("$Pagina principală")}</Link>
