@@ -9,6 +9,7 @@
     "about": "О нас",
     "faq": "Вопросы и ответы",
     "contacts": "Контакты",
+    "card_payment": "Оплата картой",
     "booking": "Бронирование",
     "passengers": "Пассажиры",
     "payments": "Платежи",
@@ -321,7 +322,7 @@
   "$Achită toate": "Оплатить все",
   "$Сформировать платёж": "Сформировать платёж",
   "$Doriți să anulați biletul?": "Вы хотите отменить билет?",
-  "$În funcție de timpul rămas până la plecare, există o taxă de reținere pentru bilet – o sumă care este reținută de la pasager în cazul returnării biletului": "В зависимости от времени, оставшегося до отправления, удерживается комиссия \u2014 сумма, удерживаемая с пассажира при возврате билета.",
+  "$În funcție de timpul rămas până la plecare, există o taxă de reținere pentru bilet – o sumă care este reținută de la pasager în cazul returnării biletului": "В зависимости от времени, оставшегося до отправления, удерживается комиссия — сумма, удерживаемая с пассажира при возврате билета.",
   "$Anulează biletul": "Отменить билет",
   "$Nume": "Фамилия",
   "$Telefon": "Телефон",
@@ -365,5 +366,16 @@
   "cookies": {
     "message": "Этот сайт использует файлы cookie для улучшения работы.",
     "ok": "OK"
+  },
+  "card_payment": {
+    "title": "Оплата картой",
+    "description": "Введите ID поездки, который вы можете узнать у водителя, и указанную им сумму. Затем оплатите билет онлайн и предъявите результат оплаты водителю.",
+    "trip_id_label": "ID поездки",
+    "amount_label": "Сумма",
+    "trip_id_required": "ID поездки обязателен",
+    "amount_min": "Сумма должна быть не менее 20",
+    "agree_required": "Вы должны согласиться с политикой конфиденциальности",
+    "pay": "Оплатить",
+    "agreement": "Я согласен с <privacyPolicy>политикой конфиденциальности</privacyPolicy>"
   }
 }

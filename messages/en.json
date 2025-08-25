@@ -9,6 +9,7 @@
     "about": "About us",
     "faq": "FAQ",
     "contacts": "Contacts",
+    "card_payment": "Card payment",
     "booking": "Booking",
     "passengers": "Passengers",
     "payments": "Payments",
@@ -365,5 +366,16 @@
   "cookies": {
     "message": "This website uses cookies to enhance your experience.",
     "ok": "OK"
+  },
+  "card_payment": {
+    "title": "Card payment",
+    "description": "Enter the trip ID provided by the driver and the amount they told you. Then pay the ticket online and show the payment result to the driver.",
+    "trip_id_label": "Trip ID",
+    "amount_label": "Amount",
+    "trip_id_required": "Trip ID is required",
+    "amount_min": "Amount must be at least 20",
+    "agree_required": "You must agree with the privacy policy",
+    "pay": "Pay",
+    "agreement": "I agree with the <privacyPolicy>Privacy Policy</privacyPolicy>"
   }
 }

@@ -32,6 +32,10 @@ export const NAV_LINK = {
     path: "/contacts",
     label: "nav.contacts",
   },
+  card_payment: {
+    path: "/card-payment",
+    label: "nav.card_payment",
+  },
 } as const satisfies Record<string, NavLinkItem>;
 
 export const NAV_LINKS = Object.values(NAV_LINK);

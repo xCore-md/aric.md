@@ -9,6 +9,7 @@
     "about": "Despre noi",
     "faq": "Întrebări și răspunsuri",
     "contacts": "Contacte",
+    "card_payment": "Plată cu cardul",
     "booking": "Rezervare",
     "passengers": "Pasageri",
     "payments": "Plăți",
@@ -365,5 +366,16 @@
   "cookies": {
     "message": "Acest site utilizează cookie-uri pentru a vă îmbunătăți experiența.",
     "ok": "OK"
+  },
+  "card_payment": {
+    "title": "Plată cu cardul",
+    "description": "Introduceți ID-ul cursei oferit de șofer și suma indicată de acesta. Apoi plătiți biletul online și arătați rezultatul plății șoferului.",
+    "trip_id_label": "ID cursă",
+    "amount_label": "Sumă",
+    "trip_id_required": "ID cursă este obligatoriu",
+    "amount_min": "Suma trebuie să fie cel puțin 20",
+    "agree_required": "Trebuie să fiți de acord cu politica de confidențialitate",
+    "pay": "Achită",
+    "agreement": "Sunt de acord cu <privacyPolicy>Politica de confidențialitate</privacyPolicy>"
   }
 }
