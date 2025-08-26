@@ -19,8 +19,15 @@ const MIN_AMOUNT = 20;
 
 const CardPaymentSchema = (t: ReturnType<typeof useTranslations>) =>
   z.object({
-    trip_id: z.coerce.number().int().min(1, { message: t("trip_id_required") }),
-    amount: z.coerce.number().min(MIN_AMOUNT, { message: t("amount_min") }),
+    trip_id: z
+      .coerce
+      .number({ invalid_type_error: t("expected_number") })
+      .int()
+      .min(1, { message: t("trip_id_required") }),
+    amount: z
+      .coerce
+      .number({ invalid_type_error: t("expected_number") })
+      .min(MIN_AMOUNT, { message: t("amount_min") }),
     agree: z.boolean().refine((val) => val, { message: t("agree_required") }),
   });
 
@@ -70,7 +77,7 @@ export const CardPaymentContainer: React.FC = () => {
               <FormItem>
                 <FormLabel>{t("trip_id_label")}</FormLabel>
                 <FormControl>
-                  <Input type="number" min={1} {...field} />
+                  <Input type="number" min={1} {...field} value={field.value ?? ""} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -83,7 +90,7 @@ export const CardPaymentContainer: React.FC = () => {
               <FormItem>
                 <FormLabel>{t("amount_label")}</FormLabel>
                 <FormControl>
-                  <Input type="number" min={MIN_AMOUNT} {...field} />
+                  <Input type="number" min={MIN_AMOUNT} {...field} value={field.value ?? ""} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -351,6 +351,7 @@
   "$Vă rugăm să verificați datele introduse sau să încercați din nou Dacă problema persistă, contactați-ne pentru asistență": "Пожалуйста, проверьте введённые данные или попробуйте снова. Если проблема сохранится, свяжитесь с нами для получения помощи.",
   "$Pagina principală": "Главная страница",
   "$Vezi biletele": "Перейти к билетам",
+  "$Salvează bonul": "Сохранить чек",
   "$Website": "Website",
   "$Comerciant": "Коммерсант",
   "$Descriere": "Описание",
@@ -374,6 +375,7 @@
     "amount_label": "Сумма",
     "trip_id_required": "ID поездки обязателен",
     "amount_min": "Сумма должна быть не менее 20",
+    "expected_number": "Ожидалось число, получено NaN",
     "agree_required": "Вы должны согласиться с политикой конфиденциальности",
     "pay": "Оплатить",
     "agreement": "Я согласен с <privacyPolicy>политикой конфиденциальности</privacyPolicy>"

@@ -13,6 +13,8 @@ const publicPages = [
   "/legal",
   "/login",
   "/search",
+  "/payments/success",
+  "/payments/fail",
 ];
 
 export default function middleware(req: NextRequest) {

@@ -351,6 +351,7 @@
   "$Vă rugăm să verificați datele introduse sau să încercați din nou Dacă problema persistă, contactați-ne pentru asistență": "Please check the entered data or try again. If the problem persists, contact us for assistance.",
   "$Pagina principală": "Home page",
   "$Vezi biletele": "Go to tickets",
+  "$Salvează bonul": "Save receipt",
   "$Website": "Website",
   "$Comerciant": "Merchant",
   "$Descriere": "Description",
@@ -374,6 +375,7 @@
     "amount_label": "Amount",
     "trip_id_required": "Trip ID is required",
     "amount_min": "Amount must be at least 20",
+    "expected_number": "Expected number, received nan",
     "agree_required": "You must agree with the privacy policy",
     "pay": "Pay",
     "agreement": "I agree with the <privacyPolicy>Privacy Policy</privacyPolicy>"

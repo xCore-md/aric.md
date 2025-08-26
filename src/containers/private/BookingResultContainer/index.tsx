@@ -16,6 +16,7 @@ export const BookingResultContainer: React.FC<{
   const searchParams = useSearchParams();
   const { formatUTC } = useFormatUTCToLocal();
   const { push } = useRouter();
+  const context = searchParams.get("context");
   const [delay, setDelay] = React.useState(ticketDelay ?? 0);
 
   React.useEffect(() => {
@@ -97,12 +98,20 @@ export const BookingResultContainer: React.FC<{
                   </div>
                 </div>
                 <div className="flex items-center justify-between gap-10 border-t pt-6">
-                  <Button disabled={delay > 0} onClick={() => push("/tickets")}>
-                    {t("$Vezi biletele")} {delay > 0 ? `(${delay})` : ""}
-                  </Button>
-                  <Button asChild variant="outline">
-                    <Link href="/">{t("$Pagina principală")}</Link>
-                  </Button>
+                  {context === "anonymous_booking" ? (
+                    <Button onClick={() => window.print()}>
+                      {t("$Salvează bonul")}
+                    </Button>
+                  ) : (
+                    <>
+                      <Button disabled={delay > 0} onClick={() => push("/tickets")}> 
+                        {t("$Vezi biletele")} {delay > 0 ? `(${delay})` : ""}
+                      </Button>
+                      <Button asChild variant="outline">
+                        <Link href="/">{t("$Pagina principală")}</Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -164,6 +173,13 @@ export const BookingResultContainer: React.FC<{
               <div className="font-semibold">{t("site.name")}</div>
               <div>{t("site.description")}</div>
             </div>
+            {context === "anonymous_booking" && (
+              <div className="mt-6 flex justify-end">
+                <Button onClick={() => window.print()}>
+                  {t("$Salvează bonul")}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

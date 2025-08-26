@@ -351,6 +351,7 @@
   "$Vă rugăm să verificați datele introduse sau să încercați din nou Dacă problema persistă, contactați-ne pentru asistență": "Vă rugăm să verificați datele introduse sau să încercați din nou. Dacă problema persistă, contactați-ne pentru asistență.",
   "$Pagina principală": "Pagina principală",
   "$Vezi biletele": "Mergi la bilete",
+  "$Salvează bonul": "Salvează bonul",
   "$Website": "Website",
   "$Comerciant": "Comerciant",
   "$Descriere": "Descriere",
@@ -374,6 +375,7 @@
     "amount_label": "Sumă",
     "trip_id_required": "ID cursă este obligatoriu",
     "amount_min": "Suma trebuie să fie cel puțin 20",
+    "expected_number": "Se aștepta un număr, dar s-a primit NaN",
     "agree_required": "Trebuie să fiți de acord cu politica de confidențialitate",
     "pay": "Achită",
     "agreement": "Sunt de acord cu <privacyPolicy>Politica de confidențialitate</privacyPolicy>"

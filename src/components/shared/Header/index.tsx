@@ -65,7 +65,7 @@ export const Header: React.FC<{ isHomePage?: boolean }> = ({ isHomePage }) => {
     return null;
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-50 print:hidden">
       <div className={cn("mt-5 hidden sm:block", !isHomePage && "mt-0 bg-white")}>
         <div className="container">
           <div

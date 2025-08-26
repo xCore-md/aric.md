@@ -37,7 +37,7 @@ export const Footer: React.FC = () => {
   const currentPath = pathname + (searchParams.size ? `?${searchParams}` : "");
 
   return (
-    <div className="mt-auto">
+    <div className="mt-auto print:hidden">
       <footer className="bg-black px-0 py-10 md:p-14">
         <div className="container">
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-20 xl:gap-48">
