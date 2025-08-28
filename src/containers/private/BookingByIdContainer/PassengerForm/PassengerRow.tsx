@@ -18,7 +18,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns/format";
 import { Calendar } from "@/components/ui/calendar";
-import { Delete } from "lucide-react";
+import { Delete, CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type PassengerRowProps = {
   index: number;
@@ -45,7 +46,7 @@ export const PassengerRow: React.FC<PassengerRowProps> = ({
       <div className="bg-blue/10 flex h-7 min-w-7 items-center justify-center rounded-full text-sm font-medium">
         {index + 1}
       </div>
-      <div className="grid w-full grid-cols-2 gap-2">
+      <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2">
         {/* last_name */}
         <FormField
           control={control}
@@ -100,11 +101,22 @@ export const PassengerRow: React.FC<PassengerRowProps> = ({
               <FormControl>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="outline">
-                      {field.value
-                        ? format(field.value, "dd.MM.yyyy")
-                        : t("$Data nasterii")}
-                    </Button>
+                    <button
+                      type="button"
+                      className={cn(
+                        "flex h-12 w-full min-w-0 items-center rounded-full border border-input bg-white px-5 py-1 text-left transition-[color,box-shadow] outline-none",
+                        "focus-visible:border-ring focus-visible:ring-ring/50 ring-inset focus-visible:ring-1",
+                        "hover:bg-gray-50",
+                        !field.value && "text-text-gray"
+                      )}
+                    >
+                      <CalendarIcon className={cn("mr-2 h-4 w-4 flex-shrink-0", !field.value && "opacity-50")} />
+                      <span>
+                        {field.value
+                          ? format(field.value, "dd.MM.yyyy")
+                          : t("$Data nasterii")}
+                      </span>
+                    </button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
                     <Calendar

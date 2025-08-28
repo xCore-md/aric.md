@@ -3,7 +3,7 @@ import Image from "next/image";
 import logo from "@/assets/images/logo-black.svg";
 import image from "@/assets/images/auth-wall.jpg";
 import { Input } from "@/components/ui/input";
-import { MoldovaPhoneInput } from "@/components/shared/MoldovaPhoneInput";
+import { PhoneInput } from "@/components/shared/phone-input";
 import { Button } from "@/components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
 
@@ -31,14 +31,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { profileService } from "@/services/profile.service";
 import { useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
-import { MOLDOVA_PHONE_CODE, AUTH_SUCCESS_EVENT } from "@/utils/constants";
+import { AUTH_SUCCESS_EVENT } from "@/utils/constants";
 import { formatTime } from "@/utils";
 import { cn } from "@/lib/utils";
 
 const FormSchema = z.object({
   code: z.string().min(6).max(6).nullable(),
   email: z.union([z.literal(""), z.string().email()]),
-  phone: z.string().min(8).max(8),
+  phone: z.string().min(1, "Numărul de telefon este obligatoriu"),
 });
 
 const SECONDS = 60;
@@ -115,7 +115,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
     setCanResend(false);
 
     mutationSendVerificationCode.mutate({
-      phone: MOLDOVA_PHONE_CODE + phoneWithoutSpaces,
+      phone: phoneWithoutSpaces,
       language: locale,
     });
   };
@@ -123,7 +123,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     if (phone && step === "phone") {
       mutationSendVerificationCode.mutate({
-        phone: MOLDOVA_PHONE_CODE + phoneWithoutSpaces,
+        phone: phoneWithoutSpaces,
         language: locale,
       });
 
@@ -132,7 +132,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
 
     if (code && step === "code") {
       mutationVerifyCode.mutate({
-        phone: MOLDOVA_PHONE_CODE + phoneWithoutSpaces,
+        phone: phoneWithoutSpaces,
         code,
         language: locale,
       });
@@ -195,7 +195,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <MoldovaPhoneInput
+                            <PhoneInput
                               placeholder={t("input.phone_placeholder")}
                               className="h-16"
                               {...field}
@@ -221,7 +221,7 @@ export const AuthForm: React.FC<{ onDialogClose?: () => void }> = ({
                 <p className="text-text-gray mb-10">
                   {t("auth.input_otp_phone")}{" "}
                   <span className="font-semibold text-black">
-                    {MOLDOVA_PHONE_CODE + " " + phone}
+                    {phone}
                   </span>
                 </p>
 

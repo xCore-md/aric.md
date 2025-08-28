@@ -67,14 +67,14 @@ export const PassengerCountSelect: React.FC<{
 
       <PopoverContent className="w-80 space-y-4">
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between gap-6">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
             <div>
               <div className="font-medium">{t("passengers.adults")}</div>
               <div className="text-muted-foreground text-sm">
                 {t("passengers.adults_hint")}
               </div>
             </div>
-            <div className="mt-2 flex items-center justify-between">
+            <div className="mt-2 flex items-center justify-between sm:mt-0">
               <ControlButton
                 onClick={() =>
                   updateCount("adult", Math.max(0, passengerCounts.adult - 1))
@@ -92,7 +92,7 @@ export const PassengerCountSelect: React.FC<{
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-6">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
             <div>
               <div className="font-medium">
                 {t("passengers.children")}
@@ -104,7 +104,7 @@ export const PassengerCountSelect: React.FC<{
                 {t("passengers.children_hint")}
               </div>
             </div>
-            <div className="mt-2 flex items-center justify-between">
+            <div className="mt-2 flex items-center justify-between sm:mt-0">
               <ControlButton
                 onClick={() =>
                   updateCount("child", Math.max(0, passengerCounts.child - 1))

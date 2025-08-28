@@ -61,7 +61,10 @@ export const passengerFormSchema = z.object({
       z.object({
         first_name: z.string().min(3),
         last_name: z.string().min(3),
-        birth_date: z.date(),
+        birth_date: z.date({
+          required_error: "Data nașterii este obligatorie",
+          invalid_type_error: "Selectați o dată validă",
+        }),
         phone: phoneNumberSchema,
       }),
     ).default([]),
@@ -98,7 +101,7 @@ const defaultValues: Partial<PassengerFormInput> = {
         first_name: "",
         last_name: "",
         phone: "",
-        birth_date: new Date(),
+        birth_date: undefined,
       },
     ],
     existing: [],
