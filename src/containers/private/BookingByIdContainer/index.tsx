@@ -101,7 +101,7 @@ const defaultValues: Partial<PassengerFormInput> = {
         first_name: "",
         last_name: "",
         phone: "",
-        birth_date: undefined,
+        birth_date: new Date(),
       },
     ],
     existing: [],
