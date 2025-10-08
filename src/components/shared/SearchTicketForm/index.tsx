@@ -16,11 +16,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTicketForm } from "@/hooks/useTicketForm";
 import type { TicketFormValues } from "@/types";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/utils/constants";
 import { searchService } from "@/services/search.service";
 import { LoadingSpinner } from "../LoadingSpinner";
+import { getLocalizedField } from "@/utils/getLocalizedField";
 
 const options = maskitoDateOptionsGenerator({
   mode: "dd/mm/yyyy",
@@ -51,6 +52,7 @@ export const SearchTicketForm: React.FC<{
   isLoading?: boolean;
 }> = ({ onSubmit, isLoading }) => {
   const t = useTranslations();
+  const locale = useLocale();
   const {
     fromStationId,
     setFromStationId,
@@ -182,7 +184,7 @@ export const SearchTicketForm: React.FC<{
             data={
               stations?.map((s) => ({
                 value: String(s.id),
-                label: s.name_ru,
+                label: getLocalizedField(s, "name", locale) || "",
               })) || []
             }
             loading={isStationsLoading}
@@ -196,7 +198,7 @@ export const SearchTicketForm: React.FC<{
             data={
               stationsDestinations?.map((s) => ({
                 value: String(s.id),
-                label: s.name_ru,
+                label: getLocalizedField(s, "name", locale) || "",
               })) || []
             }
             disabled={!fromStationId}
