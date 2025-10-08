@@ -220,8 +220,8 @@ export const SearchContainer: React.FC = () => {
                                 )}
                               </div>
                               <div className="text-base text-text-gray flex items-center justify-end gap-1">
+                                <span>{searchParams?.passengers || 1}x</span>
                                 <User className="h-4 w-4" />
-                                <span>x{searchParams?.passengers || 1}</span>
                                 {formatCurrency(getAmountByCurrency(departurePrices))}
                               </div>
                             </div>

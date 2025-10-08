@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 
 const socialButtons = [
   {
-    href: "https://t.me/username",
+    href: "https://t.me/+37379435990",
     labelKey: "call.telegram",
     color: "#02B0F4",
     svgPath: (
@@ -15,7 +15,7 @@ const socialButtons = [
     ),
   },
   {
-    href: "viber://chat/?number=%2BPHONENUMBERWITHCOUNTRYCODE",
+    href: "viber://chat/?number=%2B37379435990",
     labelKey: "call.viber",
     color: "#7360F2",
     svgPath: (
@@ -32,7 +32,7 @@ const socialButtons = [
     ),
   },
   {
-    href: "whatsapp://send?abid=phonenumber",
+    href: "https://wa.me/+37379435990",
     labelKey: "call.whatsapp",
     color: "#25D366",
     svgPath: (

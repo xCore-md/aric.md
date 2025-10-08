@@ -118,21 +118,6 @@ export const TicketDetailsCollapsible: React.FC<{
                     <div className="text-text-gray">
                       {getLocalizedField(station, "address", locale)}
                     </div>
-
-                    <Button
-                      size="sm"
-                      variant="link"
-                      className="text-text-gray h-auto flex-none !px-0 text-xs text-nowrap"
-                      asChild
-                    >
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        href={`https://www.google.com/maps?q=${station?.latitude},${station?.longitude}`}
-                      >
-                        {t("$Vezi pe hartă")}
-                      </a>
-                    </Button>
                   </div>
                 </div>
               ))}

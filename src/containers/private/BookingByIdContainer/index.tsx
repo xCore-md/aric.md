@@ -111,7 +111,7 @@ const defaultValues: Partial<PassengerFormInput> = {
     child: 0,
   },
   payment: {
-    method: PaymentMethodEnum.Cash,
+    method: PaymentMethodEnum.Card,
   },
   consent: false,
 };
@@ -447,39 +447,6 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
                     </div>
                   </RadioGroup>
                 </div>
-
-                {/* Third step form */}
-                {paymentMethod === PaymentMethodEnum.Card && (
-                  <div className="space-y-4">
-                    <div className="text-lg font-semibold">
-                      3. {t("$Alegeți o poartă de plată")}:
-                    </div>
-
-                    <RadioGroup defaultValue="maib">
-                      <div className="flex flex-wrap gap-6">
-                        <RadioGroupItem
-                          value="maib"
-                          id="maib"
-                          className="sr-only data-[state=checked]:[&+label]:shadow data-[state=checked]:[&+label]:ring-2"
-                        />
-
-                        <label
-                          htmlFor="maib"
-                          className="bg-back ring-blue shadow-blue/10 flex h-14 items-center gap-2 rounded-full p-3 font-bold"
-                        >
-                          <div className="relative h-full w-28 flex-none overflow-hidden rounded-full">
-                            <Image
-                              src={logoMaib.src}
-                              alt="MAIB"
-                              fill
-                              className="object-contain"
-                            />
-                          </div>
-                        </label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                )}
               </div>
 
               <TicketDetailsCollapsible
