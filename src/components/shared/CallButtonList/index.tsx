@@ -5,9 +5,11 @@ import { useOnClickOutside } from "usehooks-ts";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
-const socialButtons = [
+const PHONE_NUMBER = "+37379435990";
+
+const getSocialButtons = () => [
   {
-    href: "https://t.me/+37379435990",
+    href: `https://t.me/${PHONE_NUMBER}`,
     labelKey: "call.telegram",
     color: "#02B0F4",
     svgPath: (
@@ -15,7 +17,7 @@ const socialButtons = [
     ),
   },
   {
-    href: "viber://chat/?number=%2B37379435990",
+    href: `viber://chat/?number=%2B${PHONE_NUMBER.substring(1)}`,
     labelKey: "call.viber",
     color: "#7360F2",
     svgPath: (
@@ -32,7 +34,7 @@ const socialButtons = [
     ),
   },
   {
-    href: "https://wa.me/+37379435990",
+    href: `https://wa.me/${PHONE_NUMBER}`,
     labelKey: "call.whatsapp",
     color: "#25D366",
     svgPath: (
@@ -49,6 +51,7 @@ export const CallButtonList: React.FC = () => {
   const t = useTranslations();
   const ref = React.useRef(null);
   const [show, setShow] = React.useState(false);
+  const socialButtons = React.useMemo(() => getSocialButtons(), []);
 
   useOnClickOutside(ref, () => setShow(false));
 
