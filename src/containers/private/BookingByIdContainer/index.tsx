@@ -24,7 +24,6 @@ import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
 
 import flagMD from "@/assets/images/languages/md.svg";
 import flagUA from "@/assets/images/languages/ua.svg";
-import logoMaib from "@/assets/images/bank/maib.svg";
 import { TicketDetailsCollapsible } from "@/components/shared/TicketDetailsCollapsible";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { PassengerForm } from "./PassengerForm";
@@ -44,7 +43,6 @@ import {
   Passenger,
 } from "@/types";
 
-import { formatISO, differenceInYears } from "date-fns";
 
 export const phoneNumberSchema = z.string().refine(
   (val) => {
@@ -61,10 +59,6 @@ export const passengerFormSchema = z.object({
       z.object({
         first_name: z.string().min(3),
         last_name: z.string().min(3),
-        birth_date: z.date({
-          required_error: "Data nașterii este obligatorie",
-          invalid_type_error: "Selectați o dată validă",
-        }),
         phone: phoneNumberSchema,
       }),
     ).default([]),
@@ -101,7 +95,6 @@ const defaultValues: Partial<PassengerFormInput> = {
         first_name: "",
         last_name: "",
         phone: "",
-        birth_date: new Date(),
       },
     ],
     existing: [],
@@ -210,13 +203,9 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
   );
 
   const handleExistingChange = React.useCallback((passengers: Passenger[]) => {
-    const today = new Date();
     const counts = passengers.reduce(
       (acc, p) => {
-        if (!p.birth_date) return acc;
-        const birth = new Date(p.birth_date);
-        const age = differenceInYears(today, birth);
-        if (age <= 11) acc.child += 1;
+        if (p.type === 'child') acc.child += 1;
         else acc.adult += 1;
         return acc;
       },
@@ -286,10 +275,7 @@ export const BookingByIdContainer: React.FC<{ id: number }> = ({ id }) => {
     bookingComplete.mutate({
       booking_id: id,
       passengers: {
-        new: passengers?.new?.map((p) => ({
-          ...p,
-          birth_date: formatISO(p?.birth_date),
-        })),
+        new: passengers?.new || [],
         existing: passengers?.existing || [],
       },
       payment: {

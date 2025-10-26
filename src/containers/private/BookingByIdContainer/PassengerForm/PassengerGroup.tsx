@@ -3,8 +3,6 @@ import React from "react";
 import { useTranslations } from "use-intl";
 import { FieldArrayWithId } from "react-hook-form";
 
-import { subYears } from "date-fns/subYears";
-import { subDays } from "date-fns/subDays";
 import { PassengerRow } from "./PassengerRow";
 import { PassengerSelectExisting } from "./PassengerSelectExisting";
 import { Passenger, PassengerType } from "@/types";
@@ -36,11 +34,6 @@ export const PassengerGroup: React.FC<PassengerGroupProps> = ({
     Passenger[]
   >([]);
 
-  const today = new Date();
-  const minDateChild = subYears(today, 11);
-  const maxDateChild = subDays(today, 1);
-  const maxDateAdult = subYears(today, 12);
-  const minDateAdult = new Date(1900, 0, 1);
 
   // const removeLastAdult = () => {
   //   if (passengerCounts.adult > 1) {
@@ -99,10 +92,6 @@ export const PassengerGroup: React.FC<PassengerGroupProps> = ({
         <div className="space-y-4">
           {fields.slice(offset, offset + count).map((field, index) => {
             const realIndex = fields.findIndex((f) => f.id === field.id);
-            const isAdult = realIndex < passengerCounts.adult;
-            const minDate = isAdult ? minDateAdult : minDateChild;
-            const maxDate = isAdult ? maxDateAdult : maxDateChild;
-
             const totalAdults =
               passengerCounts.adult + (type === "adult" ? selectedPassengers.length : 0);
 
@@ -111,8 +100,6 @@ export const PassengerGroup: React.FC<PassengerGroupProps> = ({
                 key={field.id}
                 realIndex={realIndex}
                 index={index}
-                minDate={minDate}
-                maxDate={maxDate}
                 onRemove={() => remove(realIndex)}
                 hideRemoveButton={
                   type === "adult" && index === 0 && totalAdults <= 1
@@ -123,14 +110,13 @@ export const PassengerGroup: React.FC<PassengerGroupProps> = ({
 
           {selectedPassengers?.length > 0 && (
             <div className="grid grid-cols-1 gap-4">
-              {selectedPassengers?.map(({ id, first_name, last_name, phone, birth_date }, index) => (
+              {selectedPassengers?.map(({ id, first_name, last_name, phone }, index) => (
                 <PassengerRowReadonly
                   key={id}
                   index={fields.slice(offset, offset + count).length + index}
                   first_name={first_name}
                   last_name={last_name}
                   phone={phone}
-                  birth_date={birth_date}
                   onRemove={() => onRemoveExistingPassenger(id)}
                 />
               ))}

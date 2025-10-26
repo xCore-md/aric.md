@@ -20,15 +20,8 @@ import {
 } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
-
 import { removeMoldovaPrefix } from "@/utils";
 import { MoldovaPhoneInput } from "@/components/shared/MoldovaPhoneInput";
-import { useFormatUTCToLocal } from "@/hooks/useFormatUTCToLocal ";
-import { format } from "date-fns/format";
-import { parse } from "date-fns/parse";
-import { isValid } from "date-fns/isValid";
-import { formatISO } from "date-fns/formatISO";
 import {
   Select,
   SelectContent,
@@ -120,7 +113,6 @@ export const PassengersContainer: React.FC = () => {
                 <th>{t("$Nume")}</th>
                 <th>{t("$Prenume")}</th>
                 <th>{t("$Telefon")}</th>
-                <th>{t("$Data nașterii")}</th>
                 <th>{t("$Acțiuni")}</th>
               </tr>
             </thead>
@@ -176,14 +168,12 @@ const PassengerRow: React.FC<{
 }> = ({ data, onChange, loading }) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = React.useState(false);
-  const { formatUTC } = useFormatUTCToLocal();
   const t = useTranslations();
 
   const [edit, setEdit] = React.useState(false);
   const [first_name, setFirstName] = React.useState("");
   const [last_name, setLastName] = React.useState("");
   const [phone, setPhone] = React.useState("");
-  const [birth_date, setBirthDate] = React.useState("");
 
   const refInput = React.useRef<HTMLInputElement>(null);
 
@@ -192,7 +182,6 @@ const PassengerRow: React.FC<{
       id: data?.id,
       first_name,
       last_name,
-      birth_date: formatISO(birth_date),
       phone: phone.replace(/\s+/g, ""),
     });
     setEdit(false);
@@ -202,7 +191,6 @@ const PassengerRow: React.FC<{
     setFirstName(data.first_name || "");
     setLastName(data.last_name || "");
     setPhone(removeMoldovaPrefix(data.phone || ""));
-    setBirthDate(data.birth_date || "");
     setEdit(false);
   };
 
@@ -224,17 +212,6 @@ const PassengerRow: React.FC<{
     },
   });
 
-  const handleChangeBirthDate = (date?: Date) => {
-    setBirthDate(date ? format(date, "yyyy-MM-dd") : "");
-  };
-
-  const selectedDate = React.useMemo(() => {
-    if (!birth_date) return undefined;
-
-    const parsed = parse(birth_date, "yyyy-MM-dd", new Date());
-    return isValid(parsed) ? parsed : undefined;
-  }, [birth_date]);
-
   const handleDelete = () => {
     if (data.id) deletePassenger.mutate(data.id);
   };
@@ -245,7 +222,6 @@ const PassengerRow: React.FC<{
     setFirstName(data.first_name || "");
     setLastName(data.last_name || "");
     setPhone(removeMoldovaPrefix(data.phone || ""));
-    setBirthDate(data.birth_date || "");
   }, [data]);
 
   return (
@@ -297,40 +273,6 @@ const PassengerRow: React.FC<{
           />
         ) : (
           <span>{phone ? "+373 " + phone : ""}</span>
-        )}
-      </td>
-
-      {/* Birth date */}
-      <td className="flex justify-between px-4 lg:table-cell lg:px-0">
-        <span className="text-text-gray w-full max-w-36 font-normal lg:hidden">
-          {t("$Data nașterii")}
-        </span>
-
-        {edit ? (
-          <Popover>
-            <div className="relative flex w-full">
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="ml-auto h-11 w-full max-w-56 text-lg"
-                >
-                  {format(birth_date, "dd.MM.yyyy")}
-                </Button>
-              </PopoverTrigger>
-            </div>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                defaultMonth={selectedDate}
-                onSelect={handleChangeBirthDate}
-                captionLayout="dropdown"
-                className="rounded-md border"
-              />
-            </PopoverContent>
-          </Popover>
-        ) : (
-          <span>{formatUTC(birth_date)?.date}</span>
         )}
       </td>
 

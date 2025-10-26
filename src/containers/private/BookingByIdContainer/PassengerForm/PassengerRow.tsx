@@ -10,22 +10,12 @@ import {
 } from "@/components/ui/form";
 import { PhoneInput } from "@/components/shared/phone-input";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns/format";
-import { Calendar } from "@/components/ui/calendar";
-import { Delete, CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Delete } from "lucide-react";
 
 type PassengerRowProps = {
   index: number;
   realIndex: number;
-  minDate: Date;
-  maxDate: Date;
   onRemove: () => void;
   hideRemoveButton?: boolean;
 };
@@ -33,8 +23,6 @@ type PassengerRowProps = {
 export const PassengerRow: React.FC<PassengerRowProps> = ({
   index,
   realIndex,
-  minDate,
-  maxDate,
   onRemove,
   hideRemoveButton = false,
 }) => {
@@ -86,50 +74,6 @@ export const PassengerRow: React.FC<PassengerRowProps> = ({
                   placeholder={t("input.phone_placeholder")}
                   {...field}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* birth_date */}
-        <FormField
-          control={control}
-          name={`passengers.new.${realIndex}.birth_date`}
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button
-                      type="button"
-                      className={cn(
-                        "flex h-12 w-full min-w-0 items-center rounded-full border border-input bg-white px-5 py-1 text-left transition-[color,box-shadow] outline-none",
-                        "focus-visible:border-ring focus-visible:ring-ring/50 ring-inset focus-visible:ring-1",
-                        "hover:bg-gray-50",
-                        !field.value && "text-text-gray"
-                      )}
-                    >
-                      <CalendarIcon className={cn("mr-2 h-4 w-4 flex-shrink-0", !field.value && "opacity-50")} />
-                      <span>
-                        {field.value
-                          ? format(field.value, "dd.MM.yyyy")
-                          : t("$Data nasterii")}
-                      </span>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      defaultMonth={maxDate}
-                      onSelect={field.onChange}
-                      captionLayout="dropdown"
-                      className="rounded-md border"
-                      disabled={{ before: minDate, after: maxDate }}
-                    />
-                  </PopoverContent>
-                </Popover>
               </FormControl>
               <FormMessage />
             </FormItem>

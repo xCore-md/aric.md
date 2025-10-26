@@ -63,7 +63,6 @@ export const PassengerFields: React.FC<Props> = ({ onExistingChange }) => {
           last_name: "",
           first_name: "",
           phone: "",
-          birth_date: undefined,
         }),
         {
           shouldFocus: false,

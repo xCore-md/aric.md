@@ -92,35 +92,35 @@ export const PassengerCountSelect: React.FC<{
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-            <div>
-              <div className="font-medium">
-                {t("passengers.children")}
-                <span className="bg-green ml-2 max-w-max rounded-full px-2.5 py-0.5 text-base">
-                  -50%
-                </span>
-              </div>
-              <div className="text-muted-foreground text-sm">
-                {t("passengers.children_hint")}
-              </div>
-            </div>
-            <div className="mt-2 flex items-center justify-between sm:mt-0">
-              <ControlButton
-                onClick={() =>
-                  updateCount("child", Math.max(0, passengerCounts.child - 1))
-                }
-                disabled={passengerCounts.child <= 0}
-              />
-              <span className="flex size-10 flex-none items-center justify-center">
-                {passengerCounts.child + existingCounts.child}
-              </span>
-              <ControlButton
-                onClick={() => updateCount("child", passengerCounts.child + 1)}
-                disabled={isAtLimit}
-                icon="plus"
-              />
-            </div>
-          </div>
+          {/*<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-6">*/}
+          {/*  <div>*/}
+          {/*    <div className="font-medium">*/}
+          {/*      {t("passengers.children")}*/}
+          {/*      <span className="bg-green ml-2 max-w-max rounded-full px-2.5 py-0.5 text-base">*/}
+          {/*        -50%*/}
+          {/*      </span>*/}
+          {/*    </div>*/}
+          {/*    <div className="text-muted-foreground text-sm">*/}
+          {/*      {t("passengers.children_hint")}*/}
+          {/*    </div>*/}
+          {/*  </div>*/}
+          {/*  <div className="mt-2 flex items-center justify-between sm:mt-0">*/}
+          {/*    <ControlButton*/}
+          {/*      onClick={() =>*/}
+          {/*        updateCount("child", Math.max(0, passengerCounts.child - 1))*/}
+          {/*      }*/}
+          {/*      disabled={passengerCounts.child <= 0}*/}
+          {/*    />*/}
+          {/*    <span className="flex size-10 flex-none items-center justify-center">*/}
+          {/*      {passengerCounts.child + existingCounts.child}*/}
+          {/*    </span>*/}
+          {/*    <ControlButton*/}
+          {/*      onClick={() => updateCount("child", passengerCounts.child + 1)}*/}
+          {/*      disabled={isAtLimit}*/}
+          {/*      icon="plus"*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*</div>*/}
         </div>
 
         {isAtLimit && (

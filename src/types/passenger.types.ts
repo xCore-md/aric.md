@@ -7,7 +7,6 @@ export interface Passenger extends Timestamps {
   customer_id: number;
   first_name: string;
   last_name: string;
-  birth_date: string | null;
   phone: string | null;
   type: PassengerType;
 }
@@ -15,7 +14,6 @@ export interface Passenger extends Timestamps {
 export interface PassengerCreateDto {
   first_name: string;
   last_name: string;
-  birth_date: string | null;
   phone: string | null;
 }
 
